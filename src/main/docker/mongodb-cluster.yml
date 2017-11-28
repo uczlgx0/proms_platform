@@ -1,0 +1,16 @@
+version: '2'
+services:
+    northumbriaproms-mongodb:
+        image: mongo:3.4.8
+        ports:
+            - "27017:27017"
+        command: mongos --configdb northumbriaproms-mongodb-config
+    northumbriaproms-mongodb-node:
+        build:
+            context: .
+            dockerfile: mongodb/MongoDB.Dockerfile
+        command: mongod --replSet rs1 --noprealloc --smallfiles
+    northumbriaproms-mongodb-config:
+        image: mongo:3.4.8
+        container_name: northumbriaproms-mongodb-config
+        command: mongod --noprealloc --smallfiles --configsvr --dbpath /data/db
