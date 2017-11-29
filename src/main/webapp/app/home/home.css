@@ -293,3 +293,7 @@ a.bg-about:hover {
     background-color: #c1e2b3;
 }
 
+.blur {
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+}
