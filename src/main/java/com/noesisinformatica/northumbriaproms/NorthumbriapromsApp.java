@@ -23,7 +23,7 @@ import java.util.Collection;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
-@EnableConfigurationProperties({ApplicationProperties.class})
+@EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
 public class NorthumbriapromsApp {
 
     private static final Logger log = LoggerFactory.getLogger(NorthumbriapromsApp.class);
