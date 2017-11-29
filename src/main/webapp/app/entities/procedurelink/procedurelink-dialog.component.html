@@ -1,0 +1,51 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myProcedurelinkLabel">Create or edit a Procedurelink</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!procedurelink.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="procedurelink.id" readonly />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_procedure">Procedure</label>
+            <select class="form-control" id="field_procedure" name="procedure" [(ngModel)]="procedurelink.procedure"  required>
+                <option *ngIf="!editForm.value.procedure" [ngValue]="null" selected></option>
+                <option [ngValue]="procedureOption.id === procedurelink.procedure?.id ? procedurelink.procedure : procedureOption" *ngFor="let procedureOption of procedures; trackBy: trackProcedureById">{{procedureOption.name}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.procedure?.dirty && editForm.controls.procedure?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.procedure?.errors?.required">
+                This field is required.
+            </small>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_questionnaire">Questionnaire</label>
+            <select class="form-control" id="field_questionnaire" name="questionnaire" [(ngModel)]="procedurelink.questionnaire"  required>
+                <option *ngIf="!editForm.value.questionnaire" [ngValue]="null" selected></option>
+                <option [ngValue]="questionnaireOption.id === procedurelink.questionnaire?.id ? procedurelink.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.questionnaire?.errors?.required">
+                This field is required.
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

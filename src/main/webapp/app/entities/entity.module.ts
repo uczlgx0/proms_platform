@@ -4,6 +4,7 @@ import { NorthumbriapromsPatientModule } from './patient/patient.module';
 import { NorthumbriapromsAddressModule } from './address/address.module';
 import { NorthumbriapromsProcedureModule } from './procedure/procedure.module';
 import { NorthumbriapromsQuestionnaireModule } from './questionnaire/questionnaire.module';
+import { NorthumbriapromsProcedurelinkModule } from './procedurelink/procedurelink.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -12,6 +13,7 @@ import { NorthumbriapromsQuestionnaireModule } from './questionnaire/questionnai
         NorthumbriapromsAddressModule,
         NorthumbriapromsProcedureModule,
         NorthumbriapromsQuestionnaireModule,
+        NorthumbriapromsProcedurelinkModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
