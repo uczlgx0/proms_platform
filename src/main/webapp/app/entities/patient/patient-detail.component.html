@@ -1,0 +1,45 @@
+
+<div *ngIf="patient">
+    <h2><span>Patient</span> {{patient.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Family Name</span></dt>
+        <dd>
+            <span>{{patient.familyName}}</span>
+        </dd>
+        <dt><span>Given Name</span></dt>
+        <dd>
+            <span>{{patient.givenName}}</span>
+        </dd>
+        <dt><span>Birth Date</span></dt>
+        <dd>
+            <span>{{patient.birthDate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Gender</span></dt>
+        <dd>
+            <span>{{patient.gender}}</span>
+        </dd>
+        <dt><span>Nhs Number</span></dt>
+        <dd>
+            <span>{{patient.nhsNumber}}</span>
+        </dd>
+        <dt><span>Email</span></dt>
+        <dd>
+            <span>{{patient.email}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'patient/'+ patient.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
