@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { Address } from './../address/address.model';
 
 export const enum GenderType {
     'MALE',
@@ -16,7 +17,8 @@ export class Patient implements BaseEntity {
         public gender?: GenderType,
         public nhsNumber?: number,
         public email?: string,
-        public addresses?: BaseEntity[],
+        public addresses?: Address[],
+        public procedureBookings?: BaseEntity[],
     ) {
     }
 }

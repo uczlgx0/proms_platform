@@ -1,9 +1,14 @@
 package com.noesisinformatica.northumbriaproms.service;
 
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
+import com.noesisinformatica.northumbriaproms.domain.Address_;
+import com.noesisinformatica.northumbriaproms.domain.Patient;
+import com.noesisinformatica.northumbriaproms.domain.Patient_;
+import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking_;
+import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
+import com.noesisinformatica.northumbriaproms.repository.search.PatientSearchRepository;
+import com.noesisinformatica.northumbriaproms.service.dto.PatientCriteria;
+import io.github.jhipster.service.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,15 +17,7 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.jhipster.service.QueryService;
-
-import com.noesisinformatica.northumbriaproms.domain.Patient;
-import com.noesisinformatica.northumbriaproms.domain.*; // for static metamodels
-import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
-import com.noesisinformatica.northumbriaproms.repository.search.PatientSearchRepository;
-import com.noesisinformatica.northumbriaproms.service.dto.PatientCriteria;
-
-import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
+import java.util.List;
 
 /**
  * Service for executing complex queries for Patient entities in the database.
@@ -98,6 +95,9 @@ public class PatientQueryService extends QueryService<Patient> {
             }
             if (criteria.getAddressId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getAddressId(), Patient_.addresses, Address_.id));
+            }
+            if (criteria.getProcedureBookingsId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getProcedureBookingsId(), Patient_.procedureBookings, ProcedureBooking_.id));
             }
         }
         return specification;

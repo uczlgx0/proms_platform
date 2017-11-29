@@ -1,0 +1,51 @@
+
+<div *ngIf="procedureBooking">
+    <h2><span>Procedure Booking</span> {{procedureBooking.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Consultant Name</span></dt>
+        <dd>
+            <span>{{procedureBooking.consultantName}}</span>
+        </dd>
+        <dt><span>Hospital Site</span></dt>
+        <dd>
+            <span>{{procedureBooking.hospitalSite}}</span>
+        </dd>
+        <dt><span>Scheduled Date</span></dt>
+        <dd>
+            <span>{{procedureBooking.scheduledDate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Performed Date</span></dt>
+        <dd>
+            <span>{{procedureBooking.performedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Primary Procedure</span></dt>
+        <dd>
+            <span>{{procedureBooking.primaryProcedure}}</span>
+        </dd>
+        <dt><span>Other Procedures</span></dt>
+        <dd>
+            <span>{{procedureBooking.otherProcedures}}</span>
+        </dd>
+        <dt><span>Patient</span></dt>
+        <dd>
+            <div *ngIf="procedureBooking.patient">
+                <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

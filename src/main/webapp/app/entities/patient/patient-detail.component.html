@@ -1,6 +1,6 @@
 
 <div *ngIf="patient">
-    <h2><span>Patient</span> {{patient.id}}</h2>
+    <h2>{{patient.givenName}} {{patient.familyName}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <div class="row">
@@ -72,4 +72,72 @@
             class="btn btn-primary">
         <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
     </button>
+
+    <div class="table-responsive" *ngIf="patient.procedureBookings && patient.procedureBookings.length > 0">
+        <hr>
+        <h4>Procedure Bookings</h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
+                <th><span>Consultant Name</span></th>
+                <th><span>Hospital Site</span></th>
+                <th><span>Scheduled Date</span></th>
+                <th><span>Performed Date</span></th>
+                <th><span>Primary Procedure</span></th>
+                <!--<th jhiSortBy="otherProcedures"><span>Other Procedures</span> <span class="fa fa-sort"></span></th>-->
+                <!--<th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>-->
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let procedureBooking of patient.procedureBookings">
+                <!--<td><a [routerLink]="['../procedure-booking', procedureBooking.id ]">{{procedureBooking.id}}</a></td>-->
+                <td>{{procedureBooking.consultantName}}</td>
+                <td>{{procedureBooking.hospitalSite}}</td>
+                <td>{{procedureBooking.scheduledDate | date:'medium'}}</td>
+                <td>{{procedureBooking.performedDate | date:'medium'}}</td>
+                <td>{{procedureBooking.primaryProcedure}}</td>
+                <!--<td>{{procedureBooking.otherProcedures}}</td>-->
+                <!--<td>-->
+                    <!--<div *ngIf="procedureBooking.patient">-->
+                        <!--<a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.id}}</a>-->
+                    <!--</div>-->
+                <!--</td>-->
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../procedure-booking', procedureBooking.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--<div *ngIf="patient.procedureBookings && patient.procedureBookings.length > 0">-->
+        <!--<div class="row justify-content-center">-->
+            <!--<jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>-->
+        <!--</div>-->
+        <!--<div class="row justify-content-center">-->
+            <!--<ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>

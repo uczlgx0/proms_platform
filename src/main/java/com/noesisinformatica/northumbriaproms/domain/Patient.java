@@ -59,6 +59,10 @@ public class Patient implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Address> addresses = new HashSet<>();
 
+    @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ProcedureBooking> procedureBookings = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -175,6 +179,31 @@ public class Patient implements Serializable {
     public void setAddresses(Set<Address> addresses) {
         this.addresses = addresses;
     }
+
+    public Set<ProcedureBooking> getProcedureBookings() {
+        return procedureBookings;
+    }
+
+    public Patient procedureBookings(Set<ProcedureBooking> procedureBookings) {
+        this.procedureBookings = procedureBookings;
+        return this;
+    }
+
+    public Patient addProcedureBookings(ProcedureBooking procedureBooking) {
+        this.procedureBookings.add(procedureBooking);
+        procedureBooking.setPatient(this);
+        return this;
+    }
+
+    public Patient removeProcedureBookings(ProcedureBooking procedureBooking) {
+        this.procedureBookings.remove(procedureBooking);
+        procedureBooking.setPatient(null);
+        return this;
+    }
+
+    public void setProcedureBookings(Set<ProcedureBooking> procedureBookings) {
+        this.procedureBookings = procedureBookings;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -207,7 +236,6 @@ public class Patient implements Serializable {
             ", gender='" + getGender() + "'" +
             ", nhsNumber=" + getNhsNumber() +
             ", email='" + getEmail() + "'" +
-            ", addresses='" + getAddresses() + "'" +
             "}";
     }
 }

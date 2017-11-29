@@ -3,6 +3,7 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
 import com.noesisinformatica.northumbriaproms.domain.Address;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
+import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.PatientSearchRepository;
@@ -567,6 +568,25 @@ public class PatientResourceIntTest {
 
         // Get all the patientList where address equals to addressId + 1
         defaultPatientShouldNotBeFound("addressId.equals=" + (addressId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllPatientsByProcedureBookingsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        ProcedureBooking procedureBookings = ProcedureBookingResourceIntTest.createEntity(em);
+        em.persist(procedureBookings);
+        em.flush();
+        patient.addProcedureBookings(procedureBookings);
+        patientRepository.saveAndFlush(patient);
+        Long procedureBookingsId = procedureBookings.getId();
+
+        // Get all the patientList where procedureBookings equals to procedureBookingsId
+        defaultPatientShouldBeFound("procedureBookingsId.equals=" + procedureBookingsId);
+
+        // Get all the patientList where procedureBookings equals to procedureBookingsId + 1
+        defaultPatientShouldNotBeFound("procedureBookingsId.equals=" + (procedureBookingsId + 1));
     }
 
     /**

@@ -3,22 +3,22 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Patient } from './patient.model';
-import { PatientService } from './patient.service';
+import { ProcedureBooking } from './procedure-booking.model';
+import { ProcedureBookingService } from './procedure-booking.service';
 
 @Component({
-    selector: 'jhi-patient-detail',
-    templateUrl: './patient-detail.component.html'
+    selector: 'jhi-procedure-booking-detail',
+    templateUrl: './procedure-booking-detail.component.html'
 })
-export class PatientDetailComponent implements OnInit, OnDestroy {
+export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
 
-    patient: Patient;
+    procedureBooking: ProcedureBooking;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
     constructor(
         private eventManager: JhiEventManager,
-        private patientService: PatientService,
+        private procedureBookingService: ProcedureBookingService,
         private route: ActivatedRoute
     ) {
     }
@@ -27,16 +27,14 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.subscription = this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
-        this.registerChangeInPatients();
+        this.registerChangeInProcedureBookings();
     }
 
     load(id) {
-        this.patientService.find(id).subscribe((patient) => {
-            this.patient = patient;
-            console.log("this.patient  = " , this.patient );
+        this.procedureBookingService.find(id).subscribe((procedureBooking) => {
+            this.procedureBooking = procedureBooking;
         });
     }
-
     previousState() {
         window.history.back();
     }
@@ -46,10 +44,10 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    registerChangeInPatients() {
+    registerChangeInProcedureBookings() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'patientListModification',
-            (response) => this.load(this.patient.id)
+            'procedureBookingListModification',
+            (response) => this.load(this.procedureBooking.id)
         );
     }
 }

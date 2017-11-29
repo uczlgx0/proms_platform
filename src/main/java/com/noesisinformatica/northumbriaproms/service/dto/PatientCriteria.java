@@ -49,6 +49,8 @@ public class PatientCriteria implements Serializable {
 
     private LongFilter addressId;
 
+    private LongFilter procedureBookingsId;
+
     public PatientCriteria() {
     }
 
@@ -116,6 +118,14 @@ public class PatientCriteria implements Serializable {
         this.addressId = addressId;
     }
 
+    public LongFilter getProcedureBookingsId() {
+        return procedureBookingsId;
+    }
+
+    public void setProcedureBookingsId(LongFilter procedureBookingsId) {
+        this.procedureBookingsId = procedureBookingsId;
+    }
+
     @Override
     public String toString() {
         return "PatientCriteria{" +
@@ -127,6 +137,7 @@ public class PatientCriteria implements Serializable {
                 (nhsNumber != null ? "nhsNumber=" + nhsNumber + ", " : "") +
                 (email != null ? "email=" + email + ", " : "") +
                 (addressId != null ? "addressId=" + addressId + ", " : "") +
+                (procedureBookingsId != null ? "procedureBookingsId=" + procedureBookingsId + ", " : "") +
             "}";
     }
 
