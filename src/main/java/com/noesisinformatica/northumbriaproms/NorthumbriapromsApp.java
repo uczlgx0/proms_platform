@@ -3,6 +3,9 @@ package com.noesisinformatica.northumbriaproms;
 import com.noesisinformatica.northumbriaproms.config.ApplicationProperties;
 import com.noesisinformatica.northumbriaproms.config.DefaultProfileUtil;
 
+import com.noesisinformatica.northumbriaproms.domain.Procedure;
+import com.noesisinformatica.northumbriaproms.repository.ProcedureRepository;
+import com.noesisinformatica.northumbriaproms.service.ProcedureService;
 import io.github.jhipster.config.JHipsterConstants;
 
 import org.slf4j.Logger;
@@ -12,12 +15,19 @@ import org.springframework.boot.actuate.autoconfigure.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -63,7 +73,8 @@ public class NorthumbriapromsApp {
     public static void main(String[] args) throws UnknownHostException {
         SpringApplication app = new SpringApplication(NorthumbriapromsApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
-        Environment env = app.run(args).getEnvironment();
+        ConfigurableApplicationContext ctx = app.run(args);
+        Environment env = ctx.getEnvironment();
         String protocol = "http";
         if (env.getProperty("server.ssl.key-store") != null) {
             protocol = "https";
@@ -80,5 +91,50 @@ public class NorthumbriapromsApp {
             InetAddress.getLocalHost().getHostAddress(),
             env.getProperty("server.port"),
             env.getActiveProfiles());
+
+        if (Arrays.asList(env.getActiveProfiles()).contains("dev") || Arrays.asList(env.getActiveProfiles()).contains("prod")) {
+
+            // add data if none exists
+            verifyAndImportProcedures(ctx);
+
+            // clear security context
+            log.info("Logging out admin user after importing entities");
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports procedures if none is found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportProcedures(ConfigurableApplicationContext ctx) {
+
+        ProcedureService procedureService = ctx.getBean(ProcedureService.class);
+        long count = ctx.getBean(ProcedureRepository.class).count();
+        log.info("roles.size() = " + count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/procedures.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        Procedure procedure = new Procedure();
+                        String[] parts = line.split(",");
+                        // create procedure form parts
+                        procedure.setLocalCode(Integer.valueOf(parts[0]));
+                        procedure.setName(parts[1]);
+                        // save procedure
+                        procedureService.save(procedure);
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read init template from class path. Nested exception is : ", e);
+            }
+        }
     }
 }
