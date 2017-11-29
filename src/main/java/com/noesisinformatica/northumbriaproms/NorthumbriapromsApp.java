@@ -4,8 +4,11 @@ import com.noesisinformatica.northumbriaproms.config.ApplicationProperties;
 import com.noesisinformatica.northumbriaproms.config.DefaultProfileUtil;
 
 import com.noesisinformatica.northumbriaproms.domain.Procedure;
+import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureRepository;
+import com.noesisinformatica.northumbriaproms.repository.QuestionnaireRepository;
 import com.noesisinformatica.northumbriaproms.service.ProcedureService;
+import com.noesisinformatica.northumbriaproms.service.QuestionnaireService;
 import io.github.jhipster.config.JHipsterConstants;
 
 import org.slf4j.Logger;
@@ -96,6 +99,7 @@ public class NorthumbriapromsApp {
 
             // add data if none exists
             verifyAndImportProcedures(ctx);
+            verifyAndImportQuestionnaires(ctx);
 
             // clear security context
             log.info("Logging out admin user after importing entities");
@@ -111,7 +115,7 @@ public class NorthumbriapromsApp {
 
         ProcedureService procedureService = ctx.getBean(ProcedureService.class);
         long count = ctx.getBean(ProcedureRepository.class).count();
-        log.info("roles.size() = " + count);
+        log.info("No of existing procedures {}", count);
 
         if (count == 0) {
 
@@ -133,7 +137,41 @@ public class NorthumbriapromsApp {
                     line = bufReader.readLine();
                 }
             } catch (IOException e){
-                log.error("Unable to read init template from class path. Nested exception is : ", e);
+                log.error("Unable to read procedures.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports questionnaires if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportQuestionnaires(ConfigurableApplicationContext ctx) {
+
+        QuestionnaireService questionnaireService = ctx.getBean(QuestionnaireService.class);
+        long count = ctx.getBean(QuestionnaireRepository.class).count();
+        log.info("No of existing questionnaires {} " , count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/questionnaires.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        Questionnaire questionnaire = new Questionnaire();
+                        String[] parts = line.split(",");
+                        // create questionnaire form parts
+                        questionnaire.setName(parts[0]);
+                        // save questionnaire
+                        questionnaireService.save(questionnaire);
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read questionnaires.csv from class path. Nested exception is : ", e);
             }
         }
     }
