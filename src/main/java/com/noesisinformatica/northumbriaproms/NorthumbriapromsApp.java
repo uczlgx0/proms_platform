@@ -2,19 +2,24 @@ package com.noesisinformatica.northumbriaproms;
 
 import com.noesisinformatica.northumbriaproms.config.ApplicationProperties;
 import com.noesisinformatica.northumbriaproms.config.DefaultProfileUtil;
-
+import com.noesisinformatica.northumbriaproms.domain.Address;
+import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.Procedure;
 import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
+import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureRepository;
 import com.noesisinformatica.northumbriaproms.repository.QuestionnaireRepository;
+import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureService;
 import com.noesisinformatica.northumbriaproms.service.QuestionnaireService;
+import com.opencsv.CSVReader;
 import io.github.jhipster.config.JHipsterConstants;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.*;
+import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -100,6 +105,7 @@ public class NorthumbriapromsApp {
             // add data if none exists
             verifyAndImportProcedures(ctx);
             verifyAndImportQuestionnaires(ctx);
+            verifyAndImportPatients(ctx);
 
             // clear security context
             log.info("Logging out admin user after importing entities");
@@ -170,6 +176,47 @@ public class NorthumbriapromsApp {
                     counter++;
                     line = bufReader.readLine();
                 }
+            } catch (IOException e){
+                log.error("Unable to read questionnaires.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports patients if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportPatients(ConfigurableApplicationContext ctx) {
+
+        PatientService patientService = ctx.getBean(PatientService.class);
+        long count = ctx.getBean(PatientRepository.class).count();
+        log.info("No of existing patients {} " , count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/patients.csv")){
+                CSVReader reader = new CSVReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                reader.forEach(parts -> {
+                    log.info("parts = {}", parts);
+                    if(! parts[0].startsWith("#")){
+                        Patient patient = new Patient();
+                        // create patient form parts
+                        patient.setGivenName(parts[2]);
+                        patient.setFamilyName(parts[3]);
+
+                        Address address = new Address(parts[4]);
+                        address.addLine(parts[5]);
+                        address.setCity(parts[6]);
+                        patient.addAddress(address);
+
+                        address.setPostalCode(parts[7]);
+                        patient.setBirthDate(parts[9]);
+                        patient.setGender(GenderType.valueOf(parts[10]));
+                        patient.setNhsNumber(Long.valueOf(parts[11]));
+                        // save questionnaire
+                        patientService.save(patient);
+                    }
+                });
             } catch (IOException e){
                 log.error("Unable to read questionnaires.csv from class path. Nested exception is : ", e);
             }

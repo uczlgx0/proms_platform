@@ -1,16 +1,13 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
-
 import com.noesisinformatica.northumbriaproms.domain.Address;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.repository.AddressRepository;
-import com.noesisinformatica.northumbriaproms.service.AddressService;
 import com.noesisinformatica.northumbriaproms.repository.search.AddressSearchRepository;
-import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
-import com.noesisinformatica.northumbriaproms.service.dto.AddressCriteria;
 import com.noesisinformatica.northumbriaproms.service.AddressQueryService;
-
+import com.noesisinformatica.northumbriaproms.service.AddressService;
+import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,7 +136,7 @@ public class AddressResourceIntTest {
         assertThat(addressList).hasSize(databaseSizeBeforeCreate + 1);
         Address testAddress = addressList.get(addressList.size() - 1);
         assertThat(testAddress.getStreet()).isEqualTo(DEFAULT_STREET);
-        assertThat(testAddress.getLine()).isEqualTo(DEFAULT_LINE);
+        assertThat(testAddress.getLines()).contains(DEFAULT_LINE);
         assertThat(testAddress.getCity()).isEqualTo(DEFAULT_CITY);
         assertThat(testAddress.getCounty()).isEqualTo(DEFAULT_COUNTY);
         assertThat(testAddress.getPostalCode()).isEqualTo(DEFAULT_POSTAL_CODE);
@@ -509,11 +506,11 @@ public class AddressResourceIntTest {
         em.detach(updatedAddress);
         updatedAddress
             .street(UPDATED_STREET)
-            .line(UPDATED_LINE)
             .city(UPDATED_CITY)
             .county(UPDATED_COUNTY)
             .postalCode(UPDATED_POSTAL_CODE)
             .country(UPDATED_COUNTRY);
+        updatedAddress.addLine(UPDATED_LINE);
 
         restAddressMockMvc.perform(put("/api/addresses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -525,7 +522,7 @@ public class AddressResourceIntTest {
         assertThat(addressList).hasSize(databaseSizeBeforeUpdate);
         Address testAddress = addressList.get(addressList.size() - 1);
         assertThat(testAddress.getStreet()).isEqualTo(UPDATED_STREET);
-        assertThat(testAddress.getLine()).isEqualTo(UPDATED_LINE);
+        assertThat(testAddress.getLines()).contains(UPDATED_LINE);
         assertThat(testAddress.getCity()).isEqualTo(UPDATED_CITY);
         assertThat(testAddress.getCounty()).isEqualTo(UPDATED_COUNTY);
         assertThat(testAddress.getPostalCode()).isEqualTo(UPDATED_POSTAL_CODE);

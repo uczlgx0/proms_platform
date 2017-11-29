@@ -1,19 +1,20 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
-
-import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
+import java.util.Set;
 
 
 /**
@@ -26,6 +27,7 @@ import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 public class Patient implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,8 +55,7 @@ public class Patient implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "patient")
-    @JsonIgnore
+    @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Address> addresses = new HashSet<>();
 
@@ -104,6 +105,11 @@ public class Patient implements Serializable {
 
     public void setBirthDate(ZonedDateTime birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public void setBirthDate(String dob) {
+        LocalDate date = LocalDate.parse(dob, formatter);
+        this.birthDate = date.atStartOfDay(ZoneOffset.UTC);
     }
 
     public GenderType getGender() {
@@ -201,6 +207,7 @@ public class Patient implements Serializable {
             ", gender='" + getGender() + "'" +
             ", nhsNumber=" + getNhsNumber() +
             ", email='" + getEmail() + "'" +
+            ", addresses='" + getAddresses() + "'" +
             "}";
     }
 }

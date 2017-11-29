@@ -1,8 +1,13 @@
 package com.noesisinformatica.northumbriaproms.service;
 
 
-import java.util.List;
-
+import com.noesisinformatica.northumbriaproms.domain.Address;
+import com.noesisinformatica.northumbriaproms.domain.Address_;
+import com.noesisinformatica.northumbriaproms.domain.Patient_;
+import com.noesisinformatica.northumbriaproms.repository.AddressRepository;
+import com.noesisinformatica.northumbriaproms.repository.search.AddressSearchRepository;
+import com.noesisinformatica.northumbriaproms.service.dto.AddressCriteria;
+import io.github.jhipster.service.QueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,13 +16,7 @@ import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.jhipster.service.QueryService;
-
-import com.noesisinformatica.northumbriaproms.domain.Address;
-import com.noesisinformatica.northumbriaproms.domain.*; // for static metamodels
-import com.noesisinformatica.northumbriaproms.repository.AddressRepository;
-import com.noesisinformatica.northumbriaproms.repository.search.AddressSearchRepository;
-import com.noesisinformatica.northumbriaproms.service.dto.AddressCriteria;
+import java.util.List;
 
 
 /**
@@ -79,9 +78,9 @@ public class AddressQueryService extends QueryService<Address> {
             if (criteria.getStreet() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getStreet(), Address_.street));
             }
-            if (criteria.getLine() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getLine(), Address_.line));
-            }
+//            if (criteria.getLine() != null) {
+//                specification = specification.and(buildStringSpecification(criteria.getLine(), Address_.lines));
+//            }
             if (criteria.getCity() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getCity(), Address_.city));
             }

@@ -1,11 +1,14 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -27,8 +30,8 @@ public class Address implements Serializable {
     @Column(name = "street")
     private String street;
 
-    @Column(name = "line")
-    private String line;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> lines = new ArrayList<>();
 
     @Column(name = "city")
     private String city;
@@ -43,7 +46,15 @@ public class Address implements Serializable {
     private String country;
 
     @ManyToOne
+    @JsonBackReference
     private Patient patient;
+
+    public Address() {
+    }
+
+    public Address(String addressLine) {
+        this.addLine(addressLine);
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -67,17 +78,25 @@ public class Address implements Serializable {
         this.street = street;
     }
 
-    public String getLine() {
-        return line;
+    public List<String> getLines() {
+        return lines;
     }
 
     public Address line(String line) {
-        this.line = line;
+        this.addLine(line);
         return this;
     }
 
-    public void setLine(String line) {
-        this.line = line;
+    public void setLines(List<String> lines) {
+        this.lines = lines;
+    }
+
+    public void addLine(String line) {
+        this.lines.add(line);
+    }
+
+    public void removeLine(String line) {
+        this.lines.remove(line);
     }
 
     public String getCity() {
@@ -171,7 +190,7 @@ public class Address implements Serializable {
         return "Address{" +
             "id=" + getId() +
             ", street='" + getStreet() + "'" +
-            ", line='" + getLine() + "'" +
+            ", lines='" + getLines() + "'" +
             ", city='" + getCity() + "'" +
             ", county='" + getCounty() + "'" +
             ", postalCode='" + getPostalCode() + "'" +
