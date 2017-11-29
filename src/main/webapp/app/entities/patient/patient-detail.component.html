@@ -3,32 +3,62 @@
     <h2><span>Patient</span> {{patient.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span>Family Name</span></dt>
-        <dd>
-            <span>{{patient.familyName}}</span>
-        </dd>
-        <dt><span>Given Name</span></dt>
-        <dd>
-            <span>{{patient.givenName}}</span>
-        </dd>
-        <dt><span>Birth Date</span></dt>
-        <dd>
-            <span>{{patient.birthDate | date:'medium'}}</span>
-        </dd>
-        <dt><span>Gender</span></dt>
-        <dd>
-            <span>{{patient.gender}}</span>
-        </dd>
-        <dt><span>Nhs Number</span></dt>
-        <dd>
-            <span>{{patient.nhsNumber}}</span>
-        </dd>
-        <dt><span>Email</span></dt>
-        <dd>
-            <span>{{patient.email}}</span>
-        </dd>
-    </dl>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Family Name</span></dt>
+                <dd>
+                    <span>{{patient.familyName}}</span>
+                </dd>
+                <dt><span>Given Name</span></dt>
+                <dd>
+                    <span>{{patient.givenName}}</span>
+                </dd>
+                <dt><span>Birth Date</span></dt>
+                <dd>
+                    <span>{{patient.birthDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Gender</span></dt>
+                <dd>
+                    <span>{{patient.gender}}</span>
+                </dd>
+                <dt><span>Nhs Number</span></dt>
+                <dd>
+                    <span>{{patient.nhsNumber}}</span>
+                </dd>
+                <dt><span>Email</span></dt>
+                <dd>
+                    <span>{{patient.email}}</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <h4>Address</h4>
+            <hr>
+            <dl *ngFor="let address of patient.addresses" class="row-md jh-entity-details">
+                <dt><span>Line</span></dt>
+                <dd>
+                    <span>{{address.lines}}</span>
+                </dd>
+                <dt><span>City</span></dt>
+                <dd>
+                    <span>{{address.city}}</span>
+                </dd>
+                <dt><span>County</span></dt>
+                <dd>
+                    <span>{{address.county}}</span>
+                </dd>
+                <dt><span>Postal Code</span></dt>
+                <dd>
+                    <span>{{address.postalCode}}</span>
+                </dd>
+                <dt><span>Country</span></dt>
+                <dd>
+                    <span>{{address.country}}</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
 
     <button type="submit"
             (click)="previousState()"

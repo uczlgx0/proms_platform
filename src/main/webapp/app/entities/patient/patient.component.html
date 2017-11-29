@@ -29,9 +29,9 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="familyName"><span>Family Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="givenName"><span>Given Name</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="givenName"><span>Given Name</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="birthDate"><span>Birth Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="gender"><span>Gender</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="nhsNumber"><span>Nhs Number</span> <span class="fa fa-sort"></span></th>
@@ -41,9 +41,9 @@
             </thead>
             <tbody>
             <tr *ngFor="let patient of patients ;trackBy: trackId">
-                <td><a [routerLink]="['../patient', patient.id ]">{{patient.id}}</a></td>
-                <td>{{patient.familyName}}</td>
-                <td>{{patient.givenName}}</td>
+                <!--<td><a [routerLink]="['../patient', patient.id ]">{{patient.id}}</a></td>-->
+                <td><a [routerLink]="['../patient', patient.id ]">{{patient.givenName}} {{patient.familyName}}</a></td>
+                <!--<td>{{patient.givenName}}</td>-->
                 <td>{{patient.birthDate | date:'medium'}}</td>
                 <td>{{patient.gender}}</td>
                 <td>{{patient.nhsNumber}}</td>

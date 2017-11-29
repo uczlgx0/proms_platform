@@ -44,7 +44,7 @@
             <tr *ngFor="let address of addresses ;trackBy: trackId">
                 <td><a [routerLink]="['../address', address.id ]">{{address.id}}</a></td>
                 <td>{{address.street}}</td>
-                <td>{{address.line}}</td>
+                <td>{{address.lines}}</td>
                 <td>{{address.city}}</td>
                 <td>{{address.county}}</td>
                 <td>{{address.postalCode}}</td>
