@@ -9,8 +9,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -113,10 +111,10 @@ public class Patient implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public void setBirthDate(String dob) {
-        LocalDate date = LocalDate.parse(dob, formatter);
-        this.birthDate = date.atStartOfDay(ZoneOffset.UTC);
-    }
+//    public void setBirthDate(String dob) {
+//        LocalDate date = LocalDate.parse(dob, formatter);
+//        this.birthDate = date.atStartOfDay(ZoneOffset.UTC);
+//    }
 
     public GenderType getGender() {
         return gender;

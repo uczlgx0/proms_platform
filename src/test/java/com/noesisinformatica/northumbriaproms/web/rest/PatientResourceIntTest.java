@@ -210,20 +210,20 @@ public class PatientResourceIntTest {
 
     @Test
     @Transactional
-    public void checkBirthDatePassedAsString() throws Exception {
+    public void checkBirthDateIsRequired() throws Exception {
         int databaseSizeBeforeTest = patientRepository.findAll().size();
         // set the field null
-        patient.setBirthDate("01/13/2017");
+        patient.setBirthDate(null);
 
         // Create the Patient
 
         restPatientMockMvc.perform(post("/api/patients")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(patient)))
-            .andExpect(status().isOk());
+            .andExpect(status().isBadRequest());
 
         List<Patient> patientList = patientRepository.findAll();
-        assertThat(patientList).hasSize(databaseSizeBeforeTest + 1);
+        assertThat(patientList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test

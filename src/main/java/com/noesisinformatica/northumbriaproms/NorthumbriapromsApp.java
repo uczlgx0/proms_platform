@@ -36,6 +36,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -45,6 +48,7 @@ import java.util.Collection;
 public class NorthumbriapromsApp {
 
     private static final Logger log = LoggerFactory.getLogger(NorthumbriapromsApp.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final Environment env;
 
@@ -210,7 +214,8 @@ public class NorthumbriapromsApp {
                         patient.addAddress(address);
 
                         address.setPostalCode(parts[7]);
-                        patient.setBirthDate(parts[9]);
+                        LocalDate date = LocalDate.parse(parts[9], formatter);
+                        patient.setBirthDate(date.atStartOfDay(ZoneOffset.UTC));
                         patient.setGender(GenderType.valueOf(parts[10]));
                         patient.setNhsNumber(Long.valueOf(parts[11]));
                         // save questionnaire
