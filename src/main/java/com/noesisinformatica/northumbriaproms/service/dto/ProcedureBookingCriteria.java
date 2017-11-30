@@ -42,6 +42,8 @@ public class ProcedureBookingCriteria implements Serializable {
 
     private LongFilter patientId;
 
+    private LongFilter followupPlanId;
+
     public ProcedureBookingCriteria() {
     }
 
@@ -109,6 +111,14 @@ public class ProcedureBookingCriteria implements Serializable {
         this.patientId = patientId;
     }
 
+    public LongFilter getFollowupPlanId() {
+        return followupPlanId;
+    }
+
+    public void setFollowupPlanId(LongFilter followupPlanId) {
+        this.followupPlanId = followupPlanId;
+    }
+
     @Override
     public String toString() {
         return "ProcedureBookingCriteria{" +
@@ -120,6 +130,7 @@ public class ProcedureBookingCriteria implements Serializable {
                 (primaryProcedure != null ? "primaryProcedure=" + primaryProcedure + ", " : "") +
                 (otherProcedures != null ? "otherProcedures=" + otherProcedures + ", " : "") +
                 (patientId != null ? "patientId=" + patientId + ", " : "") +
+                (followupPlanId != null ? "followupPlanId=" + followupPlanId + ", " : "") +
             "}";
     }
 

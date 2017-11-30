@@ -78,6 +78,13 @@
                 This field is required.
             </small>
         </div>
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_followupPlan">Followup Plan</label>-->
+            <!--<select class="form-control" id="field_followupPlan" name="followupPlan" [(ngModel)]="procedureBooking.followupPlan">-->
+                <!--<option [ngValue]="null"></option>-->
+                <!--<option [ngValue]="followupPlanOption.id === procedureBooking.followupPlan?.id ? procedureBooking.followupPlan : followupPlanOption" *ngFor="let followupPlanOption of followupplans; trackBy: trackFollowupPlanById">{{followupPlanOption.id}}</option>-->
+            <!--</select>-->
+        <!--</div>-->
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

@@ -1,0 +1,67 @@
+
+<div *ngIf="followupAction">
+    <h2><span>Followup Action</span> {{followupAction.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Phase</span></dt>
+        <dd>
+            <span>{{followupAction.phase}}</span>
+        </dd>
+        <dt><span>Scheduled Date</span></dt>
+        <dd>
+            <span>{{followupAction.scheduledDate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Name</span></dt>
+        <dd>
+            <span>{{followupAction.name}}</span>
+        </dd>
+        <dt><span>Type</span></dt>
+        <dd>
+            <span>{{followupAction.type}}</span>
+        </dd>
+        <dt><span>Outcome Score</span></dt>
+        <dd>
+            <span>{{followupAction.outcomeScore}}</span>
+        </dd>
+        <dt><span>Outcome Comment</span></dt>
+        <dd>
+            <span>{{followupAction.outcomeComment}}</span>
+        </dd>
+        <dt><span>Completed Date</span></dt>
+        <dd>
+            <span>{{followupAction.completedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span>Followup Plan</span></dt>
+        <dd>
+            <div *ngIf="followupAction.followupPlan">
+                <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Patient</span></dt>
+        <dd>
+            <div *ngIf="followupAction.patient">
+                <a [routerLink]="['/patient', followupAction.patient?.id]">{{followupAction.patient?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Questionnaire</span></dt>
+        <dd>
+            <div *ngIf="followupAction.questionnaire">
+                <a [routerLink]="['/questionnaire', followupAction.questionnaire?.id]">{{followupAction.questionnaire?.name}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

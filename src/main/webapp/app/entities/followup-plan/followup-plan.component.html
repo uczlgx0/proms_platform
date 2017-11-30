@@ -1,10 +1,10 @@
 <div>
     <h2>
-        <span>Procedure Bookings</span>
-        <button class="btn btn-primary float-right jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]">
+        <span>Followup Plans</span>
+        <button class="btn btn-primary float-right jh-create-entity create-followup-plan" [routerLink]="['/', { outlets: { popup: ['followup-plan-new'] } }]">
             <span class="fa fa-plus"></span>
             <span class="hidden-sm-down" >
-            Create new Procedure Booking
+            Create new Followup Plan
             </span>
         </button>
     </h2>
@@ -25,58 +25,40 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive" *ngIf="procedureBookings">
+    <div class="table-responsive" *ngIf="followupPlans">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="consultantName"><span>Consultant Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="hospitalSite"><span>Hospital Site</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="performedDate"><span>Performed Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="primaryProcedure"><span>Primary Procedure</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="otherProcedures"><span>Other Procedures</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let procedureBooking of procedureBookings ;trackBy: trackId">
-                <td><a [routerLink]="['../procedure-booking', procedureBooking.id ]">{{procedureBooking.id}}</a></td>
-                <td>{{procedureBooking.consultantName}}</td>
-                <td>{{procedureBooking.hospitalSite}}</td>
-                <td>{{procedureBooking.scheduledDate | date:'medium'}}</td>
-                <td>{{procedureBooking.performedDate | date:'medium'}}</td>
-                <td>{{procedureBooking.primaryProcedure}}</td>
-                <td>{{procedureBooking.otherProcedures}}</td>
+            <tr *ngFor="let followupPlan of followupPlans ;trackBy: trackId">
+                <td><a [routerLink]="['../followup-plan', followupPlan.id ]">{{followupPlan.id}}</a></td>
                 <td>
-                    <div *ngIf="procedureBooking.patient">
-                        <a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="procedureBooking.followupPlan">
-                        <a [routerLink]="['../followup-plan', procedureBooking.followupPlan?.id ]" >{{procedureBooking.followupPlan?.id}}</a>
+                    <div *ngIf="followupPlan.patient">
+                        <a [routerLink]="['../patient', followupPlan.patient?.id ]" >{{followupPlan.patient?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../procedure-booking', procedureBooking.id ]"
+                                [routerLink]="['../followup-plan', followupPlan.id ]"
                                 class="btn btn-info btn-sm">
                             <span class="fa fa-eye"></span>
                             <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+                                [routerLink]="['/', { outlets: { popup: 'followup-plan/'+ followupPlan.id + '/edit'} }]"
                                 replaceUrl="true"
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"
+                                [routerLink]="['/', { outlets: { popup: 'followup-plan/'+ followupPlan.id + '/delete'} }]"
                                 replaceUrl="true"
                                 class="btn btn-danger btn-sm">
                             <span class="fa fa-remove"></span>
@@ -88,7 +70,7 @@
             </tbody>
         </table>
     </div>
-        <div *ngIf="procedureBookings && procedureBookings.length">
+        <div *ngIf="followupPlans && followupPlans.length">
             <div class="row justify-content-center">
                 <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
             </div>

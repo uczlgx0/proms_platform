@@ -10,6 +10,7 @@ import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingPopupService } from './procedure-booking-popup.service';
 import { ProcedureBookingService } from './procedure-booking.service';
 import { Patient, PatientService } from '../patient';
+import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -23,11 +24,14 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     patients: Patient[];
 
+    followupplans: FollowupPlan[];
+
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private procedureBookingService: ProcedureBookingService,
         private patientService: PatientService,
+        private followupPlanService: FollowupPlanService,
         private eventManager: JhiEventManager
     ) {
     }
@@ -36,6 +40,19 @@ export class ProcedureBookingDialogComponent implements OnInit {
         this.isSaving = false;
         this.patientService.query()
             .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.followupPlanService
+            .query({filter: 'procedurebooking-is-null'})
+            .subscribe((res: ResponseWrapper) => {
+                if (!this.procedureBooking.followupPlan || !this.procedureBooking.followupPlan.id) {
+                    this.followupplans = res.json;
+                } else {
+                    this.followupPlanService
+                        .find(this.procedureBooking.followupPlan.id)
+                        .subscribe((subRes: FollowupPlan) => {
+                            this.followupplans = [subRes].concat(res.json);
+                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                }
+            }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -73,6 +90,10 @@ export class ProcedureBookingDialogComponent implements OnInit {
     }
 
     trackPatientById(index: number, item: Patient) {
+        return item.id;
+    }
+
+    trackFollowupPlanById(index: number, item: FollowupPlan) {
         return item.id;
     }
 }

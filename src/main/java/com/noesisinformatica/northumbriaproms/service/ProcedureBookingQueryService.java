@@ -98,6 +98,9 @@ public class ProcedureBookingQueryService extends QueryService<ProcedureBooking>
             if (criteria.getPatientId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getPatientId(), ProcedureBooking_.patient, Patient_.id));
             }
+            if (criteria.getFollowupPlanId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getFollowupPlanId(), ProcedureBooking_.followupPlan, FollowupPlan_.id));
+            }
         }
         return specification;
     }

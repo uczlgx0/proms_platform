@@ -50,5 +50,11 @@
                 <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
             </div>
         </dd>
+        <dt><span>Followup Plan</span></dt>
+        <dd>
+            <div *ngIf="procedureBooking.followupPlan">
+                <a [routerLink]="['/followup-plan', procedureBooking.followupPlan?.id]">{{procedureBooking.followupPlan?.id}}</a>
+            </div>
+        </dd>
     </dl>
 </div>

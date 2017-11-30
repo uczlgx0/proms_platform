@@ -14,5 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="patient"/>
 
+        <addForeignKeyConstraint baseColumnNames="followup_plan_id"
+                                 baseTableName="procedure_booking"
+                                 constraintName="fk_procedure_booking_followup_plan_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="followup_plan"/>
+
     </changeSet>
 </databaseChangeLog>

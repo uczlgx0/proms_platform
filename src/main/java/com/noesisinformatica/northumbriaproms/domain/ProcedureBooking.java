@@ -5,7 +5,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -49,8 +49,11 @@ public class ProcedureBooking implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-//    @JsonBackReference
     private Patient patient;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private FollowupPlan followupPlan;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -150,6 +153,19 @@ public class ProcedureBooking implements Serializable {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public FollowupPlan getFollowupPlan() {
+        return followupPlan;
+    }
+
+    public ProcedureBooking followupPlan(FollowupPlan followupPlan) {
+        this.followupPlan = followupPlan;
+        return this;
+    }
+
+    public void setFollowupPlan(FollowupPlan followupPlan) {
+        this.followupPlan = followupPlan;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

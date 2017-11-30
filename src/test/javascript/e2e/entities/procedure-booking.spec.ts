@@ -48,6 +48,7 @@ describe('ProcedureBooking e2e test', () => {
         procedureBookingDialogPage.setOtherProceduresInput('otherProcedures');
         expect(procedureBookingDialogPage.getOtherProceduresInput()).toMatch('otherProcedures');
         procedureBookingDialogPage.patientSelectLastOption();
+        procedureBookingDialogPage.followupPlanSelectLastOption();
         procedureBookingDialogPage.save();
         expect(procedureBookingDialogPage.getSaveButton().isPresent()).toBeFalsy();
     }); */
@@ -81,6 +82,7 @@ export class ProcedureBookingDialogPage {
     primaryProcedureInput = element(by.css('input#field_primaryProcedure'));
     otherProceduresInput = element(by.css('input#field_otherProcedures'));
     patientSelect = element(by.css('select#field_patient'));
+    followupPlanSelect = element(by.css('select#field_followupPlan'));
 
     getModalTitle() {
         return this.modalTitle.getText();
@@ -148,6 +150,22 @@ export class ProcedureBookingDialogPage {
 
     getPatientSelectedOption = function () {
         return this.patientSelect.element(by.css('option:checked')).getText();
+    }
+
+    followupPlanSelectLastOption = function () {
+        this.followupPlanSelect.all(by.tagName('option')).last().click();
+    }
+
+    followupPlanSelectOption = function (option) {
+        this.followupPlanSelect.sendKeys(option);
+    }
+
+    getFollowupPlanSelect = function () {
+        return this.followupPlanSelect;
+    }
+
+    getFollowupPlanSelectedOption = function () {
+        return this.followupPlanSelect.element(by.css('option:checked')).getText();
     }
 
     save() {

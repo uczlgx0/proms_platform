@@ -11,6 +11,7 @@ export class ProcedureBooking implements BaseEntity {
         public primaryProcedure?: string,
         public otherProcedures?: string,
         public patient?: Patient,
+        public followupPlan?: BaseEntity,
     ) {
     }
 }
