@@ -1,5 +1,6 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
+import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
@@ -7,6 +8,7 @@ import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingReposit
 import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,10 +29,14 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
     private final ProcedureBookingRepository procedureBookingRepository;
 
     private final ProcedureBookingSearchRepository procedureBookingSearchRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public ProcedureBookingServiceImpl(ProcedureBookingRepository procedureBookingRepository, ProcedureBookingSearchRepository procedureBookingSearchRepository) {
+    public ProcedureBookingServiceImpl(ProcedureBookingRepository procedureBookingRepository,
+                                       ProcedureBookingSearchRepository procedureBookingSearchRepository,
+                                       RabbitTemplate rabbitTemplate) {
         this.procedureBookingRepository = procedureBookingRepository;
         this.procedureBookingSearchRepository = procedureBookingSearchRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -44,6 +50,8 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
         log.debug("Request to save ProcedureBooking : {}", procedureBooking);
         ProcedureBooking result = procedureBookingRepository.save(procedureBooking);
         procedureBookingSearchRepository.save(result);
+        rabbitTemplate.convertAndSend(Constants.DEFAULT_QUEUE, result);
+        log.info("Sent off ProcedureBooking to message queue");
         return result;
     }
 

@@ -1,12 +1,13 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
 import com.noesisinformatica.northumbriaproms.config.Constants;
-import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
-import com.noesisinformatica.northumbriaproms.domain.Patient;
-import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
+import com.noesisinformatica.northumbriaproms.domain.*;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import com.noesisinformatica.northumbriaproms.repository.FollowupPlanRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupPlanSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupPlanService;
+import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -28,6 +29,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  */
 @Service
 @Transactional
+@RabbitListener(queues = Constants.DEFAULT_QUEUE)
 public class FollowupPlanServiceImpl implements FollowupPlanService{
 
     private final Logger log = LoggerFactory.getLogger(FollowupPlanServiceImpl.class);
@@ -35,10 +37,48 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
     private final FollowupPlanRepository followupPlanRepository;
 
     private final FollowupPlanSearchRepository followupPlanSearchRepository;
+    private final ProcedurelinkService procedurelinkService;
 
-    public FollowupPlanServiceImpl(FollowupPlanRepository followupPlanRepository, FollowupPlanSearchRepository followupPlanSearchRepository) {
+    public FollowupPlanServiceImpl(FollowupPlanRepository followupPlanRepository,
+                                   FollowupPlanSearchRepository followupPlanSearchRepository,
+                                   ProcedurelinkService procedurelinkService) {
         this.followupPlanRepository = followupPlanRepository;
         this.followupPlanSearchRepository = followupPlanSearchRepository;
+        this.procedurelinkService = procedurelinkService;
+    }
+
+    /**
+     * Utility method for generating {@link FollowupPlan} from a {@link ProcedureBooking}
+     *
+     * @param booking the ProcedureBooking to process
+     */
+    @Override
+    @RabbitHandler
+    public void processBooking(@Payload ProcedureBooking booking) {
+        log.debug("Request to process ProcedureBooking : {}", booking);
+        // get procedure code from booking and add follow up activities to a new follow up plan
+        Patient patient = booking.getPatient();
+        log.info("patient = {}", patient);
+        log.info("booking.getPrimaryProcedure() = {}", booking.getPrimaryProcedure());
+        List<Questionnaire> questionnaires = procedurelinkService.findAllQuestionnairesByProcedureId(Long.valueOf(booking.getPrimaryProcedure()));
+        log.info("questionnaires = {}", questionnaires);
+        FollowupPlan plan = new FollowupPlan();
+        plan.setProcedureBooking(booking);
+        plan.setPatient(patient);
+        questionnaires.forEach(questionnaire -> {
+            // create a new follow up action
+            FollowupAction action = new FollowupAction();
+            action.name(questionnaire.getName())
+                .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.POST_OPERATIVE)
+                .patient(patient);
+            if("EQ-5D".equalsIgnoreCase(questionnaire.getName())) {
+                action.setPhase(ActionPhase.PRE_OPERATIVE);
+            }
+            // add action to plan
+            plan.addFollowupAction(action);
+        });
+        // save plan
+        this.save(plan);
     }
 
     /**

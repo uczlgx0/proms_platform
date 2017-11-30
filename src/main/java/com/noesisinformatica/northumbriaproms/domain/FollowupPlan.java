@@ -36,7 +36,7 @@ public class FollowupPlan implements Serializable {
     @NotNull
     private Patient patient;
 
-    @OneToMany(mappedBy = "followupPlan")
+    @OneToMany(mappedBy = "followupPlan", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<FollowupAction> followupActions = new HashSet<>();

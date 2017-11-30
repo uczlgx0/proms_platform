@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { FollowupAction } from './followup-action.model';
 import { FollowupActionService } from './followup-action.service';
@@ -19,6 +19,7 @@ export class FollowupActionDetailComponent implements OnInit, OnDestroy {
     constructor(
         private eventManager: JhiEventManager,
         private followupActionService: FollowupActionService,
+        private jhiAlertService: JhiAlertService,
         private route: ActivatedRoute
     ) {
     }
@@ -35,8 +36,13 @@ export class FollowupActionDetailComponent implements OnInit, OnDestroy {
             this.followupAction = followupAction;
         });
     }
+
     previousState() {
         window.history.back();
+    }
+
+    initiate() {
+        this.jhiAlertService.info('Launching followup action...', null, null);
     }
 
     ngOnDestroy() {

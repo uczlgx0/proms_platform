@@ -9,7 +9,7 @@
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
@@ -29,61 +29,63 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="outcomeScore"><span>Outcome Score</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>-->
+            <!--<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>-->
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
-                <td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>
+                <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
+                <td>
+                    <div *ngIf="followupAction.patient">
+                        <a [routerLink]="['../patient', followupAction.patient?.id ]" >
+                            {{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}
+                        </a>
+                    </div>
+                </td>
                 <td>{{followupAction.phase}}</td>
                 <td>{{followupAction.scheduledDate | date:'medium'}}</td>
                 <td>{{followupAction.name}}</td>
-                <td>{{followupAction.type}}</td>
+                <!--<td>{{followupAction.type}}</td>-->
                 <td>{{followupAction.outcomeScore}}</td>
-                <td>{{followupAction.outcomeComment}}</td>
+                <!--<td>{{followupAction.outcomeComment}}</td>-->
                 <td>{{followupAction.completedDate | date:'medium'}}</td>
-                <td>
-                    <div *ngIf="followupAction.followupPlan">
-                        <a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="followupAction.patient">
-                        <a [routerLink]="['../patient', followupAction.patient?.id ]" >{{followupAction.patient?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="followupAction.questionnaire">
-                        <a [routerLink]="['../questionnaire', followupAction.questionnaire?.id ]" >{{followupAction.questionnaire?.name}}</a>
-                    </div>
-                </td>
+                <!--<td>-->
+                    <!--<div *ngIf="followupAction.followupPlan">-->
+                        <!--<a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>-->
+                    <!--</div>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<div *ngIf="followupAction.questionnaire">-->
+                        <!--<a [routerLink]="['../questionnaire', followupAction.questionnaire?.id ]" >{{followupAction.questionnaire?.name}}</a>-->
+                    <!--</div>-->
+                <!--</td>-->
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['../followup-action', followupAction.id ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <!--<span class="fa fa-eye"></span>-->
                             <span class="d-none d-md-inline">View</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
                                 replaceUrl="true"
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"
                                 replaceUrl="true"
                                 class="btn btn-danger btn-sm">

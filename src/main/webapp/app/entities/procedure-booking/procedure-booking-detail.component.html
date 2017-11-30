@@ -19,42 +19,86 @@
     </h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span>Consultant Name</span></dt>
-        <dd>
-            <span>{{procedureBooking.consultantName}}</span>
-        </dd>
-        <dt><span>Hospital Site</span></dt>
-        <dd>
-            <span>{{procedureBooking.hospitalSite}}</span>
-        </dd>
-        <dt><span>Scheduled Date</span></dt>
-        <dd>
-            <span>{{procedureBooking.scheduledDate | date:'medium'}}</span>
-        </dd>
-        <dt><span>Performed Date</span></dt>
-        <dd>
-            <span>{{procedureBooking.performedDate | date:'medium'}}</span>
-        </dd>
-        <dt><span>Primary Procedure</span></dt>
-        <dd>
-            <span>{{procedureBooking.primaryProcedure}}</span>
-        </dd>
-        <dt><span>Other Procedures</span></dt>
-        <dd>
-            <span>{{procedureBooking.otherProcedures}}</span>
-        </dd>
-        <dt><span>Patient</span></dt>
-        <dd>
-            <div *ngIf="procedureBooking.patient">
-                <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
-            </div>
-        </dd>
-        <dt><span>Followup Plan</span></dt>
-        <dd>
-            <div *ngIf="procedureBooking.followupPlan">
-                <a [routerLink]="['/followup-plan', procedureBooking.followupPlan?.id]">{{procedureBooking.followupPlan?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Patient</span></dt>
+                <dd>
+                    <div *ngIf="procedureBooking.patient">
+                        <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Consultant Name</span></dt>
+                <dd>
+                    <span>{{procedureBooking.consultantName}}</span>
+                </dd>
+                <dt><span>Hospital Site</span></dt>
+                <dd>
+                    <span>{{procedureBooking.hospitalSite}}</span>
+                </dd>
+                <!--<dt><span>Scheduled Date</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.scheduledDate | date:'medium'}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Performed Date</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.performedDate | date:'medium'}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Primary Procedure</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.primaryProcedure}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Other Procedures</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.otherProcedures}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Followup Plan</span></dt>-->
+                <!--<dd>-->
+                    <!--<div *ngIf="procedureBooking.followupPlan">-->
+                        <!--<a [routerLink]="['/followup-plan', procedureBooking.followupPlan?.id]">{{procedureBooking.followupPlan?.id}}</a>-->
+                    <!--</div>-->
+                <!--</dd>-->
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <!--<dt><span>Patient</span></dt>-->
+                <!--<dd>-->
+                    <!--<div *ngIf="procedureBooking.patient">-->
+                        <!--<a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>-->
+                    <!--</div>-->
+                <!--</dd>-->
+                <!--<dt><span>Consultant Name</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.consultantName}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Hospital Site</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{procedureBooking.hospitalSite}}</span>-->
+                <!--</dd>-->
+                <!--<dt><span>Scheduled Date</span></dt>-->
+                <dd>
+                    <span>{{procedureBooking.scheduledDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Performed Date</span></dt>
+                <dd>
+                    <span>{{procedureBooking.performedDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Primary Procedure</span></dt>
+                <dd>
+                    <span>{{procedureBooking.primaryProcedure}}</span>
+                </dd>
+                <dt><span>Other Procedures</span></dt>
+                <dd>
+                    <span>{{procedureBooking.otherProcedures}}</span>
+                </dd>
+                <dt><span>Followup Plan</span></dt>
+                <dd>
+                    <div *ngIf="procedureBooking.followupPlan">
+                        <a [routerLink]="['/followup-plan', procedureBooking.followupPlan?.id]">{{procedureBooking.followupPlan?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
 </div>

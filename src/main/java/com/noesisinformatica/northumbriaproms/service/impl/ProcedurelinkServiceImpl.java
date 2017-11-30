@@ -1,5 +1,7 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
+import com.noesisinformatica.northumbriaproms.domain.Procedure;
+import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
 import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
 import com.noesisinformatica.northumbriaproms.domain.Procedurelink;
 import com.noesisinformatica.northumbriaproms.repository.ProcedurelinkRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -65,6 +68,32 @@ public class ProcedurelinkServiceImpl implements ProcedurelinkService{
     public Page<Procedurelink> findAll(Pageable pageable) {
         log.debug("Request to get all Procedurelinks");
         return procedurelinkRepository.findAll(pageable);
+    }
+
+    /**
+     * Get all the {@link Procedurelink}s associated with a procedure.
+     *
+     * @param procedure the procedure
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Procedurelink> findAllByProcedure(Procedure procedure) {
+        log.debug("Request to get all Procedurelinks for Procedure {} ", procedure);
+        return procedurelinkRepository.findAllByProcedure(procedure);
+    }
+
+    /**
+     * Get all the {@link com.noesisinformatica.northumbriaproms.domain.Questionnaire}s associated with a procedure.
+     *
+     * @param procedureId the id of procedure
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Questionnaire> findAllQuestionnairesByProcedureId(Long procedureId) {
+        log.debug("Request to get all Questionnaires for Procedure {} ", procedureId);
+        return procedurelinkRepository.findAllQuestionnairesByProcedureId(procedureId);
     }
 
     /**

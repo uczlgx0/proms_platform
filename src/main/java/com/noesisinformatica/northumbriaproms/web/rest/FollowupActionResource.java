@@ -2,12 +2,13 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
+import com.noesisinformatica.northumbriaproms.service.FollowupActionQueryService;
 import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
+import com.noesisinformatica.northumbriaproms.service.dto.FollowupActionCriteria;
 import com.noesisinformatica.northumbriaproms.web.rest.errors.BadRequestAlertException;
 import com.noesisinformatica.northumbriaproms.web.rest.util.HeaderUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.PaginationUtil;
-import com.noesisinformatica.northumbriaproms.service.dto.FollowupActionCriteria;
-import com.noesisinformatica.northumbriaproms.service.FollowupActionQueryService;
+import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing FollowupAction.
@@ -103,6 +100,25 @@ public class FollowupActionResource {
         log.debug("REST request to get FollowupActions by criteria: {}", criteria);
         Page<FollowupAction> page = followupActionQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/followup-actions");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /patient/:id/followup-actions : get all the followupActions for patient id
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of followupActions in body
+     */
+    @GetMapping("/patient/{id}/followup-actions")
+    @Timed
+    public ResponseEntity<List<FollowupAction>> getAllFollowupActions(@PathVariable Long id, Pageable pageable) {
+        log.debug("REST request to get FollowupActions for patient id: {}", id);
+        FollowupActionCriteria criteria = new FollowupActionCriteria();
+        LongFilter filter = new LongFilter();
+        filter.setEquals(id);
+        criteria.setPatientId(filter);
+        Page<FollowupAction> page = followupActionQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/patient/" + id + "/followup-actions");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

@@ -1,6 +1,7 @@
 package com.noesisinformatica.northumbriaproms.service;
 
 import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
+import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,6 +12,12 @@ import java.util.List;
  */
 public interface FollowupPlanService {
 
+    /**
+     * Utility method for generating {@link FollowupPlan} from a {@link ProcedureBooking}
+     *
+     * @param booking the ProcedureBooking to process
+     */
+    void processBooking(ProcedureBooking booking);
 
     /**
      * Save a followupPlan.

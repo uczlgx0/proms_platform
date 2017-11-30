@@ -1,17 +1,15 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
-
-import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
-import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
+import com.noesisinformatica.northumbriaproms.domain.Patient;
+import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
-import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
-import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
-import com.noesisinformatica.northumbriaproms.service.dto.ProcedureBookingCriteria;
+import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingQueryService;
-
+import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
+import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,13 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
-import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.sameInstant;
 import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.createFormattingConversionService;
+import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -80,6 +78,9 @@ public class ProcedureBookingResourceIntTest {
     private ProcedureBookingQueryService procedureBookingQueryService;
 
     @Autowired
+    private PatientService patientService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -98,7 +99,8 @@ public class ProcedureBookingResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProcedureBookingResource procedureBookingResource = new ProcedureBookingResource(procedureBookingService, procedureBookingQueryService);
+        final ProcedureBookingResource procedureBookingResource = new ProcedureBookingResource(procedureBookingService,
+            procedureBookingQueryService, patientService);
         this.restProcedureBookingMockMvc = MockMvcBuilders.standaloneSetup(procedureBookingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -19,6 +19,13 @@ spring:
             enabled: false
         livereload:
             enabled: false
+    jackson:
+        serialization.indent_output: true
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mariadb://localhost:3306/northumbriaproms
