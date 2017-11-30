@@ -50,6 +50,12 @@ export class ProcedureBookingService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    findByPatientId(id: any, req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.patientResourceUrl+id+'/procedure-bookings', options)
+            .map((res: Response) => this.convertResponse(res));
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }

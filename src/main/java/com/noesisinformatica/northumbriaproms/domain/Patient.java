@@ -1,5 +1,6 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -60,6 +61,7 @@ public class Patient implements Serializable {
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ProcedureBooking> procedureBookings = new HashSet<>();
 

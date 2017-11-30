@@ -40,6 +40,9 @@ export const patientRoute: Routes = [
     }, {
         path: 'patient/:id',
         component: PatientDetailComponent,
+        resolve: {
+            'pagingParams': PatientResolvePagingParams
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'Patients'

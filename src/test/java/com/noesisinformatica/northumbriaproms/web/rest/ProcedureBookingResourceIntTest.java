@@ -3,9 +3,9 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
-import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
+import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingQueryService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
@@ -74,7 +74,7 @@ public class ProcedureBookingResourceIntTest {
     private ProcedureBookingSearchRepository procedureBookingSearchRepository;
 
     @Autowired
-    private PatientRepository patientRepository;
+    private PatientService patientService;
 
     @Autowired
     private ProcedureBookingQueryService procedureBookingQueryService;
@@ -99,7 +99,7 @@ public class ProcedureBookingResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final ProcedureBookingResource procedureBookingResource = new ProcedureBookingResource(procedureBookingService,
-            procedureBookingQueryService, patientRepository);
+            procedureBookingQueryService, patientService);
         this.restProcedureBookingMockMvc = MockMvcBuilders.standaloneSetup(procedureBookingResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

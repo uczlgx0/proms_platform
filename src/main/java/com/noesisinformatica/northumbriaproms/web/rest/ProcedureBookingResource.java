@@ -3,7 +3,7 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
-import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
+import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingQueryService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.service.dto.ProcedureBookingCriteria;
@@ -39,18 +39,18 @@ public class ProcedureBookingResource {
     private final ProcedureBookingService procedureBookingService;
 
     private final ProcedureBookingQueryService procedureBookingQueryService;
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
 
     public ProcedureBookingResource(ProcedureBookingService procedureBookingService,
                                     ProcedureBookingQueryService procedureBookingQueryService,
-                                    PatientRepository patientRepository) {
+                                    PatientService patientService) {
         this.procedureBookingService = procedureBookingService;
         this.procedureBookingQueryService = procedureBookingQueryService;
-        this.patientRepository = patientRepository;
+        this.patientService = patientService;
     }
 
     /**
-     * POST  /patient/{patientId}/procedure-bookings : Create a new procedureBooking.
+     * POST  /patient/:id/procedure-bookings : Create a new procedureBooking.
      *
      * @param procedureBooking the procedureBooking to create
      * @return the ResponseEntity with status 201 (Created) and with body the new procedureBooking, or with status 400 (Bad Request) if the procedureBooking has already an ID
@@ -64,12 +64,12 @@ public class ProcedureBookingResource {
             throw new BadRequestAlertException("A new procedureBooking cannot already have an ID", ENTITY_NAME, "idexists");
         }
         // check patient with id exists
-        Patient existingPatient = patientRepository.findOne(patientId);
+        Patient existingPatient = patientService.findOne(patientId);
         if(existingPatient != null) {
             procedureBooking.setPatient(existingPatient);
             ProcedureBooking result = procedureBookingService.save(procedureBooking);
             existingPatient.addProcedureBookings(result);
-            patientRepository.save(existingPatient);
+            patientService.save(existingPatient);
             return ResponseEntity.created(new URI("/api/procedure-bookings/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
@@ -79,7 +79,7 @@ public class ProcedureBookingResource {
     }
 
     /**
-     * PUT  /patient/{patientId}/procedure-bookings : Updates an existing procedureBooking.
+     * PUT  /patient/:id/procedure-bookings : Updates an existing procedureBooking.
      *
      * @param procedureBooking the procedureBooking to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated procedureBooking,
@@ -95,11 +95,11 @@ public class ProcedureBookingResource {
             return createProcedureBooking(patientId, procedureBooking);
         }
         // check patient with id exists
-        Patient existingPatient = patientRepository.findOne(patientId);
+        Patient existingPatient = patientService.findOne(patientId);
         if(existingPatient != null) {
             ProcedureBooking result = procedureBookingService.save(procedureBooking);
             existingPatient.addProcedureBookings(result);
-            patientRepository.save(existingPatient);
+            patientService.save(existingPatient);
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, procedureBooking.getId().toString()))
                 .body(result);
@@ -136,6 +136,27 @@ public class ProcedureBookingResource {
         log.debug("REST request to get ProcedureBooking : {}", id);
         ProcedureBooking procedureBooking = procedureBookingService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(procedureBooking));
+    }
+
+    /**
+     * GET  /patient/:id/procedure-bookings/ : get the procedureBookings for patient with given id.
+     *
+     * @param patientId the id of the patient to retrieve procedureBooking for
+     * @return the ResponseEntity with status 200 (OK) and with body the procedureBooking, or with status 404 (Not Found)
+     */
+    @GetMapping("/patient/{patientId}/procedure-bookings")
+    @Timed
+    public ResponseEntity<List<ProcedureBooking>> getProcedureBooking(@PathVariable Long patientId, Pageable pageable) {
+        log.debug("REST request to get ProcedureBooking for patient : {}", patientId);
+        // check patient with id exists
+        Patient existingPatient = patientService.findOne(patientId);
+        if(existingPatient != null) {
+            Page<ProcedureBooking> page = procedureBookingService.findAllByPatient(existingPatient, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/patient/" + patientId + "/procedure-bookings");
+            return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        } else {
+            throw new BadRequestAlertException("No patient with matching id exists", ENTITY_NAME, "notfound");
+        }
     }
 
     /**

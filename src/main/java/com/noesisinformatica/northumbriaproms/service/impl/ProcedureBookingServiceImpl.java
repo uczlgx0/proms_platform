@@ -1,5 +1,6 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
+import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
@@ -70,6 +71,19 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
     public ProcedureBooking findOne(Long id) {
         log.debug("Request to get ProcedureBooking : {}", id);
         return procedureBookingRepository.findOne(id);
+    }
+
+    /**
+     * Get all procedureBookings by patient.
+     *
+     * @param patient the patient
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProcedureBooking> findAllByPatient(Patient patient, Pageable pageable) {
+        log.debug("Request to get ProcedureBookings for patient : {}", patient);
+        return procedureBookingRepository.findAllByPatient(patient, pageable);
     }
 
     /**

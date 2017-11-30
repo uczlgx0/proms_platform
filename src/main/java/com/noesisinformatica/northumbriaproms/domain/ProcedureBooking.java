@@ -1,12 +1,11 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -50,7 +49,7 @@ public class ProcedureBooking implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
-    @JsonBackReference
+//    @JsonBackReference
     private Patient patient;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
