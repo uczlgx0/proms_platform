@@ -1,6 +1,22 @@
 
 <div *ngIf="procedureBooking">
-    <h2><span>Procedure Booking</span> {{procedureBooking.id}}</h2>
+    <h2>
+        <span>Procedure Booking</span> {{procedureBooking.id}}
+        <div class="btn-group float-right" role="group">
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+                    replaceUrl="true"
+                    class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
@@ -31,21 +47,8 @@
         <dt><span>Patient</span></dt>
         <dd>
             <div *ngIf="procedureBooking.patient">
-                <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.id}}</a>
+                <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
             </div>
         </dd>
     </dl>
-
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
-            replaceUrl="true"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
-    </button>
 </div>

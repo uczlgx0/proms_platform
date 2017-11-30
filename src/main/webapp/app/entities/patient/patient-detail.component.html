@@ -1,6 +1,22 @@
 
 <div *ngIf="patient">
-    <h2>{{patient.givenName}} {{patient.familyName}}</h2>
+    <h2>
+        {{patient.givenName}} {{patient.familyName}}
+        <div class="btn-group float-right " role="group">
+            <button  type="submit"
+                     (click)="previousState()"
+                     class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+
+            <button  type="button"
+                     [routerLink]="['/', { outlets: { popup: 'patient/'+ patient.id + '/edit'} }]"
+                     replaceUrl="true"
+                     class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <div class="row">
@@ -60,19 +76,6 @@
         </div>
     </div>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'patient/'+ patient.id + '/edit'} }]"
-            replaceUrl="true"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
-    </button>
-
     <div class="table-responsive" *ngIf="patient.procedureBookings && patient.procedureBookings.length > 0">
         <hr>
         <h4>Procedure Bookings</h4>
@@ -104,7 +107,7 @@
                         <!--<a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.id}}</a>-->
                     <!--</div>-->
                 <!--</td>-->
-                <td class="text-right">
+                <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['../procedure-booking', procedureBooking.id ]"

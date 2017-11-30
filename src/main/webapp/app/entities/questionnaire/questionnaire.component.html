@@ -9,7 +9,7 @@
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
+    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
@@ -29,7 +29,7 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="copyright"><span>Copyright</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="reference"><span>Reference</span> <span class="fa fa-sort"></span></th>
@@ -38,11 +38,11 @@
             </thead>
             <tbody>
             <tr *ngFor="let questionnaire of questionnaires ;trackBy: trackId">
-                <td><a [routerLink]="['../questionnaire', questionnaire.id ]">{{questionnaire.id}}</a></td>
-                <td>{{questionnaire.name}}</td>
+                <!--<td><a [routerLink]="['../questionnaire', questionnaire.id ]">{{questionnaire.id}}</a></td>-->
+                <td><a [routerLink]="['../questionnaire', questionnaire.id ]">{{questionnaire.name}}</a></td>
                 <td>{{questionnaire.copyright}}</td>
                 <td>{{questionnaire.reference}}</td>
-                <td class="text-right">
+                <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['../questionnaire', questionnaire.id ]"

@@ -48,7 +48,7 @@
                 <td>{{patient.gender}}</td>
                 <td>{{patient.nhsNumber}}</td>
                 <td>{{patient.email}}</td>
-                <td class="text-right">
+                <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['../patient', patient.id ]"
