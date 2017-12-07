@@ -13,5 +13,6 @@ export class ProcedureBooking implements BaseEntity {
         public patient?: Patient,
         public followupPlan?: BaseEntity,
     ) {
+        this.patient = new Patient();
     }
 }

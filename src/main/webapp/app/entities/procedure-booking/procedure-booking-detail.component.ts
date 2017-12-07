@@ -17,6 +17,7 @@ export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
 
     procedureBooking: ProcedureBooking;
     proceduresLookup: any;
+    patientId: string;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
@@ -31,6 +32,7 @@ export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.route.params.subscribe((params) => {
+            this.patientId = params['id'];
             this.load(params['id']);
         });
         this.registerChangeInProcedureBookings();

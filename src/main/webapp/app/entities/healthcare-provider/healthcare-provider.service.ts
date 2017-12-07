@@ -68,6 +68,11 @@ export class HealthcareProviderService {
         return new ResponseWrapper(res.headers, result, res.status);
     }
 
+    /**
+     * Convert the result into an array of {value, label} items for use in UI select
+     * @param res
+     * @returns {any}
+     */
     private convertToSelectOption(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
         const result = [];
