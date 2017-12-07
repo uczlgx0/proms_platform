@@ -8,6 +8,7 @@ import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 import com.noesisinformatica.northumbriaproms.repository.*;
 import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
 import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
+import com.noesisinformatica.northumbriaproms.service.HealthcareProviderService;
 import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureService;
 import com.noesisinformatica.northumbriaproms.service.QuestionnaireService;
@@ -110,6 +111,7 @@ public class NorthumbriapromsApp {
             // add data if none exists
             verifyAndImportProcedures(ctx);
             verifyAndImportQuestionnaires(ctx);
+            verifyAndImportHealthcareProviders(ctx);
             verifyAndImportPatients(ctx);
             verifyAndImportConsultants(ctx);
 
@@ -184,6 +186,40 @@ public class NorthumbriapromsApp {
                 }
             } catch (IOException e){
                 log.error("Unable to read questionnaires.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports healthcare providers if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportHealthcareProviders(ConfigurableApplicationContext ctx) {
+
+        HealthcareProviderService healthcareProviderService = ctx.getBean(HealthcareProviderService.class);
+        long count = ctx.getBean(HealthcareProviderRepository.class).count();
+        log.info("No of existing healthcare providers {} " , count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/healthcare_providers.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        HealthcareProvider healthcareProvider = new HealthcareProvider();
+                        String[] parts = line.split(",");
+                        // create healthcareProvider form parts
+                        healthcareProvider.setName(parts[0]);
+                        // save healthcareProvider
+                        healthcareProviderService.save(healthcareProvider);
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read healthcare_providers.csv from class path. Nested exception is : ", e);
             }
         }
     }
