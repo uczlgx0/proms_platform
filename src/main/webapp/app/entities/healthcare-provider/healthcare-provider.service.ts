@@ -43,6 +43,12 @@ export class HealthcareProviderService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    allAsSelectOptions(req?: any): Observable<any> {
+        const options = createRequestOption(req);
+        return this.http.get(this.resourceUrl, options)
+            .map((res: Response) => this.convertToSelectOption(res));
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
@@ -58,6 +64,15 @@ export class HealthcareProviderService {
         const result = [];
         for (let i = 0; i < jsonResponse.length; i++) {
             result.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
+    }
+
+    private convertToSelectOption(res: Response): ResponseWrapper {
+        const jsonResponse = res.json();
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push({value: jsonResponse[i].name, label: jsonResponse[i].name});
         }
         return new ResponseWrapper(res.headers, result, res.status);
     }

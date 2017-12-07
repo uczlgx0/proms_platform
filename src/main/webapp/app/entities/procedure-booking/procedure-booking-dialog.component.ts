@@ -9,6 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingPopupService } from './procedure-booking-popup.service';
 import { ProcedureBookingService } from './procedure-booking.service';
+import { HealthcareProviderService } from '../healthcare-provider/healthcare-provider.service';
 import { UserService } from '../../shared/user/user.service';
 import { User } from '../../shared/user/user.model';
 import { Patient, PatientService } from '../patient';
@@ -27,13 +28,9 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     patients: Patient[];
     consultants: Array<IOption>;
+    locations: Array<IOption>;
 
     followupplans: FollowupPlan[];
-    myOptions: Array<IOption> = [
-        {label: 'Belgium', value: 'BE'},
-        {label: 'Luxembourg', value: 'LU'},
-        {label: 'Netherlands', value: 'NL'}
-    ];
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -41,6 +38,7 @@ export class ProcedureBookingDialogComponent implements OnInit {
         private procedureBookingService: ProcedureBookingService,
         private patientService: PatientService,
         private userService: UserService,
+        private healthcareProviderService: HealthcareProviderService,
         private followupPlanService: FollowupPlanService,
         private eventManager: JhiEventManager
     ) {
@@ -65,12 +63,16 @@ export class ProcedureBookingDialogComponent implements OnInit {
             }, (res: ResponseWrapper) => this.onError(res.json));
 
         // load consultants
-        this.loadConsultants();
+        //this.loadConsultants();
+        this.userService.consultants()
+            .subscribe((res: ResponseWrapper) => {this.consultants = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
+        // load locations
+        this.healthcareProviderService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => {this.locations = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
     }
 
     loadConsultants() {
         this.consultants = [];
-        console.log("this.myOptions  = " , this.myOptions );
         this.userService.consultants()
             .subscribe(
             (res: ResponseWrapper) => {

@@ -14,16 +14,15 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_consultantName">Consultant Name</label>
-            <!--<ng-select class="form-control" name="consultantName" id="field_consultantName"-->
-               <!--placeholder="Type to search consultant name"-->
-                       <!--[options]="consultants"-->
-                       <!--(opened) = "loadConsultants()"-->
-                       <!--[(ngModel)]="procedureBooking.consultantName">-->
-            <!--</ng-select>-->
-            <select class="form-control" name="consultantName" id="field_consultantName"
-                    [(ngModel)]="procedureBooking.consultantName" required>
-                <option *ngFor="let item of consultants" [value]="item.value">{{ item.label }}</option>
-            </select>
+            <ng-select class="form-control" name="consultantName" id="field_consultantName"
+                       placeholder="Type to search consultant name"
+                       [options]="consultants"
+                       [(ngModel)]="procedureBooking.consultantName">
+            </ng-select>
+            <!--<select class="form-control" name="consultantName" id="field_consultantName"-->
+                    <!--[(ngModel)]="procedureBooking.consultantName" required>-->
+                <!--<option *ngFor="let item of consultants" [value]="item.value">{{ item.label }}</option>-->
+            <!--</select>-->
             <div [hidden]="!(editForm.controls.consultantName?.dirty && editForm.controls.consultantName?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.consultantName?.errors?.required">
@@ -33,8 +32,13 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_hospitalSite">Hospital Site</label>
-            <input type="text" class="form-control" name="hospitalSite" id="field_hospitalSite"
-                [(ngModel)]="procedureBooking.hospitalSite" required/>
+            <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
+                    placeholder="Type to search consultant name"
+                    [options]="locations"
+                    [(ngModel)]="procedureBooking.hospitalSite">
+            </ng-select>
+            <!--<input type="text" class="form-control" name="hospitalSite" id="field_hospitalSite"-->
+                <!--[(ngModel)]="procedureBooking.hospitalSite" required/>-->
             <div [hidden]="!(editForm.controls.hospitalSite?.dirty && editForm.controls.hospitalSite?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.hospitalSite?.errors?.required">
