@@ -49,7 +49,7 @@
                 </dd>
                 <dt><span>Primary Procedure</span></dt>
                 <dd>
-                    <span>{{procedureBooking.primaryProcedure}}</span>
+                    <span *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</span>
                 </dd>
                 <dt><span>Other Procedures</span></dt>
                 <dd>

@@ -43,6 +43,12 @@ export class ProcedureService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    allAsSelectOptions(req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.resourceUrl, options)
+            .map((res: Response) => this.convertToSelectOption(res));
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
@@ -68,6 +74,20 @@ export class ProcedureService {
     private convertItemFromServer(json: any): Procedure {
         const entity: Procedure = Object.assign(new Procedure(), json);
         return entity;
+    }
+
+    /**
+     * Convert returned result to Array of 'value, label' objects for use as UI select options
+     * @param res
+     * @returns {any}
+     */
+    private convertToSelectOption(res: Response): ResponseWrapper {
+        const jsonResponse = res.json();
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push({value: jsonResponse[i].localCode, label: jsonResponse[i].name});
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
     /**

@@ -2,9 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
+import * as _ from 'underscore';
 
 import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingService } from './procedure-booking.service';
+import { ProcedureService } from '../procedure/procedure.service';
+
 import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 
 @Component({
@@ -15,6 +18,7 @@ export class ProcedureBookingComponent implements OnInit, OnDestroy {
 
 currentAccount: any;
     procedureBookings: ProcedureBooking[];
+    proceduresLookup: any;
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -31,6 +35,7 @@ currentAccount: any;
 
     constructor(
         private procedureBookingService: ProcedureBookingService,
+        private procedureService: ProcedureService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
@@ -68,12 +73,14 @@ currentAccount: any;
             (res: ResponseWrapper) => this.onError(res.json)
         );
     }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
         this.router.navigate(['/procedure-booking'], {queryParams:
             {
@@ -109,6 +116,11 @@ currentAccount: any;
         this.loadAll();
     }
     ngOnInit() {
+        // load procedures lookup
+        this.procedureService.allAsSelectOptions().subscribe((res: ResponseWrapper) => {
+                this.proceduresLookup = _.indexBy(res.json, 'value');
+            },
+            (res: ResponseWrapper) => this.onError(res.json()));
         this.loadAll();
         this.principal.identity().then((account) => {
             this.currentAccount = account;

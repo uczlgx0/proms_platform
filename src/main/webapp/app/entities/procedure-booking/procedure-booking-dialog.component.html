@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="form-control-label" for="field_consultantName">Consultant Name</label>
             <ng-select class="form-control" name="consultantName" id="field_consultantName"
-                       placeholder="Type to search consultant name"
+                       placeholder="Type/Select consultant name"
                        [options]="consultants"
                        [(ngModel)]="procedureBooking.consultantName">
             </ng-select>
@@ -33,7 +33,7 @@
         <div class="form-group">
             <label class="form-control-label" for="field_hospitalSite">Hospital Site</label>
             <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
-                    placeholder="Type to search consultant name"
+                    placeholder="Type/Select hospital name"
                     [options]="locations"
                     [(ngModel)]="procedureBooking.hospitalSite">
             </ng-select>
@@ -62,8 +62,13 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_primaryProcedure">Primary Procedure</label>
-            <input type="text" class="form-control" name="primaryProcedure" id="field_primaryProcedure"
-                [(ngModel)]="procedureBooking.primaryProcedure" required/>
+            <ng-select class="form-control" name="primaryProcedure" id="field_primaryProcedure"
+                       placeholder="Type/Select procedure name"
+                       [options]="procedures"
+                       [(ngModel)]="procedureBooking.primaryProcedure">
+            </ng-select>
+            <!--<input type="text" class="form-control" name="primaryProcedure" id="field_primaryProcedure"-->
+                <!--[(ngModel)]="procedureBooking.primaryProcedure" required/>-->
             <div [hidden]="!(editForm.controls.primaryProcedure?.dirty && editForm.controls.primaryProcedure?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.primaryProcedure?.errors?.required">

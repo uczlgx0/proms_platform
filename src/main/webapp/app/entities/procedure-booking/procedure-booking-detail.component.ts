@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import * as _ from 'underscore';
 
 import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingService } from './procedure-booking.service';
+import { ProcedureService } from '../procedure/procedure.service';
+import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-procedure-booking-detail',
@@ -13,12 +16,15 @@ import { ProcedureBookingService } from './procedure-booking.service';
 export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
 
     procedureBooking: ProcedureBooking;
+    proceduresLookup: any;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
     constructor(
         private eventManager: JhiEventManager,
+        private jhiAlertService: JhiAlertService,
         private procedureBookingService: ProcedureBookingService,
+        private procedureService: ProcedureService,
         private route: ActivatedRoute
     ) {
     }
@@ -31,10 +37,17 @@ export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
+        // load procedures lookup
+        this.procedureService.allAsSelectOptions().subscribe((res: ResponseWrapper) => {
+                this.proceduresLookup = _.indexBy(res.json, 'value');
+            },
+            (res: ResponseWrapper) => this.onError(res.json()));
+
         this.procedureBookingService.find(id).subscribe((procedureBooking) => {
             this.procedureBooking = procedureBooking;
         });
     }
+
     previousState() {
         window.history.back();
     }
@@ -49,5 +62,9 @@ export class ProcedureBookingDetailComponent implements OnInit, OnDestroy {
             'procedureBookingListModification',
             (response) => this.load(this.procedureBooking.id)
         );
+    }
+
+    private onError(error) {
+        this.jhiAlertService.error(error.message, null, null);
     }
 }

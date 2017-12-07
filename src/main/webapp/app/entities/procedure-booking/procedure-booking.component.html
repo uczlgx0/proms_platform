@@ -52,7 +52,7 @@
                 </td>
                 <td>{{procedureBooking.scheduledDate | date:'medium'}}</td>
                 <td>{{procedureBooking.performedDate | date:'medium'}}</td>
-                <td>{{procedureBooking.primaryProcedure}}</td>
+                <td *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</td>
                 <!--<td>{{procedureBooking.otherProcedures}}</td>-->
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">

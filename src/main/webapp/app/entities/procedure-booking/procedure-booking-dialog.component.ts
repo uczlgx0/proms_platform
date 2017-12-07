@@ -5,11 +5,13 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import * as _ from 'underscore';
 
 import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingPopupService } from './procedure-booking-popup.service';
 import { ProcedureBookingService } from './procedure-booking.service';
 import { HealthcareProviderService } from '../healthcare-provider/healthcare-provider.service';
+import { ProcedureService } from '../procedure/procedure.service';
 import { UserService } from '../../shared/user/user.service';
 import { User } from '../../shared/user/user.model';
 import { Patient, PatientService } from '../patient';
@@ -29,6 +31,8 @@ export class ProcedureBookingDialogComponent implements OnInit {
     patients: Patient[];
     consultants: Array<IOption>;
     locations: Array<IOption>;
+    procedures: Array<IOption>;
+    proceduresLookup: any;
 
     followupplans: FollowupPlan[];
 
@@ -39,6 +43,7 @@ export class ProcedureBookingDialogComponent implements OnInit {
         private patientService: PatientService,
         private userService: UserService,
         private healthcareProviderService: HealthcareProviderService,
+        private procedureService: ProcedureService,
         private followupPlanService: FollowupPlanService,
         private eventManager: JhiEventManager
     ) {
@@ -63,30 +68,19 @@ export class ProcedureBookingDialogComponent implements OnInit {
             }, (res: ResponseWrapper) => this.onError(res.json));
 
         // load consultants
-        //this.loadConsultants();
         this.userService.consultants()
             .subscribe((res: ResponseWrapper) => {this.consultants = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
         // load locations
         this.healthcareProviderService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => {this.locations = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
-    }
-
-    loadConsultants() {
-        this.consultants = [];
-        this.userService.consultants()
-            .subscribe(
-            (res: ResponseWrapper) => {
-                console.log("res  = " , res );
-                for(let user of res.json) {
-                    let consultant = <IOption>{};
-                    consultant.value = user.id;
-                    consultant.label = user.title + ' ' + user.firstName + ' ' + user.lastName;
-                    this.consultants.push(consultant);
-                }
-                console.log("this.consultants  = " , this.consultants );
+        // load procedures
+        this.procedureService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => {
+                this.procedures = res.json;
+                this.proceduresLookup = _.indexBy(res.json, 'value');
+                console.log("this.proceduresLookup  = " , this.proceduresLookup );
             },
-            (res: ResponseWrapper) => this.onError(res.json)
-        );
+            (res: ResponseWrapper) => this.onError(res.json()));
     }
 
     clear() {
