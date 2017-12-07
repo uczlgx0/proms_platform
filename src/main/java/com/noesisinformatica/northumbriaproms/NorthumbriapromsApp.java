@@ -1,18 +1,17 @@
 package com.noesisinformatica.northumbriaproms;
 
 import com.noesisinformatica.northumbriaproms.config.ApplicationProperties;
+import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.config.DefaultProfileUtil;
-import com.noesisinformatica.northumbriaproms.domain.Address;
-import com.noesisinformatica.northumbriaproms.domain.Patient;
-import com.noesisinformatica.northumbriaproms.domain.Procedure;
-import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
+import com.noesisinformatica.northumbriaproms.domain.*;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
-import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
-import com.noesisinformatica.northumbriaproms.repository.ProcedureRepository;
-import com.noesisinformatica.northumbriaproms.repository.QuestionnaireRepository;
+import com.noesisinformatica.northumbriaproms.repository.*;
+import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
+import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
 import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.service.ProcedureService;
 import com.noesisinformatica.northumbriaproms.service.QuestionnaireService;
+import com.noesisinformatica.northumbriaproms.service.util.RandomUtil;
 import com.opencsv.CSVReader;
 import io.github.jhipster.config.JHipsterConstants;
 import org.slf4j.Logger;
@@ -27,6 +26,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -110,6 +111,7 @@ public class NorthumbriapromsApp {
             verifyAndImportProcedures(ctx);
             verifyAndImportQuestionnaires(ctx);
             verifyAndImportPatients(ctx);
+            verifyAndImportConsultants(ctx);
 
             // clear security context
             log.info("Logging out admin user after importing entities");
@@ -201,7 +203,7 @@ public class NorthumbriapromsApp {
             try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/patients.csv")){
                 CSVReader reader = new CSVReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                 reader.forEach(parts -> {
-                    log.info("parts = {}", parts);
+                    log.debug("parts = {}", parts);
                     if(! parts[0].startsWith("#")){
                         Patient patient = new Patient();
                         // create patient form parts
@@ -227,4 +229,66 @@ public class NorthumbriapromsApp {
             }
         }
     }
+
+    /**
+     * Utility bootstrap method that imports consultants if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportConsultants(ConfigurableApplicationContext ctx) {
+
+        UserRepository userRepository = ctx.getBean(UserRepository.class);
+        PasswordEncoder passwordEncoder = ctx.getBean(PasswordEncoder.class);
+        UserSearchRepository userSearchRepository = ctx.getBean(UserSearchRepository.class);
+        long count = userRepository.findAllByAuthoritiesName(AuthoritiesConstants.CONSULTANT, null).getTotalElements();
+        log.info("No of existing consultants {} ", count);
+
+        if (count == 0) {
+
+            AuthorityRepository authorityRepository = ctx.getBean(AuthorityRepository.class);
+            // find consultant role
+            Authority consultantRole = authorityRepository.findOne(AuthoritiesConstants.CONSULTANT);
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/consultants.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        String[] parts = line.split(",");
+                        // create consultant from part
+                        User user = new User();
+                        user.setTitle(parts[0]);
+                        user.setFirstName(parts[1]);
+                        user.setLastName(parts[2]);
+                        user.setLogin(parts[3]);
+                        user.setEmail(parts[4] + "@promsapp.com");
+                        user.addAuthority(consultantRole);
+                        if (user.getLangKey() == null) {
+                            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+                        } else {
+                            user.setLangKey(user.getLangKey());
+                        }
+
+                        // set random password if no password set
+                        if (user.getPassword() == null) {
+                            user.setPassword(RandomUtil.generatePassword());
+                        }
+
+                        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+                        user.setPassword(encryptedPassword);
+                        user.setResetKey(RandomUtil.generateResetKey());
+                        user.setResetDate(Instant.now());
+                        user.setActivated(true);
+                        log.debug("Saving user = {}", user);
+                        userRepository.save(user);
+                        userSearchRepository.save(user);
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read consultants.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
 }

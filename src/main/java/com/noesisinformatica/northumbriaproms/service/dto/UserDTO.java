@@ -31,6 +31,9 @@ public class UserDTO {
     @Size(max = 50)
     private String lastName;
 
+    @Size(max = 20)
+    private String title;
+
     @Email
     @Size(min = 5, max = 100)
     private String email;
@@ -62,6 +65,7 @@ public class UserDTO {
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
+        this.title = user.getTitle();
         this.email = user.getEmail();
         this.activated = user.getActivated();
         this.imageUrl = user.getImageUrl();
@@ -177,6 +181,14 @@ public class UserDTO {
 
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override

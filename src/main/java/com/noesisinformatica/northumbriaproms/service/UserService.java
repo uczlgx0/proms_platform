@@ -123,6 +123,7 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
+        log.debug("Request to create User for UserDTO: {}", userDTO);
         User user = new User();
         user.setLogin(userDTO.getLogin());
         user.setFirstName(userDTO.getFirstName());
@@ -145,6 +146,7 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        log.debug("Saving User: {}", user);
         userRepository.save(user);
         userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
