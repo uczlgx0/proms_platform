@@ -24,5 +24,8 @@ public interface ProcedurelinkRepository extends JpaRepository<Procedurelink, Lo
     @Query("select procedurelink.questionnaire from Procedurelink procedurelink where procedurelink.procedure.id = :procedureId")
     List<Questionnaire> findAllQuestionnairesByProcedureId(@Param("procedureId") Long procedureId);
 
+    @Query("select procedurelink.questionnaire from Procedurelink procedurelink where procedurelink.procedure.localCode = :localCode")
+    List<Questionnaire> findAllQuestionnairesByProcedureLocalCode(@Param("localCode") Integer localCode);
+
     Optional<Procedurelink> findOneByProcedureAndQuestionnaire(Procedure procedure, Questionnaire questionnaire);
 }

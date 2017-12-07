@@ -59,8 +59,7 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
         // get procedure code from booking and add follow up activities to a new follow up plan
         Patient patient = booking.getPatient();
         log.info("patient = {}", patient);
-        log.info("booking.getPrimaryProcedure() = {}", booking.getPrimaryProcedure());
-        List<Questionnaire> questionnaires = procedurelinkService.findAllQuestionnairesByProcedureId(Long.valueOf(booking.getPrimaryProcedure()));
+        List<Questionnaire> questionnaires = procedurelinkService.findAllQuestionnairesByProcedureLocalCode(Integer.valueOf(booking.getPrimaryProcedure()));
         log.info("questionnaires = {}", questionnaires);
         FollowupPlan plan = new FollowupPlan();
         plan.setProcedureBooking(booking);
@@ -69,10 +68,10 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
             // create a new follow up action
             FollowupAction action = new FollowupAction();
             action.name(questionnaire.getName())
-                .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.POST_OPERATIVE)
+                .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.PRE_OPERATIVE)
                 .patient(patient);
-            if("EQ-5D".equalsIgnoreCase(questionnaire.getName())) {
-                action.setPhase(ActionPhase.PRE_OPERATIVE);
+            if("OUTCOME".equalsIgnoreCase(questionnaire.getName())) {
+                action.setPhase(ActionPhase.POST_OPERATIVE);
             }
             // add action to plan
             plan.addFollowupAction(action);
