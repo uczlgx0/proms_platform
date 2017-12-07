@@ -46,6 +46,14 @@ public interface ProcedurelinkService {
     List<Questionnaire> findAllQuestionnairesByProcedureId(Long procedureId);
 
     /**
+     * Get all the {@link com.noesisinformatica.northumbriaproms.domain.Questionnaire}s associated with a procedure.
+     *
+     * @param localCode the local code of procedure
+     * @return the list of entities
+     */
+    List<Questionnaire> findAllQuestionnairesByProcedureLocalCode(Integer localCode);
+
+    /**
      * Get the "id" procedurelink.
      *
      * @param id the id of the entity

@@ -8,10 +8,7 @@ import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
 import com.noesisinformatica.northumbriaproms.repository.*;
 import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
 import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
-import com.noesisinformatica.northumbriaproms.service.HealthcareProviderService;
-import com.noesisinformatica.northumbriaproms.service.PatientService;
-import com.noesisinformatica.northumbriaproms.service.ProcedureService;
-import com.noesisinformatica.northumbriaproms.service.QuestionnaireService;
+import com.noesisinformatica.northumbriaproms.service.*;
 import com.noesisinformatica.northumbriaproms.service.util.RandomUtil;
 import com.opencsv.CSVReader;
 import io.github.jhipster.config.JHipsterConstants;
@@ -41,8 +38,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
@@ -111,6 +107,7 @@ public class NorthumbriapromsApp {
             // add data if none exists
             verifyAndImportProcedures(ctx);
             verifyAndImportQuestionnaires(ctx);
+            verifyAndImportProcedureLinks(ctx);
             verifyAndImportHealthcareProviders(ctx);
             verifyAndImportPatients(ctx);
             verifyAndImportConsultants(ctx);
@@ -186,6 +183,73 @@ public class NorthumbriapromsApp {
                 }
             } catch (IOException e){
                 log.error("Unable to read questionnaires.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+
+    /**
+     * Utility bootstrap method that imports procedure links if none is found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportProcedureLinks(ConfigurableApplicationContext ctx) {
+
+        ProcedurelinkService procedureLinkService = ctx.getBean(ProcedurelinkService.class);
+        ProcedureRepository procedureRepository = ctx.getBean(ProcedureRepository.class);
+        QuestionnaireRepository questionnaireRepository = ctx.getBean(QuestionnaireRepository.class);
+        long count = ctx.getBean(ProcedurelinkRepository.class).count();
+        log.info("No of existing procedure links {}", count);
+        Map<String, Questionnaire> questionnaireMap = new HashMap<>();
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/procedure_links.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                List<String> questionnaireNames = new ArrayList<>();
+                while(line != null){
+                    // use first line to get names of all questionnaires
+                    if(counter == 0) {
+                        String[] parts = line.split(",");
+                        // use questionnaire name to find match in repo
+                        for(int i=0; i < parts.length; i++) {
+                            // first add part to list for look up later on
+                            questionnaireNames.add(parts[i]);
+                            Optional<Questionnaire> questionnaire = questionnaireRepository.findOneByName(parts[i]);
+                            if(questionnaire.isPresent()) {
+                                questionnaireMap.put(parts[i], questionnaire.get());
+                            }
+                        }
+                        log.info("questionnaireMap = {}", questionnaireMap);
+                    } else {
+                        String[] parts = line.split(",");
+                        // create procedure link form parts
+                        Optional<Procedure> procedure =  procedureRepository.findOneByLocalCode(Integer.valueOf(parts[0]));
+                        if(procedure.isPresent()) {
+                            // process rest of parts and if they contain a 'x' then create procedure link
+                            for(int i=1; i < parts.length; i++) {
+                                String entry = parts[i];
+                                if("X".equalsIgnoreCase(entry)) {
+                                    // use index to get corresponding questionnaire name in list
+                                    String questionnaireName = questionnaireNames.get(i);
+                                    log.info("questionnaireName = {}", questionnaireName);
+                                    log.info("questionnaireMap.get(questionnaireName) = {}", questionnaireMap.get(questionnaireName));
+                                    if (questionnaireMap.containsKey(questionnaireName)) {
+                                        Procedurelink procedurelink = new Procedurelink();
+                                        procedurelink.procedure(procedure.get()).questionnaire(questionnaireMap.get(questionnaireName));
+                                        // save procedure link
+                                        procedureLinkService.save(procedurelink);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read procedure_links.csv from class path. Nested exception is : ", e);
             }
         }
     }

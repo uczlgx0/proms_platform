@@ -97,6 +97,19 @@ public class ProcedurelinkServiceImpl implements ProcedurelinkService{
     }
 
     /**
+     * Get all the {@link com.noesisinformatica.northumbriaproms.domain.Questionnaire}s associated with a procedure.
+     *
+     * @param localCode the local code of procedure
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Questionnaire> findAllQuestionnairesByProcedureLocalCode(Integer localCode) {
+        log.debug("Request to get all Questionnaires for Procedure with local code {} ", localCode);
+        return procedurelinkRepository.findAllQuestionnairesByProcedureLocalCode(localCode);
+    }
+
+    /**
      * Get one procedurelink by id.
      *
      * @param id the id of the entity

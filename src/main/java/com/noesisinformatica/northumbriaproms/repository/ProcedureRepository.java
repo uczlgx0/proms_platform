@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
 
+import java.util.Optional;
+
 
 /**
  * Spring Data JPA repository for the Procedure entity.
@@ -13,4 +15,9 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface ProcedureRepository extends JpaRepository<Procedure, Long> {
 
+    Optional<Procedure> findOneByName(String name);
+
+    Optional<Procedure> findOneByLocalCode(Integer code);
+
+    Optional<Procedure> findOneByExternalCode(String code);
 }
