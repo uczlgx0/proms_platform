@@ -14,8 +14,16 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_consultantName">Consultant Name</label>
-            <input type="text" class="form-control" name="consultantName" id="field_consultantName"
-                [(ngModel)]="procedureBooking.consultantName" required/>
+            <!--<ng-select class="form-control" name="consultantName" id="field_consultantName"-->
+               <!--placeholder="Type to search consultant name"-->
+                       <!--[options]="consultants"-->
+                       <!--(opened) = "loadConsultants()"-->
+                       <!--[(ngModel)]="procedureBooking.consultantName">-->
+            <!--</ng-select>-->
+            <select class="form-control" name="consultantName" id="field_consultantName"
+                    [(ngModel)]="procedureBooking.consultantName" required>
+                <option *ngFor="let item of consultants" [value]="item.value">{{ item.label }}</option>
+            </select>
             <div [hidden]="!(editForm.controls.consultantName?.dirty && editForm.controls.consultantName?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.consultantName?.errors?.required">

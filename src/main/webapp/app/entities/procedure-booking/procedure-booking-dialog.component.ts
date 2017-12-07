@@ -9,9 +9,12 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { ProcedureBooking } from './procedure-booking.model';
 import { ProcedureBookingPopupService } from './procedure-booking-popup.service';
 import { ProcedureBookingService } from './procedure-booking.service';
+import { UserService } from '../../shared/user/user.service';
+import { User } from '../../shared/user/user.model';
 import { Patient, PatientService } from '../patient';
 import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { ResponseWrapper } from '../../shared';
+import {IOption} from 'ng-select';
 
 @Component({
     selector: 'jhi-procedure-booking-dialog',
@@ -23,14 +26,21 @@ export class ProcedureBookingDialogComponent implements OnInit {
     isSaving: boolean;
 
     patients: Patient[];
+    consultants: Array<IOption>;
 
     followupplans: FollowupPlan[];
+    myOptions: Array<IOption> = [
+        {label: 'Belgium', value: 'BE'},
+        {label: 'Luxembourg', value: 'LU'},
+        {label: 'Netherlands', value: 'NL'}
+    ];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private procedureBookingService: ProcedureBookingService,
         private patientService: PatientService,
+        private userService: UserService,
         private followupPlanService: FollowupPlanService,
         private eventManager: JhiEventManager
     ) {
@@ -53,6 +63,28 @@ export class ProcedureBookingDialogComponent implements OnInit {
                         }, (subRes: ResponseWrapper) => this.onError(subRes.json));
                 }
             }, (res: ResponseWrapper) => this.onError(res.json));
+
+        // load consultants
+        this.loadConsultants();
+    }
+
+    loadConsultants() {
+        this.consultants = [];
+        console.log("this.myOptions  = " , this.myOptions );
+        this.userService.consultants()
+            .subscribe(
+            (res: ResponseWrapper) => {
+                console.log("res  = " , res );
+                for(let user of res.json) {
+                    let consultant = <IOption>{};
+                    consultant.value = user.id;
+                    consultant.label = user.title + ' ' + user.firstName + ' ' + user.lastName;
+                    this.consultants.push(consultant);
+                }
+                console.log("this.consultants  = " , this.consultants );
+            },
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
     }
 
     clear() {

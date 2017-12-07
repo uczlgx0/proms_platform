@@ -5425,6 +5425,10 @@ ng-jhipster@0.2.12:
     "@ngx-translate/core" "7.0.0"
     "@ngx-translate/http-loader" "0.1.0"
 
+ng-select@^1.0.0-rc.3:
+  version "1.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/ng-select/-/ng-select-1.0.0-rc.3.tgz#0d6ca53a475a0301e6d01e0c0a5568e183cb7a0d"
+
 ng2-webstorage@1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/ng2-webstorage/-/ng2-webstorage-1.8.0.tgz#02bac5f29cecc2b7a4dfea17d9cebc720edf6b49"
