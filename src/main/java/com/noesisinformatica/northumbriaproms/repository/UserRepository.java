@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByActivatedIsFalseAndCreatedDateBefore(Instant dateTime);
 
+    Page<User> findAllByAuthoritiesName(String authority, Pageable pageable);
+
     Optional<User> findOneByResetKey(String resetKey);
 
     Optional<User> findOneByEmailIgnoreCase(String email);

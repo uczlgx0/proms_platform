@@ -1,17 +1,15 @@
 package com.noesisinformatica.northumbriaproms.service;
 
+import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.Authority;
 import com.noesisinformatica.northumbriaproms.domain.User;
 import com.noesisinformatica.northumbriaproms.repository.AuthorityRepository;
-import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.repository.UserRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
 import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
 import com.noesisinformatica.northumbriaproms.security.SecurityUtils;
-import com.noesisinformatica.northumbriaproms.service.util.RandomUtil;
 import com.noesisinformatica.northumbriaproms.service.dto.UserDTO;
-import com.noesisinformatica.northumbriaproms.web.rest.vm.ManagedUserVM;
-
+import com.noesisinformatica.northumbriaproms.service.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -24,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -76,11 +77,11 @@ public class UserService {
        return userRepository.findOneByResetKey(key)
            .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
            .map(user -> {
-                user.setPassword(passwordEncoder.encode(newPassword));
-                user.setResetKey(null);
-                user.setResetDate(null);
-                cacheManager.getCache(USERS_CACHE).evict(user.getLogin());
-                return user;
+               user.setPassword(passwordEncoder.encode(newPassword));
+               user.setResetKey(null);
+               user.setResetDate(null);
+               cacheManager.getCache(USERS_CACHE).evict(user.getLogin());
+               return user;
            });
     }
 
@@ -227,6 +228,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> findAllByAuthoritiesName(String authority, Pageable pageable) {
+        return userRepository.findAllByAuthoritiesName(authority, pageable).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
