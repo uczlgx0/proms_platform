@@ -171,6 +171,9 @@ public class Patient implements Serializable {
     }
 
     public void setAddresses(Set<Address> addresses) {
+        addresses.forEach(address -> {
+            address.setPatient(this);
+        });
         this.addresses = addresses;
     }
 
@@ -179,6 +182,9 @@ public class Patient implements Serializable {
     }
 
     public Patient procedureBookings(Set<ProcedureBooking> procedureBookings) {
+        procedureBookings.forEach(procedureBooking -> {
+            procedureBooking.setPatient(this);
+        });
         this.procedureBookings = procedureBookings;
         return this;
     }
