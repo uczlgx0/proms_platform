@@ -16,8 +16,8 @@ mkdir -p ${index.folder.location} || true
 chown -Rf ${project.artifactId}:${project.artifactId} ${index.folder.location}
 
 # Database command safe to run both on install and upgrade
-echo "Creating ${project.artifactId} mysql database and user with permissions to access all trialslink_db schemas"
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS trialslink_db DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci; GRANT ALL  ON trialslink_db.* TO 'trialslink'@'localhost' IDENTIFIED BY 'tr14lzl1nk'; FLUSH PRIVILEGES;"
+echo "Creating ${project.artifactId} mysql database and user with permissions to access all promsapp_db schemas"
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS promsapp_db DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci; GRANT ALL  ON promsapp_db.* TO 'promsapp'@'localhost' IDENTIFIED BY 'pr0mz4p9'; FLUSH PRIVILEGES;"
 
 # Move service unit file from /tmp to /etc/systemd/system
 mv /opt/$APP_NAME/$APP_NAME.service /etc/systemd/system/$APP_NAME.service || true
