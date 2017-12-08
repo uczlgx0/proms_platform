@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="table-responsive" *ngIf="patient.procedureBookings && patient.procedureBookings.length > 0">
+    <div class="table-responsive" *ngIf="procedureBookings && procedureBookings.length > 0">
         <hr>
         <h4>Procedure Bookings</h4>
         <table class="table table-striped">
@@ -94,7 +94,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let procedureBooking of patient.procedureBookings">
+            <tr *ngFor="let procedureBooking of procedureBookings">
                 <!--<td><a [routerLink]="['../procedure-booking', procedureBooking.id ]">{{procedureBooking.id}}</a></td>-->
                 <td>{{procedureBooking.consultantName}}</td>
                 <td>{{procedureBooking.hospitalSite}}</td>
@@ -107,22 +107,22 @@
                         <!--<a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.id}}</a>-->
                     <!--</div>-->
                 <!--</td>-->
-                <td *jhiHasAnyAuthority="'ROLE_ADMIN'" class="text-right">
+                <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../procedure-booking', procedureBooking.id ]"
+                                [routerLink]="['../../procedure-booking', procedureBooking.id ]"
                                 class="btn btn-info btn-sm">
                             <span class="fa fa-eye"></span>
                             <span class="d-none d-md-inline">View</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
                                 replaceUrl="true"
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
-                        <button type="submit"
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"
                                 replaceUrl="true"
                                 class="btn btn-danger btn-sm">
@@ -135,12 +135,96 @@
             </tbody>
         </table>
     </div>
-    <div *ngIf="patient.procedureBookings && patient.procedureBookings.length > 0">
+    <div *ngIf="procedureBookings && procedureBookings.length > 0">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="bookingQueryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            <ngb-pagination [collectionSize]="bookingTotalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+
+    <div class="table-responsive" *ngIf="followupActions && followupActions.length">
+        <hr>
+        <h4>Followup Actions</h4>
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" >
+                <!--<th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>-->
+                <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
+                <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
+                <!--<th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>-->
+                <th jhiSortBy="outcomeScore"><span>Outcome Score</span> <span class="fa fa-sort"></span></th>
+                <!--<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>-->
+                <th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>
+                <!--<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>-->
+                <!--<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>-->
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
+                <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
+                <!--<td>-->
+                    <!--<div *ngIf="followupAction.patient">-->
+                        <!--<a [routerLink]="['../patient', followupAction.patient?.id ]" >-->
+                            <!--{{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}-->
+                        <!--</a>-->
+                    <!--</div>-->
+                <!--</td>-->
+                <td>{{followupAction.name}}</td>
+                <td>{{followupAction.phase}}</td>
+                <td>{{followupAction.scheduledDate | date:'medium'}}</td>
+                <!--<td>{{followupAction.type}}</td>-->
+                <td>{{followupAction.outcomeScore}}</td>
+                <!--<td>{{followupAction.outcomeComment}}</td>-->
+                <td>{{followupAction.completedDate | date:'medium'}}</td>
+                <!--<td>-->
+                <!--<div *ngIf="followupAction.followupPlan">-->
+                <!--<a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>-->
+                <!--</div>-->
+                <!--</td>-->
+                <!--<td>-->
+                <!--<div *ngIf="followupAction.questionnaire">-->
+                <!--<a [routerLink]="['../questionnaire', followupAction.questionnaire?.id ]" >{{followupAction.questionnaire?.name}}</a>-->
+                <!--</div>-->
+                <!--</td>-->
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../../followup-action', followupAction.id ]"
+                                class="btn btn-info btn-sm">
+                            <!--<span class="fa fa-eye"></span>-->
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="followupActions && followupActions.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="followupQueryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="followupTotalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
         </div>
     </div>
 </div>

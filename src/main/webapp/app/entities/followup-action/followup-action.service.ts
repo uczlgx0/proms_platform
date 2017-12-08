@@ -12,6 +12,7 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 export class FollowupActionService {
 
     private resourceUrl = SERVER_API_URL + 'api/followup-actions';
+    private patientResourceUrl = SERVER_API_URL + 'api/patient/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/followup-actions';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
@@ -37,6 +38,12 @@ export class FollowupActionService {
             const jsonResponse = res.json();
             return this.convertItemFromServer(jsonResponse);
         });
+    }
+
+    findByPatientId(id: any, req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.patientResourceUrl+id+'/followup-actions', options)
+            .map((res: Response) => this.convertResponse(res));
     }
 
     query(req?: any): Observable<ResponseWrapper> {

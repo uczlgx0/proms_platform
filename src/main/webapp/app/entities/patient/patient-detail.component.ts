@@ -7,6 +7,8 @@ import { Patient } from './patient.model';
 import { PatientService } from './patient.service';
 import { ProcedureBooking } from '../procedure-booking/procedure-booking.model';
 import { ProcedureBookingService } from '../procedure-booking/procedure-booking.service';
+import { FollowupAction } from '../followup-action/followup-action.model';
+import { FollowupActionService } from '../followup-action/followup-action.service';
 import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 
 @Component({
@@ -16,12 +18,17 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 export class PatientDetailComponent implements OnInit, OnDestroy {
 
     patient: Patient;
+    procedureBookings: Array<ProcedureBooking>;
+    followupActions: Array<FollowupAction>;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
     routeData: any;
-    links: any;
-    totalItems: any;
-    queryCount: any;
+    bookingLinks: any;
+    bookingTotalItems: any;
+    bookingQueryCount: any;
+    followupgLinks: any;
+    followupTotalItems: any;
+    followupQueryCount: any;
     itemsPerPage: any;
     page: any;
     predicate: any;
@@ -35,6 +42,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private patientService: PatientService,
         private procedureBookingService: ProcedureBookingService,
+        private followupActionService: FollowupActionService,
         private route: ActivatedRoute
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
@@ -57,15 +65,23 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.patientService.find(id).subscribe((patient) => {
             this.patient = patient;
             console.log("this.patient  = " , this.patient );
-            // now find procedure bookings
-            this.procedureBookingService.findByPatientId(this.patient.id, {
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()}).subscribe(
-                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
-                (res: ResponseWrapper) => this.onError(res.json)
-            );
         });
+        // find procedure bookings
+        this.procedureBookingService.findByPatientId(id, {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onBookingsSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
+        // find procedure bookings
+        this.followupActionService.findByPatientId(id, {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onFollowupSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
     }
 
     previousState() {
@@ -92,12 +108,20 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         return result;
     }
 
-    private onSuccess(data, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
-        this.queryCount = this.totalItems;
+    private onBookingsSuccess(data, headers) {
+        this.bookingLinks = this.parseLinks.parse(headers.get('link'));
+        this.bookingTotalItems = headers.get('X-Total-Count');
+        this.bookingQueryCount = this.bookingTotalItems;
         // this.page = pagingParams.page;
-        this.patient.procedureBookings = data;
+        this.procedureBookings = data;
+    }
+
+    private onFollowupSuccess(data, headers) {
+        this.followupgLinks = this.parseLinks.parse(headers.get('link'));
+        this.followupTotalItems = headers.get('X-Total-Count');
+        this.followupQueryCount = this.followupTotalItems;
+        // this.page = pagingParams.page;
+        this.followupActions = data;
     }
 
     private onError(error) {
