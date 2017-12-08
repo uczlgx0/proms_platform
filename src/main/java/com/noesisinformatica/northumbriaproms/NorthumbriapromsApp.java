@@ -356,11 +356,12 @@ public class NorthumbriapromsApp {
                         String[] parts = line.split(",");
                         // create consultant from part
                         User user = new User();
-                        user.setTitle(parts[0]);
-                        user.setFirstName(parts[1]);
-                        user.setLastName(parts[2]);
-                        user.setLogin(parts[3]);
-                        user.setEmail(parts[4] + "@promsapp.com");
+                        user.setTitle(parts[0].trim());
+                        user.setFirstName(parts[1].trim());
+                        user.setLastName(parts[2].trim());
+                        user.setLogin(parts[3].trim());
+                        user.setEmail(parts[4].trim() + "@promsapp.com");
+                        user.setPassword(parts[4].trim());
                         user.addAuthority(consultantRole);
                         if (user.getLangKey() == null) {
                             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
