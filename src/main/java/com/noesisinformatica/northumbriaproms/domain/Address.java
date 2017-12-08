@@ -31,6 +31,8 @@ public class Address implements Serializable {
     private String street;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "address_lines", joinColumns=@JoinColumn(name="address_id"))
+    @Column(name="line")
     private List<String> lines = new ArrayList<>();
 
     @Column(name = "city")

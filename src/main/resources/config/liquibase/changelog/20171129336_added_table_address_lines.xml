@@ -18,7 +18,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="lines" type="varchar(255)">
+            <column name="line" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
 
