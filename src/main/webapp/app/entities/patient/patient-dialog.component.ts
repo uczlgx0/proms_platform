@@ -18,6 +18,7 @@ export class PatientDialogComponent implements OnInit {
 
     patient: Patient;
     isSaving: boolean;
+    birthDateDp: any;
 
     constructor(
         public activeModal: NgbActiveModal,

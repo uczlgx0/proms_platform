@@ -1,7 +1,6 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DatePipe } from '@angular/common';
 import { Patient } from './patient.model';
 import { PatientService } from './patient.service';
 
@@ -10,7 +9,6 @@ export class PatientPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
-        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private patientService: PatientService
@@ -28,8 +26,13 @@ export class PatientPopupService {
 
             if (id) {
                 this.patientService.find(id).subscribe((patient) => {
-                    patient.birthDate = this.datePipe
-                        .transform(patient.birthDate, 'yyyy-MM-ddTHH:mm:ss');
+                    if (patient.birthDate) {
+                        patient.birthDate = {
+                            year: patient.birthDate.getFullYear(),
+                            month: patient.birthDate.getMonth() + 1,
+                            day: patient.birthDate.getDate()
+                        };
+                    }
                     this.ngbModalRef = this.patientModalRef(component, patient);
                     resolve(this.ngbModalRef);
                 });

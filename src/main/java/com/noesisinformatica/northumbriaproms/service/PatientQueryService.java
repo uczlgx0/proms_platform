@@ -1,6 +1,5 @@
 package com.noesisinformatica.northumbriaproms.service;
 
-
 import com.noesisinformatica.northumbriaproms.domain.Address_;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.Patient_;

@@ -36,7 +36,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -317,7 +316,7 @@ public class NorthumbriapromsApp {
 
                         address.setPostalCode(parts[7]);
                         LocalDate date = LocalDate.parse(parts[9], formatter);
-                        patient.setBirthDate(date.atStartOfDay(ZoneOffset.UTC));
+                        patient.setBirthDate(date);
                         patient.setGender(GenderType.valueOf(parts[10]));
                         patient.setNhsNumber(Long.valueOf(parts[11]));
                         // save questionnaire

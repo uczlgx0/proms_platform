@@ -30,7 +30,7 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
-            <th jhiSortBy="familyName"><span>Family Name</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="familyName"><span>Name</span> <span class="fa fa-sort"></span></th>
             <!--<th jhiSortBy="givenName"><span>Given Name</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="birthDate"><span>Birth Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="gender"><span>Gender</span> <span class="fa fa-sort"></span></th>
@@ -44,7 +44,7 @@
                 <!--<td><a [routerLink]="['../patient', patient.id ]">{{patient.id}}</a></td>-->
                 <td><a [routerLink]="['../patient', patient.id ]">{{patient.givenName}} {{patient.familyName}}</a></td>
                 <!--<td>{{patient.givenName}}</td>-->
-                <td>{{patient.birthDate | date:'medium'}}</td>
+                <td>{{patient.birthDate | date:'mediumDate'}}</td>
                 <td>{{patient.gender}}</td>
                 <td>{{patient.nhsNumber}}</td>
                 <td>{{patient.email}}</td>

@@ -1,18 +1,13 @@
 package com.noesisinformatica.northumbriaproms.service.dto;
 
-import java.io.Serializable;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
+import java.io.Serializable;
 
-
-import io.github.jhipster.service.filter.ZonedDateTimeFilter;
 
 
 /**
@@ -39,7 +34,7 @@ public class PatientCriteria implements Serializable {
 
     private StringFilter givenName;
 
-    private ZonedDateTimeFilter birthDate;
+    private LocalDateFilter birthDate;
 
     private GenderTypeFilter gender;
 
@@ -78,11 +73,11 @@ public class PatientCriteria implements Serializable {
         this.givenName = givenName;
     }
 
-    public ZonedDateTimeFilter getBirthDate() {
+    public LocalDateFilter getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(ZonedDateTimeFilter birthDate) {
+    public void setBirthDate(LocalDateFilter birthDate) {
         this.birthDate = birthDate;
     }
 

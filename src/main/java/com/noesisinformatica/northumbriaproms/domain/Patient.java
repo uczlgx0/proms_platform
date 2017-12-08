@@ -9,8 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +25,6 @@ import java.util.Set;
 public class Patient implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +40,7 @@ public class Patient implements Serializable {
 
     @NotNull
     @Column(name = "birth_date", nullable = false)
-    private ZonedDateTime birthDate;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -55,6 +53,7 @@ public class Patient implements Serializable {
     private String email;
 
     @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+//    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Address> addresses = new HashSet<>();
 
@@ -98,23 +97,18 @@ public class Patient implements Serializable {
         this.givenName = givenName;
     }
 
-    public ZonedDateTime getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public Patient birthDate(ZonedDateTime birthDate) {
+    public Patient birthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
         return this;
     }
 
-    public void setBirthDate(ZonedDateTime birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
-//    public void setBirthDate(String dob) {
-//        LocalDate date = LocalDate.parse(dob, formatter);
-//        this.birthDate = date.atStartOfDay(ZoneOffset.UTC);
-//    }
 
     public GenderType getGender() {
         return gender;

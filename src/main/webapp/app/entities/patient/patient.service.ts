@@ -76,9 +76,10 @@ export class PatientService {
     private convertItemFromServer(json: any): Patient {
         const entity: Patient = Object.assign(new Patient(), json);
         entity.birthDate = this.dateUtils
-            .convertDateTimeFromServer(json.birthDate);
+            .convertLocalDateFromServer(json.birthDate);
         return entity;
     }
+
 
     /**
      * Convert the result into an array of {value, label} items for use in UI select
@@ -99,8 +100,8 @@ export class PatientService {
      */
     private convert(patient: Patient): Patient {
         const copy: Patient = Object.assign({}, patient);
-
-        copy.birthDate = this.dateUtils.toDate(patient.birthDate);
+        copy.birthDate = this.dateUtils
+            .convertLocalDateToServer(patient.birthDate);
         return copy;
     }
 }

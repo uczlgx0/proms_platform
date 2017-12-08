@@ -39,8 +39,8 @@ describe('Patient e2e test', () => {
         expect(patientDialogPage.getFamilyNameInput()).toMatch('familyName');
         patientDialogPage.setGivenNameInput('givenName');
         expect(patientDialogPage.getGivenNameInput()).toMatch('givenName');
-        patientDialogPage.setBirthDateInput(12310020012301);
-        expect(patientDialogPage.getBirthDateInput()).toMatch('2001-12-31T02:30');
+        patientDialogPage.setBirthDateInput('2000-12-31');
+        expect(patientDialogPage.getBirthDateInput()).toMatch('2000-12-31');
         patientDialogPage.genderSelectLastOption();
         patientDialogPage.setNhsNumberInput('5');
         expect(patientDialogPage.getNhsNumberInput()).toMatch('5');
