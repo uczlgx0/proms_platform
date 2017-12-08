@@ -32,7 +32,7 @@
                 <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
                 <th jhiSortBy="consultantName"><span>Consultant Name</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="hospitalSite"><span>Hospital Site</span> <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="patient.familyName"><span>Patient</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="performedDate"><span>Performed Date</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="primaryProcedure"><span>Primary Procedure</span> <span class="fa fa-sort"></span></th>
@@ -43,47 +43,79 @@
             <tbody>
             </tbody>
         </table>
-        <div class="row" *ngFor="let procedureBooking of procedureBookings ;trackBy: trackId">
-            <div class="col-sm-6">
-                <!--<td><a [routerLink]="['../procedure-booking', procedureBooking.id ]">{{procedureBooking.id}}</a></td>-->
-                <h4>
-                    <div *ngIf="procedureBooking.patient">
-                        <a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
+        <div class="row">
+            <div class="col-sm-2 col-md-3 col-lg-4 col-xl-4" *ngFor="let procedureBooking of procedureBookings ;trackBy: trackId">
+                <div class="card border-dark mb-3" style="width: 20rem;">
+                    <div class="card-header">
+                        <h4 class="card-title" *ngIf="procedureBooking.patient">
+                            <a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
+                        </h4>
                     </div>
-                </h4>
-                <h5 *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</h5>
-                <h6>Consultant Name: {{procedureBooking.consultantName}}</h6>
-                <h6>Hospital Site: {{procedureBooking.hospitalSite}}</h6>
-                <!--<td>{{procedureBooking.otherProcedures}}</td>-->
-            </div>
-            <div class="col-sm-6">
-                <div class="mt-3">Scheduled Date: {{procedureBooking.scheduledDate | date:'medium'}}</div>
-                <div>Performed Date: {{procedureBooking.performedDate | date:'medium'}}</div>
-                <!--<div class="text-right">-->
-                    <div class="btn-group">
-                        <button type="submit"
-                                [routerLink]="['../procedure-booking', procedureBooking.id ]"
-                                class="btn btn-outline-info btn-xs">
-                            <!--<span class="fa fa-eye"></span>-->
-                            <span class="d-none d-md-inline">Procedure details</span>
-                        </button>
-                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
-                                replaceUrl="true"
-                                class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
-                            <span class="d-none d-md-inline">Edit</span>
-                        </button>
-                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"
-                                replaceUrl="true"
-                                class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
-                            <span class="d-none d-md-inline">Delete</span>
-                        </button>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted" *ngIf="proceduresLookup">
+                            {{proceduresLookup[procedureBooking.primaryProcedure].label}}
+                        </h6>
+                        <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
+                        <!--<h6>Consultant Name: {{procedureBooking.consultantName}}</h6>-->
+                        <!--<h6>Hospital Site: {{procedureBooking.hospitalSite}}</h6>-->
+                        <!--<a [routerLink]="['../procedure-booking', procedureBooking.id ]" class="card-link">Details</a>-->
+                        <!--<a href="#" class="card-link">Another link</a>-->
                     </div>
-                <!--</div>-->
+                    <ul class="list-group list-group-flush borderless">
+                        <li class="list-group-item">Consultant Name: {{procedureBooking.consultantName}}</li>
+                        <li class="list-group-item">{{procedureBooking.hospitalSite}}</li>
+                        <li class="list-group-item">Scheduled Date: {{procedureBooking.scheduledDate | date:'medium'}}</li>
+                        <li class="list-group-item">Performed Date: {{procedureBooking.performedDate | date:'medium'}}</li>
+                    </ul>
+                    <div class="card-footer bg-light">
+                        <a class="btn btn-outline-info btn-xs" [routerLink]="['../procedure-booking', procedureBooking.id ]">Details</a>
+                        <a class="btn btn-primary btn-sm" *jhiHasAnyAuthority="'ROLE_ADMIN'" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+                           replaceUrl="true">Edit</a>
+                        <a class="btn btn-danger btn-sm" *jhiHasAnyAuthority="'ROLE_ADMIN'" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"
+                           replaceUrl="true">Delete</a>
+                    </div>
+                </div>
             </div>
+            <!--<div class="col-sm-6">-->
+                <!--&lt;!&ndash;<td><a [routerLink]="['../procedure-booking', procedureBooking.id ]">{{procedureBooking.id}}</a></td>&ndash;&gt;-->
+                <!--<h4>-->
+                    <!--<div *ngIf="procedureBooking.patient">-->
+                        <!--<a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>-->
+                    <!--</div>-->
+                <!--</h4>-->
+                <!--<h5 *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</h5>-->
+                <!--<h6>Consultant Name: {{procedureBooking.consultantName}}</h6>-->
+                <!--<h6>Hospital Site: {{procedureBooking.hospitalSite}}</h6>-->
+                <!--&lt;!&ndash;<td>{{procedureBooking.otherProcedures}}</td>&ndash;&gt;-->
+            <!--</div>-->
+            <!--<div class="col-sm-6">-->
+                <!--<div class="mt-3">Scheduled Date: {{procedureBooking.scheduledDate | date:'medium'}}</div>-->
+                <!--<div>Performed Date: {{procedureBooking.performedDate | date:'medium'}}</div>-->
+                <!--&lt;!&ndash;<div class="text-right">&ndash;&gt;-->
+                    <!--<div class="btn-group">-->
+                        <!--<button type="submit"-->
+                                <!--[routerLink]="['../procedure-booking', procedureBooking.id ]"-->
+                                <!--class="btn btn-outline-info btn-xs">-->
+                            <!--&lt;!&ndash;<span class="fa fa-eye"></span>&ndash;&gt;-->
+                            <!--<span class="d-none d-md-inline">Procedure details</span>-->
+                        <!--</button>-->
+                        <!--<button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"-->
+                                <!--[routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"-->
+                                <!--replaceUrl="true"-->
+                                <!--class="btn btn-primary btn-sm">-->
+                            <!--<span class="fa fa-pencil"></span>-->
+                            <!--<span class="d-none d-md-inline">Edit</span>-->
+                        <!--</button>-->
+                        <!--<button *jhiHasAnyAuthority="'ROLE_ADMIN'"  type="submit"-->
+                                <!--[routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/delete'} }]"-->
+                                <!--replaceUrl="true"-->
+                                <!--class="btn btn-danger btn-sm">-->
+                            <!--<span class="fa fa-remove"></span>-->
+                            <!--<span class="d-none d-md-inline">Delete</span>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--</div>-->
         </div>
     </div>
     <div *ngIf="procedureBookings && procedureBookings.length">
