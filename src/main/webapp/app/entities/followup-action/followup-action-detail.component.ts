@@ -5,6 +5,8 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { FollowupAction } from './followup-action.model';
 import { FollowupActionService } from './followup-action.service';
+import { MoxfqComponent } from '../../forms/moxfq.component';
+import { PainvasComponent } from '../../forms/painvas.component';
 
 @Component({
     selector: 'jhi-followup-action-detail',

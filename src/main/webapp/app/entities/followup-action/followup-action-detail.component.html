@@ -87,4 +87,10 @@
             </dl>
         </div>
     </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'MOXFQ'">
+        <moxfq-component [(followupAction)]="followupAction"></moxfq-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'PAIN VAS'">
+        <painvas-component [(followupAction)]="followupAction"></painvas-component>
+    </div>
 </div>
