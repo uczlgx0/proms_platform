@@ -10,6 +10,7 @@ import { NorthumbriapromsHomeModule } from './home/home.module';
 import { NorthumbriapromsAdminModule } from './admin/admin.module';
 import { NorthumbriapromsAccountModule } from './account/account.module';
 import { NorthumbriapromsEntityModule } from './entities/entity.module';
+import { PromsFormsModule } from './forms/promsforms.module';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
@@ -34,6 +35,7 @@ import {
         NorthumbriapromsAdminModule,
         NorthumbriapromsAccountModule,
         NorthumbriapromsEntityModule,
+        PromsFormsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
