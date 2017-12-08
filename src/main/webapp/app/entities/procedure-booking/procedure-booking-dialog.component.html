@@ -14,7 +14,7 @@
                            placeholder="Type/Select patient name"
                            [options]="patients"
                            (selected)="onPatientSelected($event)"
-                           [(ngModel)]="procedureBooking.patientId">
+                           [(ngModel)]="patientId">
                 </ng-select>
                 <!--<select class="form-control" id="field_patient" name="patient" [(ngModel)]="procedureBooking.patient"  required>-->
                     <!--<option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>-->
