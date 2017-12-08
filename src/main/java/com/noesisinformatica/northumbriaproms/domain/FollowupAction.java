@@ -1,19 +1,19 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Objects;
-
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
-
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
+import java.util.Set;
 
 
 /**
@@ -65,6 +65,10 @@ public class FollowupAction implements Serializable {
 
     @ManyToOne
     private Questionnaire questionnaire;
+
+    @OneToMany(mappedBy = "followupAction", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ResponseItem> responseItems = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -204,6 +208,19 @@ public class FollowupAction implements Serializable {
     public void setQuestionnaire(Questionnaire questionnaire) {
         this.questionnaire = questionnaire;
     }
+
+    public Set<ResponseItem> getResponseItems() {
+        return responseItems;
+    }
+
+    public void setResponseItems(Set<ResponseItem> responseItems) {
+        // associate all items with this followup action
+        responseItems.forEach(responseItem -> {
+            responseItem.setFollowupAction(this);
+        });
+        this.responseItems = responseItems;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -234,6 +251,7 @@ public class FollowupAction implements Serializable {
             ", scheduledDate='" + getScheduledDate() + "'" +
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +
+            ", responseItems=" + getResponseItems() +
             ", outcomeScore=" + getOutcomeScore() +
             ", outcomeComment='" + getOutcomeComment() + "'" +
             ", completedDate='" + getCompletedDate() + "'" +
