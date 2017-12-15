@@ -1,7 +1,7 @@
-<form>
+<form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
     <div class="form-group">
-        <label for="inputScore">{{followupAction.responseItems[0].question}}</label>
-        <input [(ngModel)]="followupAction.responseItems[0].value" type="text" id="inputScore" name="inputScore" class="form-control" aria-describedby="pain vas score">
+        <label for="q1">How bad is your foot/ankle pain today?</label>
+        <input [(ngModel)]="formData.q1" type="number" id="q1" name="q1" class="form-control" aria-describedby="pain vas score">
         <small id="scoreHelpBlock" class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -13,6 +13,6 @@
     </div>
 
     <br>
-    <button type="submit" class="btn btn-info" (click)="save()">Submit</button>
+    <button type="submit" class="btn btn-info">Submit</button>
     <br>
 </form>

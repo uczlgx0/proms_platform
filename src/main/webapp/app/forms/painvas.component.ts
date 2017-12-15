@@ -19,6 +19,7 @@ export class PainvasComponent implements OnInit {
 
     @Input() followupAction: FollowupAction;
     isSaving: boolean;
+    formData: any;
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -29,26 +30,33 @@ export class PainvasComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        if(!this.followupAction.responseItems) {
-            this.followupAction.responseItems = [];
+        this.formData = {};
+        if (this.followupAction.responseItems) {
+            this.convertToFormData(this.followupAction.responseItems);
         }
-        // now set first item if missing
-        if(this.followupAction.responseItems.length == 0) {
-            let item:ResponseItem = new ResponseItem();
-            item.followupActionId = this.followupAction.id;
-            this.followupAction.responseItems.push(item);
-        }
-        this.followupAction.responseItems[0].question = 'How bad is your foot/ankel pain today?';
-        this.followupAction.responseItems[0].localId = 0;
     }
 
     clear() {
     }
 
+    submitData(data: any) {
+        console.log("form data  = " , data );
+        // loop through data keys and collect as response items
+        let items: Array<ResponseItem> = [];
+        Object.keys(data).forEach((key) => {
+            if(key != 'comment' && data[key]) {
+                items.push(this.convertToResponseItem(key, data[key]));
+            }
+        });
+        console.log("items  = " , items );
+        this.followupAction.responseItems = items;
+        this.save();
+    }
+
     save() {
         this.isSaving = true;
-            this.subscribeToSaveResponse(
-                this.followupActionService.update(this.followupAction));
+        this.subscribeToSaveResponse(
+            this.followupActionService.update(this.followupAction));
     }
 
     private subscribeToSaveResponse(result: Observable<FollowupAction>) {
@@ -63,5 +71,21 @@ export class PainvasComponent implements OnInit {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
+    }
+
+    private convertToResponseItem(key: string, value: string) {
+        let responseItem = new ResponseItem();
+        responseItem.followupActionId = this.followupAction.id;
+        // process key which looks like 'qN' where N is the key we want
+        let k = key.substr(1);
+        responseItem.localId = parseInt(k);
+        responseItem.value = parseInt(value);
+        return responseItem;
+    }
+
+    private convertToFormData(items: ResponseItem[]) {
+        items.forEach(item => {
+            this.formData['q'+item.localId] = item.value;
+        })
     }
 }
