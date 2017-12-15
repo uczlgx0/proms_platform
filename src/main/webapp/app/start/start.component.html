@@ -1,0 +1,95 @@
+<div class="row m-1">
+    <div class="col-md-3 alert alert-info">
+        <h4 *ngIf="account" >Hi, {{account.login}}! What would you like to do?</h4>
+        <h4 *ngIf="!account">Hi, what would you like to do?</h4>
+        <p>Use options on the right to access different parts of the system</p>
+    </div>
+    <div class="col-md-9">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border-dark mb-3" style="width: 20rem;">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                Procedure Bookings
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Use links below to create a new procedure booking or review an existing one!
+                            </h6>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"
+                               replaceUrl="true">New</a>
+                            <a class="btn btn-outline-info btn-sm"  routerLink="../procedure-booking"
+                               replaceUrl="true">Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-dark mb-3" style="width: 20rem;">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                Followup Actions
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Use links below to create a schedule a new followup action or review an existing one!
+                            </h6>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a class="btn btn-outline-success jh-create-entity create-followup-action" [routerLink]="['/', { outlets: { popup: ['followup-action-new'] } }]"
+                               replaceUrl="true">New</a>
+                            <a class="btn btn-outline-info btn-sm"  routerLink="../followup-action"
+                               replaceUrl="true">Review</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border-dark mb-3" style="width: 20rem;">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                PROMs Outcomes
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Use links below to create a record a new PROMs outcome or review an existing one!
+                            </h6>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"
+                               replaceUrl="true">New</a>
+                            <a class="btn btn-outline-info btn-sm"  routerLink="procedure-booking"
+                               replaceUrl="true">Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-dark mb-3" style="width: 20rem;">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                Review Data
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Use links below to create a review outcomes data by procedure, consultant, etc!
+                            </h6>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"
+                               replaceUrl="true">New</a>
+                            <a class="btn btn-outline-info btn-sm"  routerLink="procedure-booking"
+                               replaceUrl="true">Review</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

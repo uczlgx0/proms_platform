@@ -1,9 +1,13 @@
 <nav class="navbar navbar-dark navbar-expand-md jh-navbar">
-    <div class="jh-logo-container float-left">
+    <div class="jh-logo-container float-left" [ngSwitch]="isAuthenticated()">
         <a class="jh-navbar-toggler d-lg-none float-right" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <i class="fa fa-bars"></i>
         </a>
-        <a class="navbar-brand logo float-left" routerLink="/" (click)="collapseNavbar()">
+        <a *ngSwitchCase="false" class="navbar-brand logo float-left" routerLink="/" (click)="collapseNavbar()">
+            <!--<span class="logo-img"></span>-->
+            <span class="navbar-title">PromsApp</span>
+        </a>
+        <a *ngSwitchCase="true" class="navbar-brand logo float-left" routerLink="start" (click)="collapseNavbar()">
             <!--<span class="logo-img"></span>-->
             <span class="navbar-title">PromsApp</span>
         </a>

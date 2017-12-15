@@ -7,6 +7,7 @@ import { Ng2Webstorage } from 'ng2-webstorage';
 import { NorthumbriapromsSharedModule, UserRouteAccessService } from './shared';
 import { NorthumbriapromsAppRoutingModule} from './app-routing.module';
 import { NorthumbriapromsHomeModule } from './home/home.module';
+import { NorthumbriapromsStartModule } from './start/start.module';
 import { NorthumbriapromsAdminModule } from './admin/admin.module';
 import { NorthumbriapromsAccountModule } from './account/account.module';
 import { NorthumbriapromsEntityModule } from './entities/entity.module';
@@ -32,6 +33,7 @@ import {
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         NorthumbriapromsSharedModule,
         NorthumbriapromsHomeModule,
+        NorthumbriapromsStartModule,
         NorthumbriapromsAdminModule,
         NorthumbriapromsAccountModule,
         NorthumbriapromsEntityModule,

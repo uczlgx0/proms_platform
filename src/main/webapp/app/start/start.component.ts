@@ -7,14 +7,14 @@ import * as _ from 'underscore';
 import { Account, LoginModalService, Principal } from '../shared';
 
 @Component({
-    selector: 'jhi-home',
-    templateUrl: './home.component.html',
+    selector: 'start-home',
+    templateUrl: './start.component.html',
     styleUrls: [
-        'home.css'
+        'start.css'
     ]
 
 })
-export class HomeComponent implements OnInit {
+export class StartComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
 
@@ -38,7 +38,6 @@ export class HomeComponent implements OnInit {
             this.principal.identity().then((account) => {
                 this.account = account;
                 console.log("this.account  = " , this.account );
-                this.router.navigate(['start']);
                 //if(_.contains(this.account.authorities, 'ROLE_CONSULTANT')) {
                 //    // navigate user to followup-action page
                 //    this.router.navigate(['procedure-booking']);
