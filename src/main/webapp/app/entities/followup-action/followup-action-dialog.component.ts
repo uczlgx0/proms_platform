@@ -6,13 +6,14 @@ import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { FollowupAction } from './followup-action.model';
+import { FollowupAction, ActionType } from './followup-action.model';
 import { FollowupActionPopupService } from './followup-action-popup.service';
 import { FollowupActionService } from './followup-action.service';
 import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { Patient, PatientService } from '../patient';
 import { Questionnaire, QuestionnaireService } from '../questionnaire';
 import { ResponseWrapper } from '../../shared';
+import {IOption} from 'ng-select';
 
 @Component({
     selector: 'jhi-followup-action-dialog',
@@ -22,7 +23,8 @@ export class FollowupActionDialogComponent implements OnInit {
 
     followupAction: FollowupAction;
     isSaving: boolean;
-
+    patientId: string;
+    questionnaireId: string;
     followupplans: FollowupPlan[];
 
     patients: Patient[];
@@ -44,9 +46,9 @@ export class FollowupActionDialogComponent implements OnInit {
         this.isSaving = false;
         this.followupPlanService.query()
             .subscribe((res: ResponseWrapper) => { this.followupplans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.patientService.query()
+        this.patientService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.questionnaireService.query()
+        this.questionnaireService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
@@ -94,6 +96,22 @@ export class FollowupActionDialogComponent implements OnInit {
 
     trackQuestionnaireById(index: number, item: Questionnaire) {
         return item.id;
+    }
+
+    onPatientSelected(option: IOption) {
+        if(!this.followupAction.patient) {
+            this.followupAction.patient = new Patient();
+        }
+        this.followupAction.patient.id = parseInt(option.value);
+    }
+
+    onQuestionnaireSelected(option: IOption) {
+        if(!this.followupAction.questionnaire) {
+            this.followupAction.questionnaire = new Questionnaire();
+        }
+        this.followupAction.questionnaire.id = parseInt(option.value);
+        this.followupAction.name = option.label;
+        this.followupAction.type = ActionType['QUESTIONNAIRE'];
     }
 }
 

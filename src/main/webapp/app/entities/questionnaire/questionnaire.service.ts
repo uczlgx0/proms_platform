@@ -43,6 +43,12 @@ export class QuestionnaireService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    allAsSelectOptions(req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.resourceUrl, options)
+            .map((res: Response) => this.convertToSelectOption(res));
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
@@ -76,5 +82,19 @@ export class QuestionnaireService {
     private convert(questionnaire: Questionnaire): Questionnaire {
         const copy: Questionnaire = Object.assign({}, questionnaire);
         return copy;
+    }
+
+    /**
+     * Convert the result into an array of {value, label} items for use in UI select
+     * @param res
+     * @returns {any}
+     */
+    private convertToSelectOption(res: Response): ResponseWrapper {
+        const jsonResponse = res.json();
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push({value: jsonResponse[i].id, label: jsonResponse[i].name});
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 }

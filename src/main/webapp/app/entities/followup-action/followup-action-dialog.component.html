@@ -7,18 +7,86 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" [hidden]="!followupAction.id">
-            <label for="id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                   [(ngModel)]="followupAction.id" readonly />
+        <!--<div class="form-group" [hidden]="!followupAction.id">-->
+            <!--<label for="id">ID</label>-->
+            <!--<input type="text" class="form-control" id="id" name="id"-->
+                   <!--[(ngModel)]="followupAction.id" readonly />-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_patient">Patient</label>-->
+            <!--<select class="form-control" id="field_patient" name="patient" [(ngModel)]="followupAction.patient"  required>-->
+                <!--<option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>-->
+                <!--<option [ngValue]="patientOption.id === followupAction.patient?.id ? followupAction.patient : patientOption" *ngFor="let patientOption of patients; trackBy: trackPatientById">{{patientOption.id}}</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--<div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">-->
+            <!--<small class="form-text text-danger"-->
+                   <!--[hidden]="!editForm.controls.patient?.errors?.required">-->
+                <!--This field is required.-->
+            <!--</small>-->
+        <!--</div>-->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_patient">Patient</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="patient" id="field_patient"
+                           placeholder="Type/Select patient name"
+                           [options]="patients"
+                           (selected)="onPatientSelected($event)"
+                           [(ngModel)]="patientId">
+                </ng-select>
+            </div>
+            <div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">
+                <small class="form-text text-danger"
+                       [hidden]="!editForm.controls.patient?.errors?.required">
+                    This field is required.
+                </small>
+            </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_phase">Phase</label>
-            <select class="form-control" name="phase" [(ngModel)]="followupAction.phase" id="field_phase" >
-                <option value="PRE_OPERATIVE">PRE_OPERATIVE</option>
-                <option value="POST_OPERATIVE">POST_OPERATIVE</option>
-                <option value="UKNOWN">UKNOWN</option>
-            </select>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_questionnaire">Questionnaire</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="questionnaire" id="field_questionnaire"
+                           placeholder="Type/Select questionnaire"
+                           [options]="questionnaires"
+                           (selected)="onQuestionnaireSelected($event)"
+                           [(ngModel)]="questionnaireId">
+                </ng-select>
+            </div>
+            <div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">
+                <small class="form-text text-danger"
+                       [hidden]="!editForm.controls.questionnaire?.errors?.required">
+                    This field is required.
+                </small>
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_questionnaire">Questionnaire</label>-->
+            <!--<select class="form-control" id="field_questionnaire" name="questionnaire" [(ngModel)]="followupAction.questionnaire" >-->
+                <!--<option [ngValue]="null"></option>-->
+                <!--<option [ngValue]="questionnaireOption.id === followupAction.questionnaire?.id ? followupAction.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label" for="field_phase">Phase</label>
+            <div class="col-sm-10" id="field_phase">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox2" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE"> Post Operative
+                    </label>
+                </div>
+                <!--<input class="form-control" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE">-->
+                <!--<input class="form-control" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE">-->
+            </div>
+            <!--<select class="form-control" name="phase" [(ngModel)]="followupAction.phase" id="field_phase" >-->
+                <!--<option value="PRE_OPERATIVE">PRE_OPERATIVE</option>-->
+                <!--<option value="POST_OPERATIVE">POST_OPERATIVE</option>-->
+                <!--<option value="UKNOWN">UKNOWN</option>-->
+            <!--</select>-->
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_scheduledDate">Scheduled Date</label>
@@ -27,41 +95,41 @@
                 />
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="followupAction.name" required/>
-            <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.name?.errors?.required">
-                   This field is required.
-                </small>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_type">Type</label>
-            <select class="form-control" name="type" [(ngModel)]="followupAction.type" id="field_type" >
-                <option value="QUESTIONNAIRE">QUESTIONNAIRE</option>
-                <option value="UKNOWN">UKNOWN</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_outcomeScore">Outcome Score</label>
-            <input type="number" class="form-control" name="outcomeScore" id="field_outcomeScore"
-                [(ngModel)]="followupAction.outcomeScore" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_outcomeComment">Outcome Comment</label>
-            <input type="text" class="form-control" name="outcomeComment" id="field_outcomeComment"
-                [(ngModel)]="followupAction.outcomeComment" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_completedDate">Completed Date</label>
-            <div class="d-flex">
-                <input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"
-                />
-            </div>
-        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_name">Name</label>-->
+            <!--<input type="text" class="form-control" name="name" id="field_name"-->
+                <!--[(ngModel)]="followupAction.name" required/>-->
+            <!--<div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">-->
+                <!--<small class="form-text text-danger"-->
+                   <!--[hidden]="!editForm.controls.name?.errors?.required">-->
+                   <!--This field is required.-->
+                <!--</small>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_type">Type</label>-->
+            <!--<select class="form-control" name="type" [(ngModel)]="followupAction.type" id="field_type" >-->
+                <!--<option value="QUESTIONNAIRE">QUESTIONNAIRE</option>-->
+                <!--<option value="UKNOWN">UKNOWN</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_outcomeScore">Outcome Score</label>-->
+            <!--<input type="number" class="form-control" name="outcomeScore" id="field_outcomeScore"-->
+                <!--[(ngModel)]="followupAction.outcomeScore" />-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_outcomeComment">Outcome Comment</label>-->
+            <!--<input type="text" class="form-control" name="outcomeComment" id="field_outcomeComment"-->
+                <!--[(ngModel)]="followupAction.outcomeComment" />-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_completedDate">Completed Date</label>-->
+            <!--<div class="d-flex">-->
+                <!--<input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"-->
+                <!--/>-->
+            <!--</div>-->
+        <!--</div>-->
 
         <div class="form-group">
             <label class="form-control-label" for="field_followupPlan">Followup Plan</label>
@@ -75,26 +143,6 @@
                 [hidden]="!editForm.controls.followupPlan?.errors?.required">
                 This field is required.
             </small>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_patient">Patient</label>
-            <select class="form-control" id="field_patient" name="patient" [(ngModel)]="followupAction.patient"  required>
-                <option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>
-                <option [ngValue]="patientOption.id === followupAction.patient?.id ? followupAction.patient : patientOption" *ngFor="let patientOption of patients; trackBy: trackPatientById">{{patientOption.id}}</option>
-            </select>
-        </div>
-        <div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">
-            <small class="form-text text-danger"
-                [hidden]="!editForm.controls.patient?.errors?.required">
-                This field is required.
-            </small>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_questionnaire">Questionnaire</label>
-            <select class="form-control" id="field_questionnaire" name="questionnaire" [(ngModel)]="followupAction.questionnaire" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="questionnaireOption.id === followupAction.questionnaire?.id ? followupAction.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>
-            </select>
         </div>
     </div>
     <div class="modal-footer">
