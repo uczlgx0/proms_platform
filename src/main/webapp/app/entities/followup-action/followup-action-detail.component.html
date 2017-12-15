@@ -48,28 +48,24 @@
                 <dd>
                     <span>{{followupAction.phase}}</span>
                 </dd>
-                <!--<dt><span>Name</span></dt>-->
-                <!--<dd>-->
-                    <!--<span>{{followupAction.name}}</span>-->
-                <!--</dd>-->
-                <!--<dt><span>Followup Plan</span></dt>-->
-                <!--<dd>-->
-                    <!--<div *ngIf="followupAction.followupPlan">-->
-                        <!--<a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>-->
-                    <!--</div>-->
-                <!--</dd>-->
-            </dl>
-        </div>
-        <div class="col-md-6">
-            <dl class="row-md jh-entity-details">
                 <dt><span>Outcome Score</span></dt>
                 <dd>
                     <span>{{followupAction.outcomeScore}}</span>
                 </dd>
-                <dt><span>Outcome Comment</span></dt>
+                <!--<dt><span>Name</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{followupAction.name}}</span>-->
+                <!--</dd>-->
+                <dt><span>Followup Plan</span></dt>
                 <dd>
-                    <span>{{followupAction.outcomeComment}}</span>
+                    <div *ngIf="followupAction.followupPlan">
+                        <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
+                    </div>
                 </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
                 <dt><span>Scheduled Date</span></dt>
                 <dd>
                     <span>{{followupAction.scheduledDate | date:'medium'}}</span>
@@ -78,11 +74,17 @@
                 <dd>
                     <span>{{followupAction.completedDate | date:'medium'}}</span>
                 </dd>
-                <dt><span>Followup Plan</span></dt>
+                <dt><span>Last updated Date</span></dt>
                 <dd>
-                    <div *ngIf="followupAction.followupPlan">
-                        <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
-                    </div>
+                    <span>{{followupAction.lastModifiedDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Last Modified By</span></dt>
+                <dd>
+                    <span>{{followupAction.lastModifiedBy}}</span>
+                </dd>
+                <dt><span>Outcome Comment</span></dt>
+                <dd>
+                    <span>{{followupAction.outcomeComment}}</span>
                 </dd>
             </dl>
         </div>
