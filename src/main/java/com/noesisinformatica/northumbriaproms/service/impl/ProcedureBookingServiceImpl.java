@@ -1,6 +1,7 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
 import com.noesisinformatica.northumbriaproms.config.Constants;
+import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -79,6 +82,20 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
     public ProcedureBooking findOne(Long id) {
         log.debug("Request to get ProcedureBooking : {}", id);
         return procedureBookingRepository.findOne(id);
+    }
+
+    /**
+     * Get one Followup plan by patient id and primary procedure.
+     *
+     * @param procedureCode the primary procedure code
+     * @param id the id of the patient
+     * @return the plan entity associated with matching procedure booking
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<FollowupPlan> findOneByPatientIdAndPrimaryProcedure(Long id, String procedureCode) {
+        log.debug("Request to get Followup Plan with patientId {} and primary procedure : {}", id, procedureCode);
+        return procedureBookingRepository.findOneByPatientIdAndPrimaryProcedure(id, procedureCode);
     }
 
     /**

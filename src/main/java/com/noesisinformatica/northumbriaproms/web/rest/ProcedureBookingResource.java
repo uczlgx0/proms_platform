@@ -1,6 +1,7 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import com.noesisinformatica.northumbriaproms.service.PatientService;
@@ -156,6 +157,27 @@ public class ProcedureBookingResource {
             return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
         } else {
             throw new BadRequestAlertException("No patient with matching id exists", ENTITY_NAME, "notfound");
+        }
+    }
+
+    /**
+     * GET  /patient/:id/primaryProcedure/:procedureCode/followup-plan : get the followup plan for patient with given id for given primary procedure code.
+     *
+     * @param patientId the id of the patient to retrieve procedureBooking for
+     * @param procedureCode the code of the primary procedure
+     * @return the ResponseEntity with status 200 (OK) and with body the followupPlan, or with status 404 (Not Found)
+     */
+    @GetMapping("/patient/{patientId}/primaryProcedure/{procedureCode}/followup-plan")
+    @Timed
+    public ResponseEntity<FollowupPlan> getByPatientIdAndPrimaryProcedure(@PathVariable Long patientId, @PathVariable String procedureCode) {
+        log.debug("Request to get Followup Plan with patientId {} and primary procedure : {}", patientId, procedureCode);
+        Optional<FollowupPlan> followupPlan = procedureBookingService.findOneByPatientIdAndPrimaryProcedure(patientId, procedureCode);
+        if(followupPlan.isPresent()) {
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("followupPlan", followupPlan.get().getId().toString()))
+                .body(followupPlan.get());
+        } else {
+            throw new BadRequestAlertException("No followup plan matching criteria exists", "followupPlan", "notfound");
         }
     }
 

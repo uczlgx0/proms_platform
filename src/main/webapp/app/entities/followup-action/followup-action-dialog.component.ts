@@ -11,6 +11,7 @@ import { FollowupActionPopupService } from './followup-action-popup.service';
 import { FollowupActionService } from './followup-action.service';
 import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { Patient, PatientService } from '../patient';
+import { ProcedureBooking, ProcedureBookingService } from '../procedure-booking';
 import { Questionnaire, QuestionnaireService } from '../questionnaire';
 import { ResponseWrapper } from '../../shared';
 import {IOption} from 'ng-select';
@@ -26,6 +27,7 @@ export class FollowupActionDialogComponent implements OnInit {
     patientId: string;
     questionnaireId: string;
     followupplans: FollowupPlan[];
+    procedureBookings: any;
 
     patients: Patient[];
 
@@ -37,6 +39,7 @@ export class FollowupActionDialogComponent implements OnInit {
         private followupActionService: FollowupActionService,
         private followupPlanService: FollowupPlanService,
         private patientService: PatientService,
+        private procedureBookingService: ProcedureBookingService,
         private questionnaireService: QuestionnaireService,
         private eventManager: JhiEventManager
     ) {
@@ -103,6 +106,14 @@ export class FollowupActionDialogComponent implements OnInit {
             this.followupAction.patient = new Patient();
         }
         this.followupAction.patient.id = parseInt(option.value);
+
+        // now get procedure bookings for patient
+        this.procedureBookingService.findByPatientId(this.followupAction.patient.id,  {
+            page: 0,
+            size: 50,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onBookingsSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json))
     }
 
     onQuestionnaireSelected(option: IOption) {
@@ -112,6 +123,14 @@ export class FollowupActionDialogComponent implements OnInit {
         this.followupAction.questionnaire.id = parseInt(option.value);
         this.followupAction.name = option.label;
         this.followupAction.type = ActionType['QUESTIONNAIRE'];
+    }
+
+    private onBookingsSuccess(data, headers) {
+        this.procedureBookings = data;
+    }
+
+    private sort() {
+        return ['id,asc'];
     }
 }
 

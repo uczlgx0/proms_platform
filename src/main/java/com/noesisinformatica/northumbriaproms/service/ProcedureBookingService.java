@@ -1,9 +1,12 @@
 package com.noesisinformatica.northumbriaproms.service;
 
+import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing ProcedureBooking.
@@ -33,6 +36,15 @@ public interface ProcedureBookingService {
      * @return the entity
      */
     ProcedureBooking findOne(Long id);
+
+    /**
+     * Get one Followup plan by patient id and primary procedure.
+     *
+     * @param procedureCode the primary procedure code
+     * @param id the id of the patient
+     * @return the plan entity associated with matching procedure booking
+     */
+    Optional<FollowupPlan> findOneByPatientIdAndPrimaryProcedure(Long id, String procedureCode);
 
     /**
      * Get all procedureBookings by patient.
