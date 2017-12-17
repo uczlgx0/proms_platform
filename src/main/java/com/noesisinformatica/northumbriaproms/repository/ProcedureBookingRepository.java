@@ -22,7 +22,7 @@ public interface ProcedureBookingRepository extends JpaRepository<ProcedureBooki
 
     Page<ProcedureBooking> findAllByPatient(Patient patient, Pageable pageable);
 
-    @Query("select procedurebooking.followupPlan from ProcedureBooking procedurebooking where procedurebooking.primaryProcedure = :code and procedurebooking.patient.id = : patientId")
+    @Query("select procedurebooking.followupPlan from ProcedureBooking procedurebooking where procedurebooking.primaryProcedure = :code and procedurebooking.patient.id = :patientId")
     Optional<FollowupPlan> findOneByPatientIdAndPrimaryProcedure(@Param("patientId") Long patientId, @Param("code") String primaryProcedureCode);
 
 }
