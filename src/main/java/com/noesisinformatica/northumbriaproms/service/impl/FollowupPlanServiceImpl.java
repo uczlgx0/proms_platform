@@ -5,7 +5,9 @@ import com.noesisinformatica.northumbriaproms.domain.*;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import com.noesisinformatica.northumbriaproms.repository.FollowupPlanRepository;
+import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupPlanSearchRepository;
+import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupPlanService;
 import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
 import org.slf4j.Logger;
@@ -35,14 +37,19 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
     private final Logger log = LoggerFactory.getLogger(FollowupPlanServiceImpl.class);
 
     private final FollowupPlanRepository followupPlanRepository;
-
+    private final ProcedureBookingRepository procedureBookingRepository;
+    private final ProcedureBookingSearchRepository procedureBookingSearchRepository;
     private final FollowupPlanSearchRepository followupPlanSearchRepository;
     private final ProcedurelinkService procedurelinkService;
 
     public FollowupPlanServiceImpl(FollowupPlanRepository followupPlanRepository,
+                                   ProcedureBookingRepository procedureBookingRepository,
+                                   ProcedureBookingSearchRepository procedureBookingSearchRepository,
                                    FollowupPlanSearchRepository followupPlanSearchRepository,
                                    ProcedurelinkService procedurelinkService) {
         this.followupPlanRepository = followupPlanRepository;
+        this.procedureBookingRepository = procedureBookingRepository;
+        this.procedureBookingSearchRepository = procedureBookingSearchRepository;
         this.followupPlanSearchRepository = followupPlanSearchRepository;
         this.procedurelinkService = procedurelinkService;
     }
@@ -70,7 +77,7 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
             action.name(questionnaire.getName())
                 .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.PRE_OPERATIVE)
                 .patient(patient);
-            if("OUTCOME".equalsIgnoreCase(questionnaire.getName())) {
+            if ("OUTCOME".equalsIgnoreCase(questionnaire.getName())) {
                 action.setPhase(ActionPhase.POST_OPERATIVE);
             }
             // add action to plan
@@ -91,6 +98,11 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
         log.debug("Request to save FollowupPlan : {}", followupPlan);
         FollowupPlan result = followupPlanRepository.save(followupPlan);
         followupPlanSearchRepository.save(result);
+        // now update procedure booking with plan
+        ProcedureBooking booking = result.getProcedureBooking();
+        booking.setFollowupPlan(followupPlan);
+        procedureBookingRepository.save(booking);
+        procedureBookingSearchRepository.save(booking);
         return result;
     }
 
