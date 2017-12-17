@@ -8,6 +8,7 @@ import {
     FollowupActionService,
     FollowupActionPopupService,
     FollowupActionComponent,
+    FollowupOutcomesComponent,
     FollowupActionDetailComponent,
     FollowupActionDialogComponent,
     FollowupActionPopupComponent,
@@ -31,6 +32,7 @@ const ENTITY_STATES = [
     ],
     declarations: [
         FollowupActionComponent,
+        FollowupOutcomesComponent,
         FollowupActionDetailComponent,
         FollowupActionDialogComponent,
         FollowupActionDeleteDialogComponent,
@@ -39,6 +41,7 @@ const ENTITY_STATES = [
     ],
     entryComponents: [
         FollowupActionComponent,
+        FollowupOutcomesComponent,
         FollowupActionDialogComponent,
         FollowupActionPopupComponent,
         FollowupActionDeleteDialogComponent,

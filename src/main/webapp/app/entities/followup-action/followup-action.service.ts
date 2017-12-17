@@ -58,8 +58,8 @@ export class FollowupActionService {
 
     search(req?: any): Observable<ResponseWrapper> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-            .map((res: any) => this.convertResponse(res));
+        return this.http.post(this.resourceSearchUrl, req.query, options)
+            .map((res: any) => this.convertSearchResponse(res));
     }
 
     private convertResponse(res: Response): ResponseWrapper {
@@ -69,6 +69,20 @@ export class FollowupActionService {
             result.push(this.convertItemFromServer(jsonResponse[i]));
         }
         return new ResponseWrapper(res.headers, result, res.status);
+    }
+
+    private convertSearchResponse(res: Response): ResponseWrapper {
+        console.log("res  = " , res );
+        const jsonResponse = res.json();
+        let items = [];
+        if (jsonResponse.results !== undefined) {
+            items = jsonResponse.results;
+        }
+        const result = [];
+        for (let i = 0; i < items.length; i++) {
+            result.push(this.convertItemFromServer(items[i]));
+        }
+        return new ResponseWrapper(res.headers, {results: result, categories: jsonResponse.categories}, res.status);
     }
 
     /**

@@ -5,6 +5,7 @@ import { UserRouteAccessService } from '../../shared';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { FollowupActionComponent } from './followup-action.component';
+import { FollowupOutcomesComponent } from './followup-outcomes.component';
 import { FollowupActionDetailComponent } from './followup-action-detail.component';
 import { FollowupActionPopupComponent } from './followup-action-dialog.component';
 import { FollowupActionDeletePopupComponent } from './followup-action-delete-dialog.component';
@@ -35,6 +36,18 @@ export const followupActionRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'FollowupActions'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'followup-outcomes',
+        component: FollowupOutcomesComponent,
+        resolve: {
+            'pagingParams': FollowupActionResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Followup Outcomes'
         },
         canActivate: [UserRouteAccessService]
     }, {
