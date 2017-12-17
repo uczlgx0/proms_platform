@@ -54,7 +54,7 @@ export class ProcedureBookingDeletePopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.routeSub = this.route.params.subscribe((params) => {
             this.procedureBookingPopupService
-                .open(ProcedureBookingDeleteDialogComponent as Component, params['id']);
+                .open(ProcedureBookingDeleteDialogComponent as Component, params['id'], false);
         });
     }
 

@@ -51,9 +51,20 @@
                 <div *ngIf="followupAction?.patient?.id" class="form-group row">
                     <label class="col-sm-2 col-form-label" for="field_questionnaire">Procedure</label>
                     <div class="col-sm-10">
-                        <div class="table-responsive" *ngIf="procedureBookings && procedureBookings.length > 0">
-                            <h6>Procedure Bookings</h6>
-                            <table class="table table-striped">
+                        <div class="table-responsive">
+                            <h6>
+                                Select existing Procedure Bookings
+                                <!--<a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"-->
+                                   <!--replaceUrl="true">New</a>-->
+                                <!--<a class="btn btn-primary btn-sm" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ followupAction?.patient?.id + '/edit'} }]"-->
+                                   <!--replaceUrl="true">Edit</a>-->
+                                <a class="btn btn-outline-success float-right jh-create-entity create-procedure-booking btn-sm mb-2" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ followupAction?.patient?.id + '/create'} }]"
+                                   replaceUrl="true">New Procedure Booking</a>
+                                <!--<a class="btn btn-outline-success float-right jh-create-entity create-procedure-booking btn-sm mb-2"-->
+                                   <!--[routerLink]="['/', { outlets: { popup: ['procedure-booking/' + followupAction?.patient?.id + '/edit2'] } }]"-->
+                                    <!--replaceUrl="true">New Procedure Booking</a>-->
+                            </h6>
+                            <table *ngIf="procedureBookings && procedureBookings.length > 0" class="table table-striped">
                                 <thead>
                                 <tr>
                                     <th><span>Consultant Name</span></th>
@@ -82,8 +93,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        <a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"
-                           replaceUrl="true">New</a>
                     </div>
                     <div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">
                         <small class="form-text text-danger"

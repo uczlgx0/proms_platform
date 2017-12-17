@@ -1,13 +1,14 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myProcedureBookingLabel">Create or edit a Procedure Booking</h4>
+        <h4 *ngIf="hidePatients" class="modal-title" id="myProcedureBookingLabel">Edit Procedure Booking</h4>
+        <h4 *ngIf="!hidePatients" class="modal-title" id="myProcedureBookingLabel">Create a Procedure Booking</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group row">
+        <div *ngIf="!hidePatients" class="form-group row">
             <label class="col-sm-2 col-form-label" for="field_patient">Patient</label>
             <div class="col-sm-10">
                 <ng-select class="form-control" name="patient" id="field_patient"

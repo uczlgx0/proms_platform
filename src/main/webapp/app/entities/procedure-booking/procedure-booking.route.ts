@@ -60,6 +60,16 @@ export const procedureBookingPopupRoute: Routes = [
         outlet: 'popup'
     },
     {
+        path: 'procedure-booking/:patientId/create',
+        component: ProcedureBookingPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'ProcedureBookings'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
         path: 'procedure-booking/:id/edit',
         component: ProcedureBookingPopupComponent,
         data: {

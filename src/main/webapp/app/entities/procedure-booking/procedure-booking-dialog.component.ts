@@ -26,6 +26,7 @@ import {IOption} from 'ng-select';
 export class ProcedureBookingDialogComponent implements OnInit {
 
     procedureBooking: ProcedureBooking;
+    hidePatients: boolean;
     isSaving: boolean;
     patientId: string;
 
@@ -148,12 +149,17 @@ export class ProcedureBookingPopupComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe((params) => {
+            console.log("params  = " , params );
             if ( params['id'] ) {
                 this.procedureBookingPopupService
-                    .open(ProcedureBookingDialogComponent as Component, params['id']);
+                    .open(ProcedureBookingDialogComponent as Component, params['id'], false);
+            }
+            else if ( params['patientId'] ) {
+                this.procedureBookingPopupService
+                    .open(ProcedureBookingDialogComponent as Component, params['patientId'], true);
             } else {
                 this.procedureBookingPopupService
-                    .open(ProcedureBookingDialogComponent as Component);
+                    .open(ProcedureBookingDialogComponent as Component, null, true);
             }
         });
     }
