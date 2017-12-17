@@ -1,8 +1,10 @@
 package com.noesisinformatica.northumbriaproms.service;
 
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
+import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.FacetedPage;
 
 /**
  * Service Interface for managing FollowupAction.
@@ -41,12 +43,19 @@ public interface FollowupActionService {
     void delete(Long id);
 
     /**
+     * Return all followup actions with all categories.
+     *
+     *  @return the page of followup actions
+     */
+    FacetedPage<FollowupAction> findAllWithCategories(Pageable pageable);
+
+    /**
      * Search for the followupAction corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<FollowupAction> search(String query, Pageable pageable);
+    FacetedPage<FollowupAction> search(QueryModel query, Pageable pageable);
 }

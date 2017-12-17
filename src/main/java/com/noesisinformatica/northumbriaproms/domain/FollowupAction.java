@@ -63,6 +63,9 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
     @NotNull
     private Patient patient;
 
+    @Transient
+    private ProcedureBooking booking;
+
     @ManyToOne
     private Questionnaire questionnaire;
 

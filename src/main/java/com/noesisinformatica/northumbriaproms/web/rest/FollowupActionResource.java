@@ -8,12 +8,16 @@ import com.noesisinformatica.northumbriaproms.service.dto.FollowupActionCriteria
 import com.noesisinformatica.northumbriaproms.web.rest.errors.BadRequestAlertException;
 import com.noesisinformatica.northumbriaproms.web.rest.util.HeaderUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.PaginationUtil;
+import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.FacetedPage;
+import org.springframework.data.elasticsearch.core.facet.result.Term;
+import org.springframework.data.elasticsearch.core.facet.result.TermResult;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * REST controller for managing FollowupAction.
@@ -158,13 +161,56 @@ public class FollowupActionResource {
      * @param pageable the pagination information
      * @return the result of the search
      */
-    @GetMapping("/_search/followup-actions")
+    @PostMapping("/_search/followup-actions")
     @Timed
-    public ResponseEntity<List<FollowupAction>> searchFollowupActions(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<Map<String, Object>> searchFollowupActions(@RequestBody QueryModel query, Pageable pageable) {
         log.debug("REST request to search for a page of FollowupActions for query {}", query);
-        Page<FollowupAction> page = followupActionService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/followup-actions");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        FacetedPage<FollowupAction> page = followupActionService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query.toString(), page, "/api/_search/followup-actions");
+        // wrap results page in a response entity with faceted results turned into a map
+        return new ResponseEntity<>(getResultMapMapForResults(page), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Utility private method for transforming a {@link FacetedPage} into a {@link Map} object with results
+     * and categories.
+     * @param page the page of results
+     * @return results as a Map
+     */
+    private Map<String, Object> getResultMapMapForResults(FacetedPage<FollowupAction> page) {
+
+        Set<String> items = new HashSet<>();
+        items.add("types");
+        items.add("procedures");
+        items.add("phases");
+        items.add("locations");
+        items.add("genders");
+        items.add("consultants");
+        Map<String, Set<Map<String, Object>>> facetsMap = new HashMap<>();
+        for (String key : items) {
+            log.info("Processed facet key : {}", key);
+            // get search categories via facets
+            Set<Map<String, Object>> mapSet = new HashSet<>();
+            TermResult pageFacet = (TermResult) page.getFacet(key);
+
+            if (pageFacet != null) {
+                for (Term bucket : pageFacet.getTerms()) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("type", bucket.getTerm());
+                    map.put("count", bucket.getCount());
+                    mapSet.add(map);
+                }
+            }
+
+            // add to facets map
+            facetsMap.put(key, mapSet);
+        }
+        log.debug("facetsMap {}", facetsMap);
+        Map<String, Object> resultsMap = new HashMap<>();
+        resultsMap.put("results", page.getContent());
+        resultsMap.put("categories", facetsMap);
+
+        return resultsMap;
     }
 
 }

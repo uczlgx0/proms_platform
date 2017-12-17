@@ -1,19 +1,10 @@
 package com.noesisinformatica.northumbriaproms.service.dto;
 
-import java.io.Serializable;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
-import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
-import io.github.jhipster.service.filter.LongFilter;
-import io.github.jhipster.service.filter.StringFilter;
+import io.github.jhipster.service.filter.*;
 
-import io.github.jhipster.service.filter.InstantFilter;
-
-import io.github.jhipster.service.filter.ZonedDateTimeFilter;
+import java.io.Serializable;
 
 
 /**
@@ -61,6 +52,12 @@ public class FollowupActionCriteria implements Serializable {
     private LongFilter patientId;
 
     private LongFilter questionnaireId;
+
+    private StringFilter consultantName;
+
+    private StringFilter hospitalSite;
+
+    private StringFilter primaryProcedure;
 
     public FollowupActionCriteria() {
     }
@@ -153,6 +150,30 @@ public class FollowupActionCriteria implements Serializable {
         this.questionnaireId = questionnaireId;
     }
 
+    public StringFilter getConsultantName() {
+        return consultantName;
+    }
+
+    public void setConsultantName(StringFilter consultantName) {
+        this.consultantName = consultantName;
+    }
+
+    public StringFilter getHospitalSite() {
+        return hospitalSite;
+    }
+
+    public void setHospitalSite(StringFilter hospitalSite) {
+        this.hospitalSite = hospitalSite;
+    }
+
+    public StringFilter getPrimaryProcedure() {
+        return primaryProcedure;
+    }
+
+    public void setPrimaryProcedure(StringFilter primaryProcedure) {
+        this.primaryProcedure = primaryProcedure;
+    }
+
     @Override
     public String toString() {
         return "FollowupActionCriteria{" +
@@ -167,6 +188,9 @@ public class FollowupActionCriteria implements Serializable {
                 (followupPlanId != null ? "followupPlanId=" + followupPlanId + ", " : "") +
                 (patientId != null ? "patientId=" + patientId + ", " : "") +
                 (questionnaireId != null ? "questionnaireId=" + questionnaireId + ", " : "") +
+                (consultantName != null ? "consultantName=" + consultantName + ", " : "") +
+                (hospitalSite != null ? "hospitalSite=" + hospitalSite + ", " : "") +
+                (primaryProcedure != null ? "primaryProcedure=" + primaryProcedure + ", " : "") +
             "}";
     }
 
