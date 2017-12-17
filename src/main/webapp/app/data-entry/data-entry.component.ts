@@ -1,0 +1,169 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { JhiEventManager, JhiAlertService, JhiParseLinks } from 'ng-jhipster';
+import { Router } from '@angular/router';
+import * as _ from 'underscore';
+
+import { Account, LoginModalService, Principal, ResponseWrapper } from '../shared';
+
+import { ActivatedRoute } from '@angular/router';
+import { Response } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+
+import { FollowupAction, ActionType, FollowupActionService } from '../entities/followup-action';
+import { FollowupPlan, FollowupPlanService } from '../entities/followup-plan';
+import { Patient, PatientService } from '../entities/patient';
+import { ProcedureBooking, ProcedureBookingService } from '../entities/procedure-booking';
+import { Questionnaire, QuestionnaireService } from '../entities/questionnaire';
+import {IOption} from 'ng-select';
+import { MoxfqComponent } from '../forms/moxfq.component';
+import { PainvasComponent } from '../forms/painvas.component';
+
+@Component({
+    selector: 'data-entry-home',
+    templateUrl: './data-entry.component.html',
+    styleUrls: [
+        'data-entry.css'
+    ]
+
+})
+export class DataEntryComponent implements OnInit {
+
+    formHeight: string = '400px';
+    followupAction: FollowupAction;
+    isSaving: boolean;
+    patientId: string;
+    questionnaireId: string;
+    followupplans: FollowupPlan[];
+    procedureBookings: any;
+    selectedProcedureBooking: ProcedureBooking;
+    selectedFollowupPlan: FollowupPlan;
+    bookingLinks: any;
+    bookingTotalItems: any;
+    bookingQueryCount: any;
+    patients: Patient[];
+    questionnaires: Questionnaire[];
+
+    constructor(
+        private jhiAlertService: JhiAlertService,
+        private parseLinks: JhiParseLinks,
+        private followupActionService: FollowupActionService,
+        private followupPlanService: FollowupPlanService,
+        private patientService: PatientService,
+        private procedureBookingService: ProcedureBookingService,
+        private questionnaireService: QuestionnaireService,
+        private eventManager: JhiEventManager
+    ) {
+        this.followupAction = new FollowupAction();
+    }
+
+    ngOnInit() {
+        this.isSaving = false;
+        this.followupPlanService.query()
+            .subscribe((res: ResponseWrapper) => { this.followupplans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.patientService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.questionnaireService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+    }
+
+    save() {
+        this.isSaving = true;
+        if (this.followupAction.id !== undefined) {
+            this.subscribeToSaveResponse(
+                this.followupActionService.update(this.followupAction));
+        } else {
+            this.subscribeToSaveResponse(
+                this.followupActionService.create(this.followupAction));
+        }
+    }
+
+    private subscribeToSaveResponse(result: Observable<FollowupAction>) {
+        result.subscribe((res: FollowupAction) =>
+            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    }
+
+    private onSaveSuccess(result: FollowupAction) {
+        this.eventManager.broadcast({ name: 'followupActionListModification', content: 'OK'});
+        this.isSaving = false;
+    }
+
+    private onSaveError() {
+        this.isSaving = false;
+    }
+
+    private onError(error: any) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
+
+    trackFollowupPlanById(index: number, item: FollowupPlan) {
+        return item.id;
+    }
+
+    trackPatientById(index: number, item: Patient) {
+        return item.id;
+    }
+
+    trackQuestionnaireById(index: number, item: Questionnaire) {
+        return item.id;
+    }
+
+    onPatientSelected(option: IOption) {
+        // rest existing values
+        this.resetValues();
+        // now set patient id
+        if(!this.followupAction.patient) {
+            this.followupAction.patient = new Patient();
+        }
+        this.followupAction.patient.id = parseInt(option.value);
+
+        // now get procedure bookings for patient
+        this.procedureBookingService.findByPatientId(this.followupAction.patient.id,  {
+            page: 0,
+            size: 50,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onBookingsSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json));
+        this.formHeight = '500px';
+    }
+
+    onQuestionnaireSelected(option: IOption) {
+        if(!this.followupAction.questionnaire) {
+            this.followupAction.questionnaire = new Questionnaire();
+        }
+        this.followupAction.questionnaire.id = parseInt(option.value);
+        this.followupAction.name = option.label;
+        this.followupAction.type = ActionType['QUESTIONNAIRE'];
+    }
+
+    onBookingSelected(booking: ProcedureBooking) {
+        this.selectedProcedureBooking = booking;
+        this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
+        console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
+        this.followupAction.followupPlan = this.selectedFollowupPlan;
+        // get questionnaires for procedure in booking
+        this.questionnaireService.questinnairesForProcedureLocalCode(booking.primaryProcedure).subscribe(
+            (res: ResponseWrapper) => this.questionnaires = res.json,
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
+        // update form height
+        this.formHeight = '750px';
+    }
+
+    private onBookingsSuccess(data, headers) {
+        this.bookingLinks = this.parseLinks.parse(headers.get('link'));
+        this.bookingTotalItems = headers.get('X-Total-Count');
+        this.bookingQueryCount = this.bookingTotalItems;
+        this.procedureBookings = data;
+    }
+
+    private sort() {
+        return ['id,asc'];
+    }
+
+    private resetValues() {
+        this.selectedProcedureBooking = null;
+        this.selectedFollowupPlan = null;
+        this.followupAction = new FollowupAction();
+    }
+}

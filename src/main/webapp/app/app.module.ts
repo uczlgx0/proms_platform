@@ -8,6 +8,7 @@ import { NorthumbriapromsSharedModule, UserRouteAccessService } from './shared';
 import { NorthumbriapromsAppRoutingModule} from './app-routing.module';
 import { NorthumbriapromsHomeModule } from './home/home.module';
 import { NorthumbriapromsStartModule } from './start/start.module';
+import { NorthumbriapromsDataEntryModule } from './data-entry/data-entry.module';
 import { NorthumbriapromsAdminModule } from './admin/admin.module';
 import { NorthumbriapromsAccountModule } from './account/account.module';
 import { NorthumbriapromsEntityModule } from './entities/entity.module';
@@ -34,6 +35,7 @@ import {
         NorthumbriapromsSharedModule,
         NorthumbriapromsHomeModule,
         NorthumbriapromsStartModule,
+        NorthumbriapromsDataEntryModule,
         NorthumbriapromsAdminModule,
         NorthumbriapromsAccountModule,
         NorthumbriapromsEntityModule,
