@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
@@ -27,9 +28,10 @@ import { PainvasComponent } from '../forms/painvas.component';
     ]
 
 })
-export class DataEntryComponent implements OnInit {
+export class DataEntryComponent implements OnInit, OnDestroy {
 
     formHeight: string = '400px';
+    eventSubscriber: Subscription;
     followupAction: FollowupAction;
     isSaving: boolean;
     patientId: string;
@@ -65,6 +67,7 @@ export class DataEntryComponent implements OnInit {
             .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.questionnaireService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.registerChangeInProcedureBookings();
     }
 
     save() {
@@ -117,14 +120,8 @@ export class DataEntryComponent implements OnInit {
         }
         this.followupAction.patient.id = parseInt(option.value);
 
-        // now get procedure bookings for patient
-        this.procedureBookingService.findByPatientId(this.followupAction.patient.id,  {
-            page: 0,
-            size: 50,
-            sort: this.sort()}).subscribe(
-            (res: ResponseWrapper) => this.onBookingsSuccess(res.json, res.headers),
-            (res: ResponseWrapper) => this.onError(res.json));
-        this.formHeight = '500px';
+        // now get procedure bookings
+        this.loadBookings();
     }
 
     onQuestionnaireSelected(option: IOption) {
@@ -137,11 +134,33 @@ export class DataEntryComponent implements OnInit {
     }
 
     onBookingSelected(booking: ProcedureBooking) {
+        // first reset questionnaire related values
+        this.followupAction.questionnaire = null;
+        this.followupAction.name = null;
+        this.followupAction.type = null;
+        this.questionnaireId = null;
+
+        // now process booking and reset questionnaires
         this.selectedProcedureBooking = booking;
         this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
         console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
         this.followupAction.followupPlan = this.selectedFollowupPlan;
         // get questionnaires for procedure in booking
+        this.loadQuestionnaires(booking);
+    }
+
+    private loadBookings() {
+        // now get procedure bookings for patient
+        this.procedureBookingService.findByPatientId(this.followupAction.patient.id,  {
+            page: 0,
+            size: 50,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onBookingsSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json));
+        this.formHeight = '500px';
+    }
+
+    private loadQuestionnaires(booking: ProcedureBooking) {
         this.questionnaireService.questinnairesForProcedureLocalCode(booking.primaryProcedure).subscribe(
             (res: ResponseWrapper) => this.questionnaires = res.json,
             (res: ResponseWrapper) => this.onError(res.json)
@@ -165,5 +184,13 @@ export class DataEntryComponent implements OnInit {
         this.selectedProcedureBooking = null;
         this.selectedFollowupPlan = null;
         this.followupAction = new FollowupAction();
+    }
+
+    private registerChangeInProcedureBookings() {
+        this.eventSubscriber = this.eventManager.subscribe('procedureBookingListModification', (response) => this.loadBookings());
+    }
+
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
     }
 }
