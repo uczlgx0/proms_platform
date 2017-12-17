@@ -7,6 +7,7 @@ import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import {SelectModule} from 'ng-select';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import {SelectModule} from 'ng-select';
         }),
         InfiniteScrollModule,
         SelectModule,
+        NgxDatatableModule,
         CookieModule.forRoot()
     ],
     exports: [
@@ -26,7 +28,8 @@ import {SelectModule} from 'ng-select';
         NgbModule,
         NgJhipsterModule,
         InfiniteScrollModule,
-        SelectModule
+        SelectModule,
+        NgxDatatableModule
     ]
 })
 export class NorthumbriapromsSharedLibsModule {}
