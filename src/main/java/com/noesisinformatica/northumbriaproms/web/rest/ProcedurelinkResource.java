@@ -2,6 +2,7 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.noesisinformatica.northumbriaproms.domain.Procedurelink;
+import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
 import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
 import com.noesisinformatica.northumbriaproms.web.rest.errors.BadRequestAlertException;
 import com.noesisinformatica.northumbriaproms.web.rest.util.HeaderUtil;
@@ -19,12 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Procedurelink.
@@ -98,6 +95,20 @@ public class ProcedurelinkResource {
         Page<Procedurelink> page = procedurelinkService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/procedurelinks");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /procedures/:id/questionnaires : get questionnaires for procedure with localCode "id".
+     *
+     * @param id the localCode of the procedure to retrieve questionnaires for
+     * @return the ResponseEntity with status 200 (OK) and with body as list of questionnaires, or with status 404 (Not Found)
+     */
+    @GetMapping("/procedures/{id}/questionnaires")
+    @Timed
+    public ResponseEntity<List<Questionnaire>> getQuestionnairesForProcedure(@PathVariable Integer id) {
+        log.debug("REST request to get questionnaires for Procedure : {}", id);
+        List<Questionnaire> list = procedurelinkService.findAllQuestionnairesByProcedureLocalCode(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(list));
     }
 
     /**

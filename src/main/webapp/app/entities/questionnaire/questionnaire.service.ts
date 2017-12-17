@@ -10,6 +10,7 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 export class QuestionnaireService {
 
     private resourceUrl = SERVER_API_URL + 'api/questionnaires';
+    private procedureResourceUrl = SERVER_API_URL + 'api/procedures';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/questionnaires';
 
     constructor(private http: Http) { }
@@ -41,6 +42,11 @@ export class QuestionnaireService {
         const options = createRequestOption(req);
         return this.http.get(this.resourceUrl, options)
             .map((res: Response) => this.convertResponse(res));
+    }
+
+    questinnairesForProcedureLocalCode(id: any): Observable<ResponseWrapper> {
+        return this.http.get(this.procedureResourceUrl + `/${id}/questionnaires`)
+            .map((res: Response) => this.convertToSelectOption(res));
     }
 
     allAsSelectOptions(req?: any): Observable<ResponseWrapper> {
