@@ -1,5 +1,6 @@
 import { BaseEntity } from './../../shared';
 import { ResponseItem } from './response-item.model';
+import { FollowupPlan } from '../followup-plan/followup-plan.model';
 
 export const enum ActionPhase {
     'PRE_OPERATIVE',
@@ -22,7 +23,7 @@ export class FollowupAction implements BaseEntity {
         public outcomeScore?: number,
         public outcomeComment?: string,
         public completedDate?: any,
-        public followupPlan?: BaseEntity,
+        public followupPlan?: FollowupPlan,
         public patient?: BaseEntity,
         public questionnaire?: BaseEntity,
         public responseItems?: ResponseItem[],

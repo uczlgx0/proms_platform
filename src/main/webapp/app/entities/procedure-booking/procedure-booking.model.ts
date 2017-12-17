@@ -1,5 +1,6 @@
 import { BaseEntity } from './../../shared';
 import { Patient } from '../patient/patient.model';
+import { FollowupPlan } from '../followup-plan/followup-plan.model';
 
 export class ProcedureBooking implements BaseEntity {
     constructor(
@@ -11,7 +12,7 @@ export class ProcedureBooking implements BaseEntity {
         public primaryProcedure?: string,
         public otherProcedures?: string,
         public patient?: Patient,
-        public followupPlan?: BaseEntity,
+        public followupPlan?: FollowupPlan,
     ) {
         this.patient = new Patient();
     }
