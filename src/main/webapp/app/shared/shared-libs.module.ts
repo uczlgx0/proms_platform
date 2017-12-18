@@ -8,7 +8,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import {SelectModule} from 'ng-select';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import {DataTableModule} from "angular2-datatable";
 
 @NgModule({
     imports: [
@@ -20,7 +19,6 @@ import {DataTableModule} from "angular2-datatable";
         InfiniteScrollModule,
         SelectModule,
         NgxDatatableModule,
-        DataTableModule,
         CookieModule.forRoot()
     ],
     exports: [
@@ -31,7 +29,6 @@ import {DataTableModule} from "angular2-datatable";
         NgJhipsterModule,
         InfiniteScrollModule,
         SelectModule,
-        DataTableModule,
         NgxDatatableModule
     ]
 })
