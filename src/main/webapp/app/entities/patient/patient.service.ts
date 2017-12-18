@@ -101,7 +101,7 @@ export class PatientService {
     private convert(patient: Patient): Patient {
         const copy: Patient = Object.assign({}, patient);
         copy.birthDate = this.dateUtils
-            .convertLocalDateToServer(patient.birthDate);
+            .convertLocalDateToServer(patient.birthDate.date);
         return copy;
     }
 }

@@ -9,6 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Patient } from './patient.model';
 import { PatientPopupService } from './patient-popup.service';
 import { PatientService } from './patient.service';
+import {IMyDpOptions} from 'mydatepicker';
 
 @Component({
     selector: 'jhi-patient-dialog',
@@ -18,7 +19,10 @@ export class PatientDialogComponent implements OnInit {
 
     patient: Patient;
     isSaving: boolean;
-    birthDateDp: any;
+    public datePickerOptions: IMyDpOptions = {
+        dateFormat: 'dd/mm/yyyy',
+        minYear: 1850
+    };
 
     constructor(
         public activeModal: NgbActiveModal,
