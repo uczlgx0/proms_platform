@@ -53,8 +53,8 @@
                             <!--<a [routerLink]="['../patient', procedureBooking.patient?.id ]" >{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>-->
                         <!--</div>-->
                     <!--</td>-->
-                    <td>{{procedureBooking.scheduledDate | date:'medium'}}</td>
-                    <td>{{procedureBooking.performedDate | date:'medium'}}</td>
+                    <td>{{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</td>
+                    <td>{{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</td>
                     <td>{{procedureBooking.primaryProcedure}}</td>
                     <!--<td>{{procedureBooking.otherProcedures}}</td>-->
                     <td class="text-right">
@@ -100,8 +100,8 @@
                     <ul class="list-group list-group-flush borderless">
                         <li class="list-group-item">Consultant Name: {{procedureBooking.consultantName}}</li>
                         <li class="list-group-item">{{procedureBooking.hospitalSite}}</li>
-                        <li class="list-group-item">Scheduled Date: {{procedureBooking.scheduledDate | date:'medium'}}</li>
-                        <li class="list-group-item">Performed Date: {{procedureBooking.performedDate | date:'medium'}}</li>
+                        <li class="list-group-item">Scheduled Date: {{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</li>
+                        <li *ngIf="procedureBooking.performedDate" class="list-group-item">Performed Date: {{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</li>
                     </ul>
                     <div class="card-footer bg-light">
                         <a class="btn btn-outline-info btn-xs" [routerLink]="['../procedure-booking', procedureBooking.id ]">Details</a>

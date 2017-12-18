@@ -1,17 +1,11 @@
 package com.noesisinformatica.northumbriaproms.service.dto;
 
-import java.io.Serializable;
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
-import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 
-
-
-import io.github.jhipster.service.filter.ZonedDateTimeFilter;
+import java.io.Serializable;
 
 
 /**
@@ -32,9 +26,9 @@ public class ProcedureBookingCriteria implements Serializable {
 
     private StringFilter hospitalSite;
 
-    private ZonedDateTimeFilter scheduledDate;
+    private LocalDateFilter scheduledDate;
 
-    private ZonedDateTimeFilter performedDate;
+    private LocalDateFilter performedDate;
 
     private StringFilter primaryProcedure;
 
@@ -71,19 +65,19 @@ public class ProcedureBookingCriteria implements Serializable {
         this.hospitalSite = hospitalSite;
     }
 
-    public ZonedDateTimeFilter getScheduledDate() {
+    public LocalDateFilter getScheduledDate() {
         return scheduledDate;
     }
 
-    public void setScheduledDate(ZonedDateTimeFilter scheduledDate) {
+    public void setScheduledDate(LocalDateFilter scheduledDate) {
         this.scheduledDate = scheduledDate;
     }
 
-    public ZonedDateTimeFilter getPerformedDate() {
+    public LocalDateFilter getPerformedDate() {
         return performedDate;
     }
 
-    public void setPerformedDate(ZonedDateTimeFilter performedDate) {
+    public void setPerformedDate(LocalDateFilter performedDate) {
         this.performedDate = performedDate;
     }
 

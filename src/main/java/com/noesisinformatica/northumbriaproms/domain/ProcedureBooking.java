@@ -5,9 +5,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 
@@ -35,10 +35,10 @@ public class ProcedureBooking implements Serializable {
     private String hospitalSite;
 
     @Column(name = "scheduled_date")
-    private ZonedDateTime scheduledDate;
+    private LocalDate scheduledDate;
 
     @Column(name = "performed_date")
-    private ZonedDateTime performedDate;
+    private LocalDate performedDate;
 
     @NotNull
     @Column(name = "primary_procedure", nullable = false)
@@ -90,29 +90,29 @@ public class ProcedureBooking implements Serializable {
         this.hospitalSite = hospitalSite;
     }
 
-    public ZonedDateTime getScheduledDate() {
+    public LocalDate getScheduledDate() {
         return scheduledDate;
     }
 
-    public ProcedureBooking scheduledDate(ZonedDateTime scheduledDate) {
+    public ProcedureBooking scheduledDate(LocalDate scheduledDate) {
         this.scheduledDate = scheduledDate;
         return this;
     }
 
-    public void setScheduledDate(ZonedDateTime scheduledDate) {
+    public void setScheduledDate(LocalDate scheduledDate) {
         this.scheduledDate = scheduledDate;
     }
 
-    public ZonedDateTime getPerformedDate() {
+    public LocalDate getPerformedDate() {
         return performedDate;
     }
 
-    public ProcedureBooking performedDate(ZonedDateTime performedDate) {
+    public ProcedureBooking performedDate(LocalDate performedDate) {
         this.performedDate = performedDate;
         return this;
     }
 
-    public void setPerformedDate(ZonedDateTime performedDate) {
+    public void setPerformedDate(LocalDate performedDate) {
         this.performedDate = performedDate;
     }
 

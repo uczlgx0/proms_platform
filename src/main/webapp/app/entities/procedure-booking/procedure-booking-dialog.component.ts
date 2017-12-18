@@ -18,6 +18,7 @@ import { Patient, PatientService } from '../patient';
 import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { ResponseWrapper } from '../../shared';
 import {IOption} from 'ng-select';
+import {IMyDpOptions} from 'mydatepicker';
 
 @Component({
     selector: 'jhi-procedure-booking-dialog',
@@ -29,6 +30,10 @@ export class ProcedureBookingDialogComponent implements OnInit {
     hidePatients: boolean;
     isSaving: boolean;
     patientId: string;
+    public myDatePickerOptions: IMyDpOptions = {
+        dateFormat: 'dd/mm/yyyy',
+        minYear: 1850
+    };
 
     patients: Patient[];
     consultants: Array<IOption>;

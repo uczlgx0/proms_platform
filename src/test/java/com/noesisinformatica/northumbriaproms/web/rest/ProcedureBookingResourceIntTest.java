@@ -25,14 +25,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.createFormattingConversionService;
-import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -53,11 +50,11 @@ public class ProcedureBookingResourceIntTest {
     private static final String DEFAULT_HOSPITAL_SITE = "AAAAAAAAAA";
     private static final String UPDATED_HOSPITAL_SITE = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_SCHEDULED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_SCHEDULED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_SCHEDULED_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_SCHEDULED_DATE = LocalDate.now(ZoneId.systemDefault());
 
-    private static final ZonedDateTime DEFAULT_PERFORMED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_PERFORMED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_PERFORMED_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_PERFORMED_DATE = LocalDate.now(ZoneId.systemDefault());
 
     private static final String DEFAULT_PRIMARY_PROCEDURE = "AAAAAAAAAA";
     private static final String UPDATED_PRIMARY_PROCEDURE = "BBBBBBBBBB";
@@ -249,8 +246,8 @@ public class ProcedureBookingResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(procedureBooking.getId().intValue())))
             .andExpect(jsonPath("$.[*].consultantName").value(hasItem(DEFAULT_CONSULTANT_NAME.toString())))
             .andExpect(jsonPath("$.[*].hospitalSite").value(hasItem(DEFAULT_HOSPITAL_SITE.toString())))
-            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(sameInstant(DEFAULT_SCHEDULED_DATE))))
-            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(sameInstant(DEFAULT_PERFORMED_DATE))))
+            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(DEFAULT_SCHEDULED_DATE)))
+            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(DEFAULT_PERFORMED_DATE)))
             .andExpect(jsonPath("$.[*].primaryProcedure").value(hasItem(DEFAULT_PRIMARY_PROCEDURE.toString())))
             .andExpect(jsonPath("$.[*].otherProcedures").value(hasItem(DEFAULT_OTHER_PROCEDURES.toString())));
     }
@@ -268,8 +265,8 @@ public class ProcedureBookingResourceIntTest {
             .andExpect(jsonPath("$.id").value(procedureBooking.getId().intValue()))
             .andExpect(jsonPath("$.consultantName").value(DEFAULT_CONSULTANT_NAME.toString()))
             .andExpect(jsonPath("$.hospitalSite").value(DEFAULT_HOSPITAL_SITE.toString()))
-            .andExpect(jsonPath("$.scheduledDate").value(sameInstant(DEFAULT_SCHEDULED_DATE)))
-            .andExpect(jsonPath("$.performedDate").value(sameInstant(DEFAULT_PERFORMED_DATE)))
+            .andExpect(jsonPath("$.scheduledDate").value(DEFAULT_SCHEDULED_DATE))
+            .andExpect(jsonPath("$.performedDate").value(DEFAULT_PERFORMED_DATE))
             .andExpect(jsonPath("$.primaryProcedure").value(DEFAULT_PRIMARY_PROCEDURE.toString()))
             .andExpect(jsonPath("$.otherProcedures").value(DEFAULT_OTHER_PROCEDURES.toString()));
     }
@@ -609,8 +606,8 @@ public class ProcedureBookingResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(procedureBooking.getId().intValue())))
             .andExpect(jsonPath("$.[*].consultantName").value(hasItem(DEFAULT_CONSULTANT_NAME.toString())))
             .andExpect(jsonPath("$.[*].hospitalSite").value(hasItem(DEFAULT_HOSPITAL_SITE.toString())))
-            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(sameInstant(DEFAULT_SCHEDULED_DATE))))
-            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(sameInstant(DEFAULT_PERFORMED_DATE))))
+            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(DEFAULT_SCHEDULED_DATE)))
+            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(DEFAULT_PERFORMED_DATE)))
             .andExpect(jsonPath("$.[*].primaryProcedure").value(hasItem(DEFAULT_PRIMARY_PROCEDURE.toString())))
             .andExpect(jsonPath("$.[*].otherProcedures").value(hasItem(DEFAULT_OTHER_PROCEDURES.toString())));
     }
@@ -729,8 +726,8 @@ public class ProcedureBookingResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(procedureBooking.getId().intValue())))
             .andExpect(jsonPath("$.[*].consultantName").value(hasItem(DEFAULT_CONSULTANT_NAME.toString())))
             .andExpect(jsonPath("$.[*].hospitalSite").value(hasItem(DEFAULT_HOSPITAL_SITE.toString())))
-            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(sameInstant(DEFAULT_SCHEDULED_DATE))))
-            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(sameInstant(DEFAULT_PERFORMED_DATE))))
+            .andExpect(jsonPath("$.[*].scheduledDate").value(hasItem(DEFAULT_SCHEDULED_DATE)))
+            .andExpect(jsonPath("$.[*].performedDate").value(hasItem(DEFAULT_PERFORMED_DATE)))
             .andExpect(jsonPath("$.[*].primaryProcedure").value(hasItem(DEFAULT_PRIMARY_PROCEDURE.toString())))
             .andExpect(jsonPath("$.[*].otherProcedures").value(hasItem(DEFAULT_OTHER_PROCEDURES.toString())));
     }
