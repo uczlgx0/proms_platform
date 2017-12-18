@@ -29,7 +29,7 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+            <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
             <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
             <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
@@ -46,7 +46,7 @@
             <tbody>
             <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
                 <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
-                <td>
+                <td *ngIf="!selectedPatientId">
                     <div *ngIf="followupAction.patient">
                         <a [routerLink]="['../patient', followupAction.patient?.id ]" >
                             {{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}
@@ -72,7 +72,13 @@
                 <!--</td>-->
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
+                        <button *ngIf="selectedPatientId" type="submit"
+                                [routerLink]="['../../followup-action', followupAction.id ]"
+                                class="btn btn-info btn-sm">
+                            <!--<span class="fa fa-eye"></span>-->
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button *ngIf="!selectedPatientId" type="submit"
                                 [routerLink]="['../followup-action', followupAction.id ]"
                                 class="btn btn-info btn-sm">
                             <!--<span class="fa fa-eye"></span>-->

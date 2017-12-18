@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
@@ -13,7 +13,7 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 })
 export class FollowupActionComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    currentAccount: any;
     followupActions: FollowupAction[];
     error: any;
     success: any;
@@ -28,6 +28,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    @Input() selectedPatientId;
 
     constructor(
         private followupActionService: FollowupActionService,
@@ -60,20 +61,33 @@ currentAccount: any;
                 );
             return;
         }
-        this.followupActionService.query({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
-            (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
-            (res: ResponseWrapper) => this.onError(res.json)
-        );
+        // load followup actions for patient if id is set
+        if(this.selectedPatientId) {
+            this.followupActionService.findByPatientId(this.selectedPatientId, {
+                page: this.page - 1,
+                size: this.itemsPerPage,
+                sort: this.sort()}).subscribe(
+                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+                (res: ResponseWrapper) => this.onError(res.json)
+            );
+        } else {
+            this.followupActionService.query({
+                page: this.page - 1,
+                size: this.itemsPerPage,
+                sort: this.sort()}).subscribe(
+                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+                (res: ResponseWrapper) => this.onError(res.json)
+            );
+        }
     }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
         this.router.navigate(['/followup-action'], {queryParams:
             {
@@ -95,6 +109,7 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     search(query) {
         if (!query) {
             return this.clear();
@@ -108,6 +123,7 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
         this.principal.identity().then((account) => {
@@ -123,6 +139,7 @@ currentAccount: any;
     trackId(index: number, item: FollowupAction) {
         return item.id;
     }
+
     registerChangeInFollowupActions() {
         this.eventSubscriber = this.eventManager.subscribe('followupActionListModification', (response) => this.loadAll());
     }
@@ -142,6 +159,7 @@ currentAccount: any;
         // this.page = pagingParams.page;
         this.followupActions = data;
     }
+
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);
     }

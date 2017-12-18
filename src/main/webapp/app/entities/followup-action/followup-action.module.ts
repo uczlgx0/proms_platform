@@ -47,6 +47,14 @@ const ENTITY_STATES = [
         FollowupActionDeleteDialogComponent,
         FollowupActionDeletePopupComponent,
     ],
+    exports: [
+        FollowupActionComponent,
+        FollowupOutcomesComponent,
+        FollowupActionDialogComponent,
+        FollowupActionPopupComponent,
+        FollowupActionDeleteDialogComponent,
+        FollowupActionDeletePopupComponent,
+    ],
     providers: [
         FollowupActionService,
         FollowupActionPopupService,
