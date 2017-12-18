@@ -4,6 +4,7 @@
         <p>Use patient entry to search existing patients and add data!</p>
     </div>
     <div class="col-md-9">
+        <jhi-alert></jhi-alert>
         <form name="editForm" [style.min-height]="formHeight" role="form" novalidate #editForm="ngForm">
 
             <!--<div class="modal-header">-->
@@ -12,7 +13,6 @@
                         <!--(click)="clear()">&times;</button>-->
             <!--</div>-->
             <div class="modal-body">
-                <jhi-alert-error></jhi-alert-error>
                 <!--<div class="form-group" [hidden]="!followupAction.id">-->
                 <!--<label for="id">ID</label>-->
                 <!--<input type="text" class="form-control" id="id" name="id"-->

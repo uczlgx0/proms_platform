@@ -73,31 +73,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.questionnaireService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.registerChangeInProcedureBookings();
-    }
-
-    save() {
-        this.isSaving = true;
-        if (this.followupAction.id !== undefined) {
-            this.subscribeToSaveResponse(
-                this.followupActionService.update(this.followupAction));
-        } else {
-            this.subscribeToSaveResponse(
-                this.followupActionService.create(this.followupAction));
-        }
-    }
-
-    private subscribeToSaveResponse(result: Observable<FollowupAction>) {
-        result.subscribe((res: FollowupAction) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
-    }
-
-    private onSaveSuccess(result: FollowupAction) {
-        this.eventManager.broadcast({ name: 'followupActionListModification', content: 'OK'});
-        this.isSaving = false;
-    }
-
-    private onSaveError() {
-        this.isSaving = false;
+        this.registerChangeInFollowupActions();
     }
 
     private onError(error: any) {
@@ -189,10 +165,16 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.selectedProcedureBooking = null;
         this.selectedFollowupPlan = null;
         this.followupAction = new FollowupAction();
+        // update form height
+        this.formHeight = '450px';
     }
 
     private registerChangeInProcedureBookings() {
         this.eventSubscriber = this.eventManager.subscribe('procedureBookingListModification', (response) => this.loadBookings());
+    }
+
+    private registerChangeInFollowupActions() {
+        this.eventSubscriber = this.eventManager.subscribe('followupActionListModification', (response) => this.resetValues());
     }
 
     ngOnDestroy() {

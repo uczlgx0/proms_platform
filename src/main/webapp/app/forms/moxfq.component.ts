@@ -52,7 +52,7 @@ export class MoxfqComponent implements OnInit {
     }
 
     private onSaveSuccess(result: FollowupAction) {
-        this.eventManager.broadcast({ name: 'followupActionListModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'followupActionListModification', content: result});
         this.isSaving = false;
     }
 
