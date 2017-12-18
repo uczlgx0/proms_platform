@@ -42,15 +42,44 @@
                 </small>
             </div>
         </div>
-        <div class="form-group row">
+        <div *ngIf="followupAction?.patient?.id" class="form-group row">
             <label class="col-sm-2 col-form-label" for="field_questionnaire">Procedure</label>
             <div class="col-sm-10">
-                <ng-select class="form-control" name="questionnaire" id="field_questionnaire"
-                           placeholder="Type/Select procedure"
-                           [options]="questionnaires"
-                           (selected)="onQuestionnaireSelected($event)"
-                           [(ngModel)]="questionnaireId">
-                </ng-select>
+                <div class="table-responsive">
+                    <h6>
+                        Select existing Procedure Bookings
+                        <!--<a class="btn btn-outline-success float-right jh-create-entity create-procedure-booking btn-sm mb-2" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ followupAction?.patient?.id + '/create'} }]"-->
+                           <!--replaceUrl="true">New Procedure Booking</a>-->
+                    </h6>
+                    <table *ngIf="procedureBookings && procedureBookings.length > 0" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th><span>Consultant Name</span></th>
+                            <th><span>Hospital Site</span></th>
+                            <th><span>Performed Date</span></th>
+                            <th><span>Primary Procedure</span></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let procedureBooking of procedureBookings">
+                            <td>{{procedureBooking.consultantName}}</td>
+                            <td>{{procedureBooking.hospitalSite}}</td>
+                            <td>{{procedureBooking.performedDate | date:'medium'}}</td>
+                            <td>{{procedureBooking.primaryProcedure}}</td>
+                            <td class="text-right">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" (change)="onBookingSelected(procedureBooking)" type="radio"
+                                               name="selectedProcedureBooking" [value]="procedureBooking"
+                                               [checked]="procedureBooking === selectedProcedureBooking">
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">
                 <small class="form-text text-danger"
@@ -59,7 +88,7 @@
                 </small>
             </div>
         </div>
-        <div class="form-group row">
+        <div *ngIf="selectedProcedureBooking" class="form-group row">
             <label class="col-sm-2 col-form-label" for="field_questionnaire">Questionnaire</label>
             <div class="col-sm-10">
                 <ng-select class="form-control" name="questionnaire" id="field_questionnaire"
@@ -83,7 +112,7 @@
                 <!--<option [ngValue]="questionnaireOption.id === followupAction.questionnaire?.id ? followupAction.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>-->
             <!--</select>-->
         <!--</div>-->
-        <div class="form-group row">
+        <div *ngIf="followupAction?.questionnaire" class="form-group row">
             <label class="col-sm-2 form-control-label" for="field_phase">Phase</label>
             <div class="col-sm-10" id="field_phase">
                 <div class="form-check form-check-inline">
@@ -105,7 +134,7 @@
                 <!--<option value="UKNOWN">UKNOWN</option>-->
             <!--</select>-->
         </div>
-        <div class="form-group">
+        <div *ngIf="followupAction?.questionnaire" class="form-group">
             <label class="form-control-label" for="field_scheduledDate">Scheduled Date</label>
             <!--<div class="d-flex">-->
                 <!--<input id="field_scheduledDate" type="datetime-local" class="form-control" name="scheduledDate" [(ngModel)]="followupAction.scheduledDate"-->
