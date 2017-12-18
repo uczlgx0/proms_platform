@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { NorthumbriapromsSharedModule } from '../../shared';
 import { NorthumbriapromsProcedureBookingModule } from '../procedure-booking/procedure-booking.module';
+import { NorthumbriapromsFollowupActionModule } from '../followup-action/followup-action.module';
 
 import {
     PatientService,
@@ -27,6 +28,7 @@ const ENTITY_STATES = [
     imports: [
         NorthumbriapromsSharedModule,
         NorthumbriapromsProcedureBookingModule,
+        NorthumbriapromsFollowupActionModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
