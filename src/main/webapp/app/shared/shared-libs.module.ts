@@ -7,7 +7,6 @@ import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import {SelectModule} from 'ng-select';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MyDatePickerModule } from 'mydatepicker';
 
 @NgModule({
@@ -19,7 +18,6 @@ import { MyDatePickerModule } from 'mydatepicker';
         }),
         InfiniteScrollModule,
         SelectModule,
-        NgxDatatableModule,
         MyDatePickerModule,
         CookieModule.forRoot()
     ],
@@ -31,7 +29,6 @@ import { MyDatePickerModule } from 'mydatepicker';
         NgJhipsterModule,
         InfiniteScrollModule,
         SelectModule,
-        NgxDatatableModule,
         MyDatePickerModule
     ]
 })

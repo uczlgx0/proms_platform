@@ -188,10 +188,6 @@
   dependencies:
     "@angular-devkit/core" "0.0.20"
 
-"@swimlane/ngx-datatable@^11.1.5":
-  version "11.1.5"
-  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-11.1.5.tgz#258e8a514c53189a8a7482dd1712f0094803f607"
-
 "@types/jasmine@2.5.53":
   version "2.5.53"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.5.53.tgz#4e0cefad09df5ec48c8dd40433512f84b1568d61"
