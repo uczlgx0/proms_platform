@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
@@ -16,7 +16,7 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 })
 export class ProcedureBookingComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    currentAccount: any;
     procedureBookings: ProcedureBooking[];
     proceduresLookup: any;
     error: any;
@@ -32,6 +32,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    @Input() selectedPatientId: number;
 
     constructor(
         private procedureBookingService: ProcedureBookingService,
@@ -65,13 +66,25 @@ currentAccount: any;
                 );
             return;
         }
-        this.procedureBookingService.query({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
-            (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
-            (res: ResponseWrapper) => this.onError(res.json)
-        );
+        // if patient is selected, then only load bookings for patient
+        if(this.selectedPatientId) {
+            // find procedure bookings
+            this.procedureBookingService.findByPatientId(this.selectedPatientId, {
+                page: this.page - 1,
+                size: this.itemsPerPage,
+                sort: this.sort()}).subscribe(
+                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+                (res: ResponseWrapper) => this.onError(res.json)
+            );
+        } else {
+            this.procedureBookingService.query({
+                page: this.page - 1,
+                size: this.itemsPerPage,
+                sort: this.sort()}).subscribe(
+                (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+                (res: ResponseWrapper) => this.onError(res.json)
+            );
+        }
     }
 
     loadPage(page: number) {
@@ -102,6 +115,7 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     search(query) {
         if (!query) {
             return this.clear();
@@ -115,12 +129,14 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     ngOnInit() {
         // load procedures lookup
         this.procedureService.allAsSelectOptions().subscribe((res: ResponseWrapper) => {
                 this.proceduresLookup = _.indexBy(res.json, 'value');
             },
             (res: ResponseWrapper) => this.onError(res.json()));
+        console.log("this.selectedPatientId  = " , this.selectedPatientId );
         this.loadAll();
         this.principal.identity().then((account) => {
             this.currentAccount = account;
@@ -135,6 +151,7 @@ currentAccount: any;
     trackId(index: number, item: ProcedureBooking) {
         return item.id;
     }
+
     registerChangeInProcedureBookings() {
         this.eventSubscriber = this.eventManager.subscribe('procedureBookingListModification', (response) => this.loadAll());
     }
@@ -154,6 +171,7 @@ currentAccount: any;
         // this.page = pagingParams.page;
         this.procedureBookings = data;
     }
+
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);
     }

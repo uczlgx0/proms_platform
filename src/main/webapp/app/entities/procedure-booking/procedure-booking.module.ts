@@ -41,6 +41,12 @@ const ENTITY_STATES = [
         ProcedureBookingDeleteDialogComponent,
         ProcedureBookingDeletePopupComponent,
     ],
+    exports: [
+        ProcedureBookingComponent,
+        ProcedureBookingPopupComponent,
+        ProcedureBookingDeleteDialogComponent,
+        ProcedureBookingDeletePopupComponent
+    ],
     providers: [
         ProcedureBookingService,
         ProcedureBookingPopupService,
