@@ -7,6 +7,7 @@ import { Patient } from './patient.model';
 import { PatientService } from './patient.service';
 import { ProcedureBooking } from '../procedure-booking/procedure-booking.model';
 import { ProcedureBookingService } from '../procedure-booking/procedure-booking.service';
+import { ProcedureBookingComponent } from '../procedure-booking/procedure-booking.component';
 import { FollowupAction } from '../followup-action/followup-action.model';
 import { FollowupActionService } from '../followup-action/followup-action.service';
 import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
