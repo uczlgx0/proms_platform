@@ -15,6 +15,7 @@ import { ProcedureBooking, ProcedureBookingService } from '../procedure-booking'
 import { Questionnaire, QuestionnaireService } from '../questionnaire';
 import { ResponseWrapper } from '../../shared';
 import {IOption} from 'ng-select';
+import {IMyDpOptions} from 'mydatepicker';
 
 @Component({
     selector: 'jhi-followup-action-dialog',
@@ -28,7 +29,10 @@ export class FollowupActionDialogComponent implements OnInit {
     questionnaireId: string;
     followupplans: FollowupPlan[];
     procedureBookings: any;
-
+    datePickerOptions: IMyDpOptions = {
+        dateFormat: 'dd/mm/yyyy',
+        minYear: 1850
+    };
     patients: Patient[];
 
     questionnaires: Questionnaire[];

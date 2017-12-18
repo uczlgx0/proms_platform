@@ -26,7 +26,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="scheduled_date" type="timestamp">
+            <column name="scheduled_date" type="date">
                 <constraints nullable="true" />
             </column>
 
@@ -46,7 +46,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="completed_date" type="timestamp">
+            <column name="completed_date" type="date">
                 <constraints nullable="true" />
             </column>
 
@@ -64,9 +64,9 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        <dropDefaultValue tableName="followup_action" columnName="scheduled_date" columnDataType="datetime"/>
-        <dropDefaultValue tableName="followup_action" columnName="completed_date" columnDataType="datetime"/>
-        
+        <dropDefaultValue tableName="followup_action" columnName="scheduled_date" columnDataType="date"/>
+        <dropDefaultValue tableName="followup_action" columnName="completed_date" columnDataType="date"/>
+
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

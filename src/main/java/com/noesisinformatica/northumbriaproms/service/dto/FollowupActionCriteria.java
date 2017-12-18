@@ -35,7 +35,7 @@ public class FollowupActionCriteria implements Serializable {
 
     private ActionPhaseFilter phase;
 
-    private InstantFilter scheduledDate;
+    private LocalDateFilter scheduledDate;
 
     private StringFilter name;
 
@@ -45,7 +45,7 @@ public class FollowupActionCriteria implements Serializable {
 
     private StringFilter outcomeComment;
 
-    private ZonedDateTimeFilter completedDate;
+    private LocalDateFilter completedDate;
 
     private LongFilter followupPlanId;
 
@@ -78,11 +78,11 @@ public class FollowupActionCriteria implements Serializable {
         this.phase = phase;
     }
 
-    public InstantFilter getScheduledDate() {
+    public LocalDateFilter getScheduledDate() {
         return scheduledDate;
     }
 
-    public void setScheduledDate(InstantFilter scheduledDate) {
+    public void setScheduledDate(LocalDateFilter scheduledDate) {
         this.scheduledDate = scheduledDate;
     }
 
@@ -118,11 +118,11 @@ public class FollowupActionCriteria implements Serializable {
         this.outcomeComment = outcomeComment;
     }
 
-    public ZonedDateTimeFilter getCompletedDate() {
+    public LocalDateFilter getCompletedDate() {
         return completedDate;
     }
 
-    public void setCompletedDate(ZonedDateTimeFilter completedDate) {
+    public void setCompletedDate(LocalDateFilter completedDate) {
         this.completedDate = completedDate;
     }
 

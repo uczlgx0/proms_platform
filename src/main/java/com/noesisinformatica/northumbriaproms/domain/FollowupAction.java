@@ -9,8 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,7 +35,7 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
     private ActionPhase phase;
 
     @Column(name = "scheduled_date")
-    private Instant scheduledDate;
+    private LocalDate scheduledDate;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -53,7 +52,7 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
     private String outcomeComment;
 
     @Column(name = "completed_date")
-    private ZonedDateTime completedDate;
+    private LocalDate completedDate;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -95,16 +94,16 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
         this.phase = phase;
     }
 
-    public Instant getScheduledDate() {
+    public LocalDate getScheduledDate() {
         return scheduledDate;
     }
 
-    public FollowupAction scheduledDate(Instant scheduledDate) {
+    public FollowupAction scheduledDate(LocalDate scheduledDate) {
         this.scheduledDate = scheduledDate;
         return this;
     }
 
-    public void setScheduledDate(Instant scheduledDate) {
+    public void setScheduledDate(LocalDate scheduledDate) {
         this.scheduledDate = scheduledDate;
     }
 
@@ -160,16 +159,16 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
         this.outcomeComment = outcomeComment;
     }
 
-    public ZonedDateTime getCompletedDate() {
+    public LocalDate getCompletedDate() {
         return completedDate;
     }
 
-    public FollowupAction completedDate(ZonedDateTime completedDate) {
+    public FollowupAction completedDate(LocalDate completedDate) {
         this.completedDate = completedDate;
         return this;
     }
 
-    public void setCompletedDate(ZonedDateTime completedDate) {
+    public void setCompletedDate(LocalDate completedDate) {
         this.completedDate = completedDate;
     }
 

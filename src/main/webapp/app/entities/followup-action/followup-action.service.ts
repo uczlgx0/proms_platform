@@ -91,9 +91,9 @@ export class FollowupActionService {
     private convertItemFromServer(json: any): FollowupAction {
         const entity: FollowupAction = Object.assign(new FollowupAction(), json);
         entity.scheduledDate = this.dateUtils
-            .convertDateTimeFromServer(json.scheduledDate);
+            .convertLocalDateFromServer(json.scheduledDate);
         entity.completedDate = this.dateUtils
-            .convertDateTimeFromServer(json.completedDate);
+            .convertLocalDateFromServer(json.completedDate);
         return entity;
     }
 
@@ -103,9 +103,13 @@ export class FollowupActionService {
     private convert(followupAction: FollowupAction): FollowupAction {
         const copy: FollowupAction = Object.assign({}, followupAction);
 
-        copy.scheduledDate = this.dateUtils.toDate(followupAction.scheduledDate);
+        if (followupAction.scheduledDate) {
+            copy.scheduledDate = this.dateUtils.convertLocalDateToServer(followupAction.scheduledDate.date);
+        }
 
-        copy.completedDate = this.dateUtils.toDate(followupAction.completedDate);
+        if (followupAction.completedDate) {
+            copy.completedDate = this.dateUtils.convertLocalDateToServer(followupAction.completedDate.date);
+        }
         return copy;
     }
 }

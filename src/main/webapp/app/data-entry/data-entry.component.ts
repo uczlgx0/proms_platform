@@ -19,6 +19,7 @@ import { Questionnaire, QuestionnaireService } from '../entities/questionnaire';
 import {IOption} from 'ng-select';
 import { MoxfqComponent } from '../forms/moxfq.component';
 import { PainvasComponent } from '../forms/painvas.component';
+import {IMyDpOptions} from 'mydatepicker';
 
 @Component({
     selector: 'data-entry-home',
@@ -45,6 +46,10 @@ export class DataEntryComponent implements OnInit, OnDestroy {
     bookingQueryCount: any;
     patients: Patient[];
     questionnaires: Questionnaire[];
+    datePickerOptions: IMyDpOptions = {
+        dateFormat: 'dd/mm/yyyy',
+        minYear: 1850
+    };
 
     constructor(
         private jhiAlertService: JhiAlertService,

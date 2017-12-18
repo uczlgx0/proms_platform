@@ -183,8 +183,10 @@
                     <!--</div>-->
                     <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
                     <div class="col-sm-10">
-                        <input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"
-                            />
+                        <!--<input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"-->
+                            <!--/>-->
+                        <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                                        [(ngModel)]="followupAction.completedDate"></my-date-picker>
                         <!--<div class="form-check form-check-inline">-->
                             <!--<label class="form-check-label">-->
                                 <!--<input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative-->

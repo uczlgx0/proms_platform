@@ -1,18 +1,17 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
-
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
 import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import com.noesisinformatica.northumbriaproms.repository.FollowupActionRepository;
-import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupActionSearchRepository;
-import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
-import com.noesisinformatica.northumbriaproms.service.dto.FollowupActionCriteria;
 import com.noesisinformatica.northumbriaproms.service.FollowupActionQueryService;
-
+import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
+import com.noesisinformatica.northumbriaproms.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,22 +27,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.sameInstant;
 import static com.noesisinformatica.northumbriaproms.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 /**
  * Test class for the FollowupActionResource REST controller.
  *
@@ -56,8 +48,8 @@ public class FollowupActionResourceIntTest {
     private static final ActionPhase DEFAULT_PHASE = ActionPhase.PRE_OPERATIVE;
     private static final ActionPhase UPDATED_PHASE = ActionPhase.POST_OPERATIVE;
 
-    private static final Instant DEFAULT_SCHEDULED_DATE = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_SCHEDULED_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final LocalDate DEFAULT_SCHEDULED_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_SCHEDULED_DATE = LocalDate.now(ZoneId.systemDefault());
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -71,8 +63,8 @@ public class FollowupActionResourceIntTest {
     private static final String DEFAULT_OUTCOME_COMMENT = "AAAAAAAAAA";
     private static final String UPDATED_OUTCOME_COMMENT = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_COMPLETED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_COMPLETED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final LocalDate DEFAULT_COMPLETED_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_COMPLETED_DATE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private FollowupActionRepository followupActionRepository;
@@ -229,7 +221,7 @@ public class FollowupActionResourceIntTest {
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].outcomeScore").value(hasItem(DEFAULT_OUTCOME_SCORE)))
             .andExpect(jsonPath("$.[*].outcomeComment").value(hasItem(DEFAULT_OUTCOME_COMMENT.toString())))
-            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(sameInstant(DEFAULT_COMPLETED_DATE))));
+            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(DEFAULT_COMPLETED_DATE)));
     }
 
     @Test
@@ -249,7 +241,7 @@ public class FollowupActionResourceIntTest {
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.outcomeScore").value(DEFAULT_OUTCOME_SCORE))
             .andExpect(jsonPath("$.outcomeComment").value(DEFAULT_OUTCOME_COMMENT.toString()))
-            .andExpect(jsonPath("$.completedDate").value(sameInstant(DEFAULT_COMPLETED_DATE)));
+            .andExpect(jsonPath("$.completedDate").value(DEFAULT_COMPLETED_DATE));
     }
 
     @Test
@@ -649,7 +641,7 @@ public class FollowupActionResourceIntTest {
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].outcomeScore").value(hasItem(DEFAULT_OUTCOME_SCORE)))
             .andExpect(jsonPath("$.[*].outcomeComment").value(hasItem(DEFAULT_OUTCOME_COMMENT.toString())))
-            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(sameInstant(DEFAULT_COMPLETED_DATE))));
+            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(DEFAULT_COMPLETED_DATE)));
     }
 
     /**
@@ -772,7 +764,7 @@ public class FollowupActionResourceIntTest {
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].outcomeScore").value(hasItem(DEFAULT_OUTCOME_SCORE)))
             .andExpect(jsonPath("$.[*].outcomeComment").value(hasItem(DEFAULT_OUTCOME_COMMENT.toString())))
-            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(sameInstant(DEFAULT_COMPLETED_DATE))));
+            .andExpect(jsonPath("$.[*].completedDate").value(hasItem(DEFAULT_COMPLETED_DATE)));
     }
 
     @Test
