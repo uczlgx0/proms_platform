@@ -95,14 +95,16 @@ export class ProcedureBookingComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/procedure-booking'], {queryParams:
+        if(!this.selectedPatientId) {
+            this.router.navigate(['/procedure-booking'], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
-        });
+            });
+        }
         this.loadAll();
     }
 
