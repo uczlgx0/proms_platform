@@ -125,7 +125,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/followup-action'], {queryParams:
+        this.router.navigate(['/followup-outcomes'], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -152,7 +152,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/followup-action', {
+        this.router.navigate(['/followup-outcomes', {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
