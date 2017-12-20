@@ -12,7 +12,7 @@ public class QueryModel {
 
     List<String> procedures = new ArrayList<>();
     List<String> consultants = new ArrayList<>();
-    List<String> sites = new ArrayList<>();
+    List<String> locations = new ArrayList<>();
     List<String> patientIds = new ArrayList<>();
     List<String> phases = new ArrayList<>();
     List<String> types = new ArrayList<>();
@@ -36,12 +36,12 @@ public class QueryModel {
         this.consultants = consultants;
     }
 
-    public List<String> getSites() {
-        return sites;
+    public List<String> getLocations() {
+        return locations;
     }
 
-    public void setSites(List<String> sites) {
-        this.sites = sites;
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 
     public List<String> getPatientIds() {
@@ -93,7 +93,7 @@ public class QueryModel {
     }
 
     public boolean isEmpty() {
-        return procedures.isEmpty() && consultants.isEmpty() && sites.isEmpty() && phases.isEmpty()
+        return procedures.isEmpty() && consultants.isEmpty() && locations.isEmpty() && phases.isEmpty()
             && patientIds.isEmpty() && types.isEmpty() && genders.isEmpty() && (age == null) && (token == null);
     }
 
@@ -102,7 +102,7 @@ public class QueryModel {
         final StringBuffer sb = new StringBuffer("QueryModel{");
         sb.append("procedures=").append(procedures);
         sb.append(", consultants=").append(consultants);
-        sb.append(", sites=").append(sites);
+        sb.append(", locations=").append(locations);
         sb.append(", patientIds=").append(patientIds);
         sb.append(", phases=").append(phases);
         sb.append(", types=").append(types);

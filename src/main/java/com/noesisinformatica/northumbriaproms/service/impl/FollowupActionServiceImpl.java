@@ -125,7 +125,7 @@ public class FollowupActionServiceImpl implements FollowupActionService{
     @Override
     @Transactional(readOnly = true)
     public FacetedPage<FollowupAction> search(QueryModel query, Pageable pageable) {
-        log.debug("Request to search for a page of Trials for query {}", query);
+        log.debug("Request to search for a page of Followup Actions for query {}", query);
 
         // if empty query, then just return all follow up actions
         if(query == null || query.isEmpty()) {
@@ -137,17 +137,17 @@ public class FollowupActionServiceImpl implements FollowupActionService{
 
         BoolQueryBuilder proceduresQueryBuilder = QueryBuilders.boolQuery();
         for(String condition : query.getProcedures()) {
-            proceduresQueryBuilder.should(QueryBuilders.matchQuery("booking.primaryProcedure", condition));
+            proceduresQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.procedureBooking.primaryProcedure", condition));
         }
 
         BoolQueryBuilder sourcesQueryBuilder = QueryBuilders.boolQuery();
-        for(String location : query.getSites()) {
-            sourcesQueryBuilder.should(QueryBuilders.matchQuery("booking.hospitalSite", location));
+        for(String location : query.getLocations()) {
+            sourcesQueryBuilder.should(QueryBuilders.matchPhraseQuery("followupPlan.procedureBooking.hospitalSite", location));
         }
 
         BoolQueryBuilder consultantsQueryBuilder = QueryBuilders.boolQuery();
         for(String consultant : query.getConsultants()) {
-            consultantsQueryBuilder.should(QueryBuilders.matchQuery("booking.consultantName", consultant));
+            consultantsQueryBuilder.should(QueryBuilders.matchPhraseQuery("followupPlan.procedureBooking.consultantName", consultant));
         }
 
         BoolQueryBuilder patientIdsQueryBuilder = QueryBuilders.boolQuery();
@@ -187,7 +187,7 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         }
 
         // we only add locations clause if there are more than 1 locations specified
-        if(query.getSites().size() > 0){
+        if(query.getLocations().size() > 0){
             boolQueryBuilder.must(sourcesQueryBuilder);
         }
 
@@ -204,7 +204,6 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         // we only add patient ids clause if there are more than 1 id specified
         if(query.getPatientIds().size() > 0){
             boolQueryBuilder.must(patientIdsQueryBuilder);
-            log.info("boolQueryBuilder = {}", boolQueryBuilder);
         }
 
         // we only add types clause if there are more than 1 type specified
@@ -220,8 +219,7 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         // we only add token clause if there is a token specified
         if (query.getToken() != null && query.getToken().length() > 2){
             BoolQueryBuilder tokenBuilder = QueryBuilders.boolQuery();
-            tokenBuilder.should(QueryBuilders.multiMatchQuery(query.getToken(), "idInfo.*", "shortName", "id").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
-            tokenBuilder.should(QueryBuilders.multiMatchQuery(query.getToken(), "keywords", "title", "briefTitle").type(MultiMatchQueryBuilder.Type.PHRASE));
+            tokenBuilder.should(QueryBuilders.multiMatchQuery(query.getToken(), "patient.address.*", "patient.nhsNumber", "patient.id").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
 
             boolQueryBuilder.must(tokenBuilder);
         }
@@ -236,9 +234,9 @@ public class FollowupActionServiceImpl implements FollowupActionService{
             .withSort(getSortParameters(pageable))
             .withPageable(pageable)
             .addAggregation(new TermsBuilder("types").field("type").size(5).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("procedures").field("booking.primaryProcedure").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("consultants").field("booking.consultantName").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("locations").field("booking.hospitalSite").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("procedures").field("followupPlan.procedureBooking.primaryProcedure").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("consultants").field("followupPlan.procedureBooking.consultantName").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("locations").field("followupPlan.procedureBooking.hospitalSite").size(100).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("genders").field("patient.gender").size(5).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("phases").field("phase").size(10).order(Terms.Order.term(true)))
             .build();
