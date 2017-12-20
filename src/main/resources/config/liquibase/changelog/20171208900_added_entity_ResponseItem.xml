@@ -27,7 +27,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="local_id" type="bigint">
+            <column name="local_id" type="varchar(16)">
                 <constraints nullable="false" />
             </column>
 

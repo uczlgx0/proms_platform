@@ -34,7 +34,7 @@ public class ResponseItem implements Serializable {
     private String question;
 
     @Column(name = "local_id", nullable = false)
-    private Integer localId;
+    private String localId;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonBackReference
@@ -66,11 +66,11 @@ public class ResponseItem implements Serializable {
         this.question = question;
     }
 
-    public Integer getLocalId() {
+    public String getLocalId() {
         return localId;
     }
 
-    public void setLocalId(Integer localId) {
+    public void setLocalId(String localId) {
         this.localId = localId;
     }
 
