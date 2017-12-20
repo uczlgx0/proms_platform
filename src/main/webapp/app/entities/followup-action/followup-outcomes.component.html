@@ -27,32 +27,51 @@
     <br/>
     <div class="row">
         <div class="col-md-3 alert alert-info m-1">
-            <h4>Search Filters</h4>
+            <h4>
+                Search Filters
+                <button class="btn btn-sm btn-warning float-right" (click)="clearFilters()"
+                        *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0"
+                    >Clear</button>
+            </h4>
             <form>
                 <div class="form-group">
-                    <label for="field_consultantName">Consultant</label>
+                    <label for="field_consultantName">Consultant
+                        <small *ngIf="query.consultants.length > 0">
+                            [<a class="alert-danger" (click)="clearConsultants()">Clear</a>]
+                        </small>
+                    </label>
                     <ng-select class="form-control" name="consultantName" id="field_consultantName"
                                placeholder="Type/Select consultant name"
                                [options]="consultants"
                                (selected)="onConsultantSelected($event)"
+                               [(ngModel)]="selectedConsultant"
                                >
                     </ng-select>
                 </div>
                 <div class="form-group">
-                    <label for="field_hospitalSite">Hospital</label>
+                    <label for="field_hospitalSite">Hospital
+                        <small *ngIf="query.locations.length > 0">
+                            [<a class="alert-danger" (click)="clearLocations()">Clear</a>]
+                        </small>
+                    </label>
                     <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
                                placeholder="Type/Select hospital name"
                                [options]="locations"
                                (selected)="onLocationSelected($event)"
+                               [(ngModel)]="selectedLocation"
                                >
                     </ng-select>
                 </div>
                 <div class="form-group">
-                    <label for="field_primaryProcedure">Procedure</label>
+                    <label for="field_primaryProcedure">Procedure <small *ngIf="query.procedures.length > 0">
+                        [<a class="alert-danger" (click)="clearProcedures()">Clear</a>]
+                        </small>
+                    </label>
                     <ng-select class="form-control" name="primaryProcedure" id="field_primaryProcedure"
                                placeholder="Type/Select procedure name"
                                [options]="procedures"
                                (selected)="onProcedureSelected($event)"
+                               [(ngModel)]="selectedProcedure"
                                >
                     </ng-select>
                 </div>

@@ -45,6 +45,9 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     locations: Array<IOption>;
     procedures: Array<IOption>;
     proceduresLookup: any;
+    selectedConsultant: any;
+    selectedLocation: any;
+    selectedProcedure: any;
 
     constructor(
         private followupActionService: FollowupActionService,
@@ -164,7 +167,6 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     onLocationSelected(option: IOption) {
-        console.log("option  = " , option );
         this.query.locations = [];
         this.query.locations.push(option.value);
         this.search(null);
@@ -173,6 +175,32 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     onProcedureSelected(option: IOption) {
         this.query.procedures = [];
         this.query.procedures.push(option.value);
+        this.search(null);
+    }
+
+    clearFilters() {
+        this.query = new Query();
+        this.selectedProcedure = null;
+        this.selectedConsultant = null;
+        this.selectedLocation = null;
+        this.search(null);
+    }
+
+    clearConsultants() {
+        this.query.consultants = [];
+        this.selectedConsultant = null;
+        this.search(null);
+    }
+
+    clearLocations() {
+        this.query.locations = [];
+        this.selectedLocation = null;
+        this.search(null);
+    }
+
+    clearProcedures() {
+        this.query.procedures = [];
+        this.selectedProcedure = null;
         this.search(null);
     }
 
