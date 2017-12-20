@@ -148,11 +148,15 @@ export class FollowupActionDialogComponent implements OnInit, OnDestroy {
 
         // now process booking and reset questionnaires
         this.selectedProcedureBooking = booking;
-        this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
-        console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
-        this.followupAction.followupPlan = this.selectedFollowupPlan;
-        // get questionnaires for procedure in booking
-        this.loadQuestionnaires(booking);
+        this.followupPlanService.findByProcedureBookingId(this.selectedProcedureBooking.id)
+            .subscribe((followupPlan) => {
+                this.selectedFollowupPlan = followupPlan;
+                //this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
+                this.followupAction.followupPlan = this.selectedFollowupPlan;
+                // get questionnaires for procedure in booking
+                this.loadQuestionnaires(booking);
+            }
+        );
     }
 
     private loadBookings() {
