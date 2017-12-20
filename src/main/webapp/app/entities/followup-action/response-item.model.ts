@@ -6,7 +6,7 @@ export class ResponseItem implements BaseEntity {
         public id?: number,
         public question?: string,
         public value?: number,
-        public localId?: number,
+        public localId?: string,
         public followupActionId?: number
     ) {
     }
