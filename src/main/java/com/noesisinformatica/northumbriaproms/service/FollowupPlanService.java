@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Interface for managing FollowupPlan.
@@ -48,6 +49,14 @@ public interface FollowupPlanService {
      * @return the entity
      */
     FollowupPlan findOne(Long id);
+
+    /**
+     * Get one followupPlan by {@link ProcedureBooking} id.
+     *
+     * @param id the id of the procedure booking
+     * @return the entity
+     */
+    Optional<FollowupPlan> findOneByProcedureBookingId(Long id);
 
     /**
      * Delete the "id" followupPlan.

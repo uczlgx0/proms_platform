@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -32,7 +33,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 @Service
 @Transactional
 @RabbitListener(queues = Constants.DEFAULT_QUEUE)
-public class FollowupPlanServiceImpl implements FollowupPlanService{
+public class FollowupPlanServiceImpl implements FollowupPlanService {
 
     private final Logger log = LoggerFactory.getLogger(FollowupPlanServiceImpl.class);
 
@@ -144,6 +145,19 @@ public class FollowupPlanServiceImpl implements FollowupPlanService{
     public FollowupPlan findOne(Long id) {
         log.debug("Request to get FollowupPlan : {}", id);
         return followupPlanRepository.findOne(id);
+    }
+
+    /**
+     * Get one followupPlan by {@link ProcedureBooking} id.
+     *
+     * @param id the id of the procedure booking
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<FollowupPlan> findOneByProcedureBookingId(Long id) {
+        log.debug("Request to get FollowupPlan : {}", id);
+        return followupPlanRepository.findOneByProcedureBookingId(id);
     }
 
     /**

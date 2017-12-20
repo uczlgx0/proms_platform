@@ -19,12 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing FollowupPlan.
@@ -118,6 +114,20 @@ public class FollowupPlanResource {
         log.debug("REST request to get FollowupPlan : {}", id);
         FollowupPlan followupPlan = followupPlanService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(followupPlan));
+    }
+
+    /**
+     * GET  /procedure-bookings/:id/followup-plan : get the followupPlan for "id" procedure booking
+     *
+     * @param id the id of the procedureBooking to retrieve followupPlan for
+     * @return the ResponseEntity with status 200 (OK) and with body the followupPlan, or with status 404 (Not Found)
+     */
+    @GetMapping("/procedure-bookings/{id}/followup-plan")
+    @Timed
+    public ResponseEntity<FollowupPlan> getFollowupPlanForBookingId(@PathVariable Long id) {
+        log.debug("REST request to get FollowupPlan for ProcedureBooking : {}", id);
+        Optional<FollowupPlan> followupPlan = followupPlanService.findOneByProcedureBookingId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(followupPlan.get()));
     }
 
     /**
