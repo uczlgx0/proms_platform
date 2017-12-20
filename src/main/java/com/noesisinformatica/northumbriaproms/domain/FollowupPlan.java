@@ -6,11 +6,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -29,7 +29,6 @@ public class FollowupPlan implements Serializable {
     private Long id;
 
     @OneToOne(mappedBy = "followupPlan")
-    @JsonIgnore
     private ProcedureBooking procedureBooking;
 
     @ManyToOne(optional = false)

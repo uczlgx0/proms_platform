@@ -1,5 +1,6 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -52,6 +53,7 @@ public class ProcedureBooking implements Serializable {
     private Patient patient;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(unique = true)
     private FollowupPlan followupPlan;
 
