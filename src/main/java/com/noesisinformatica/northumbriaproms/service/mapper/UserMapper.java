@@ -38,6 +38,7 @@ public class UserMapper {
             user.setLogin(userDTO.getLogin());
             user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
+            user.setTitle(userDTO.getTitle());
             user.setEmail(userDTO.getEmail());
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
@@ -57,7 +58,7 @@ public class UserMapper {
             .collect(Collectors.toList());
     }
 
-    public User userFromId(String id) {
+    public User userFromId(Long id) {
         if (id == null) {
             return null;
         }

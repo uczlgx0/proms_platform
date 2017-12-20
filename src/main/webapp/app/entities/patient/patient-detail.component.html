@@ -1,0 +1,86 @@
+
+<div *ngIf="patient">
+    <h2>
+        {{patient.givenName}} {{patient.familyName}}
+        <div class="btn-group float-right " role="group">
+            <button  type="submit"
+                     (click)="previousState()"
+                     class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+
+            <button  type="button"
+                     [routerLink]="['/', { outlets: { popup: 'patient/'+ patient.id + '/edit'} }]"
+                     replaceUrl="true"
+                     class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Family Name</span></dt>
+                <dd>
+                    <span>{{patient.familyName}}</span>
+                </dd>
+                <dt><span>Given Name</span></dt>
+                <dd>
+                    <span>{{patient.givenName}}</span>
+                </dd>
+                <dt><span>Birth Date</span></dt>
+                <dd>
+                    <span>{{patient.birthDate | date:'mediumDate'}}</span>
+                </dd>
+                <dt><span>Gender</span></dt>
+                <dd>
+                    <span>{{patient.gender}}</span>
+                </dd>
+                <dt><span>Nhs Number</span></dt>
+                <dd>
+                    <span>{{patient.nhsNumber}}</span>
+                </dd>
+                <dt><span>Email</span></dt>
+                <dd>
+                    <span>{{patient.email}}</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <h4>Address</h4>
+            <hr>
+            <dl *ngFor="let address of patient.addresses" class="row-md jh-entity-details">
+                <dt><span>Line</span></dt>
+                <dd>
+                    <span>{{address.lines}}</span>
+                </dd>
+                <dt><span>City</span></dt>
+                <dd>
+                    <span>{{address.city}}</span>
+                </dd>
+                <dt><span>County</span></dt>
+                <dd>
+                    <span>{{address.county}}</span>
+                </dd>
+                <dt><span>Postal Code</span></dt>
+                <dd>
+                    <span>{{address.postalCode}}</span>
+                </dd>
+                <dt><span>Country</span></dt>
+                <dd>
+                    <span>{{address.country}}</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <hr>
+    <jhi-procedure-booking [selectedPatientId]="patient.id"></jhi-procedure-booking>
+    <hr>
+
+    <jhi-followup-action [selectedPatientId]="patient.id"></jhi-followup-action>
+    <hr>
+
+</div>

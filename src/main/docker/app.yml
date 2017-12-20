@@ -4,12 +4,16 @@ services:
         image: northumbriaproms
         environment:
             - SPRING_PROFILES_ACTIVE=prod,swagger
-            - SPRING_DATA_MONGODB_URI=mongodb://northumbriaproms-mongodb:27017
-            - SPRING_DATA_MONGODB_DATABASE=northumbriaproms
+            - SPRING_DATASOURCE_URL=jdbc:mariadb://northumbriaproms-mariadb:3306/northumbriaproms
             - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=northumbriaproms-elasticsearch:9300
         ports:
             - 8080:8080
-    northumbriaproms-mongodb:
+    northumbriaproms-mariadb:
         extends:
-            file: mongodb.yml
-            service: northumbriaproms-mongodb
+            file: mariadb.yml
+            service: northumbriaproms-mariadb
+    northumbriaproms-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: northumbriaproms-elasticsearch

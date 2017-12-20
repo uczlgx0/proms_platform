@@ -6,6 +6,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
+import {SelectModule} from 'ng-select';
+import { MyDatePickerModule } from 'mydatepicker';
+import { NouisliderModule } from 'ng2-nouislider';
 
 @NgModule({
     imports: [
@@ -15,6 +18,9 @@ import { CookieModule } from 'ngx-cookie';
             alertAsToast: false,
         }),
         InfiniteScrollModule,
+        SelectModule,
+        MyDatePickerModule,
+        NouisliderModule,
         CookieModule.forRoot()
     ],
     exports: [
@@ -23,7 +29,10 @@ import { CookieModule } from 'ngx-cookie';
         CommonModule,
         NgbModule,
         NgJhipsterModule,
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        SelectModule,
+        MyDatePickerModule,
+        NouisliderModule
     ]
 })
 export class NorthumbriapromsSharedLibsModule {}

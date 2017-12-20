@@ -1,0 +1,104 @@
+
+<div *ngIf="followupAction">
+    <h2>
+        <span>Followup Action</span> {{followupAction.name}}
+        <div class="btn-group float-right" role="group">
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+            <button type="button"
+                    [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
+                    replaceUrl="true"
+                    class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+            <button type="button"
+                    (click)="initiate()"
+                    class="btn btn-success">
+                <span class="fa fa-bolt"></span>&nbsp;<span> Initiate</span>
+            </button>
+        </div>
+    </h2>
+    <hr>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Patient</span></dt>
+                <dd>
+                    <div *ngIf="followupAction.patient">
+                        <a [routerLink]="['/patient', followupAction.patient?.id]">
+                            {{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}
+                        </a>
+                    </div>
+                </dd>
+                <!--<dt><span>Type</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{followupAction.type}}</span>-->
+                <!--</dd>-->
+                <dt><span>Questionnaire</span></dt>
+                <dd>
+                    <div *ngIf="followupAction.questionnaire">
+                        <a [routerLink]="['/questionnaire', followupAction.questionnaire?.id]">{{followupAction.questionnaire?.name}}</a>
+                    </div>
+                </dd>
+                <dt><span>Phase</span></dt>
+                <dd>
+                    <span>{{followupAction.phase}}</span>
+                </dd>
+                <dt><span>Outcome Score</span></dt>
+                <dd>
+                    <span>{{followupAction.outcomeScore}}</span>
+                </dd>
+                <!--<dt><span>Name</span></dt>-->
+                <!--<dd>-->
+                    <!--<span>{{followupAction.name}}</span>-->
+                <!--</dd>-->
+                <dt><span>Followup Plan</span></dt>
+                <dd>
+                    <div *ngIf="followupAction.followupPlan">
+                        <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Scheduled Date</span></dt>
+                <dd>
+                    <span>{{followupAction.scheduledDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Completed Date</span></dt>
+                <dd>
+                    <span>{{followupAction.completedDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Last updated Date</span></dt>
+                <dd>
+                    <span>{{followupAction.lastModifiedDate | date:'medium'}}</span>
+                </dd>
+                <dt><span>Last Modified By</span></dt>
+                <dd>
+                    <span>{{followupAction.lastModifiedBy}}</span>
+                </dd>
+                <dt><span>Outcome Comment</span></dt>
+                <dd>
+                    <span>{{followupAction.outcomeComment}}</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'MOXFQ'">
+        <moxfq-component [(followupAction)]="followupAction"></moxfq-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'PAIN VAS'">
+        <painvas-component [(followupAction)]="followupAction"></painvas-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOFAS'">
+        <aofas-component [(followupAction)]="followupAction"></aofas-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOS'">
+        <aos-component [(followupAction)]="followupAction"></aos-component>
+    </div>
+</div>
