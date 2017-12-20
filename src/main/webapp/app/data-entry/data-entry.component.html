@@ -200,19 +200,22 @@
                     </div>
                 </div>
 
-                <!--<div class="form-group">-->
-                    <!--<label class="form-control-label" for="field_followupPlan">Followup Plan</label>-->
+                <div *ngIf="followupAction?.questionnaire" class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="field_outcomescore">Outcome score</label>
+                    <div class="col-sm-10" id="field_outcomescore">
+                        <input [(ngModel)]="followupAction.outcomeScore" type="number" id="outcomeScore" name="outcomeScore" class="form-control">
+                    </div>
                     <!--<select class="form-control" id="field_followupPlan" name="followupPlan" [(ngModel)]="followupAction.followupPlan"  required>-->
                         <!--<option *ngIf="!editForm.value.followupPlan" [ngValue]="null" selected></option>-->
                         <!--<option [ngValue]="followupPlanOption.id === followupAction.followupPlan?.id ? followupAction.followupPlan : followupPlanOption" *ngFor="let followupPlanOption of followupplans; trackBy: trackFollowupPlanById">{{followupPlanOption.id}}</option>-->
                     <!--</select>-->
-                <!--</div>-->
-                <!--<div [hidden]="!(editForm.controls.followupPlan?.dirty && editForm.controls.followupPlan?.invalid)">-->
-                    <!--<small class="form-text text-danger"-->
-                           <!--[hidden]="!editForm.controls.followupPlan?.errors?.required">-->
-                        <!--This field is required.-->
-                    <!--</small>-->
-                <!--</div>-->
+                </div>
+                <div [hidden]="!(editForm.controls.outcomeScore?.dirty && editForm.controls.outcomeScore?.invalid)">
+                    <small class="form-text text-danger"
+                           [hidden]="!editForm.controls.outcomeScore?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
             </div>
             <div *ngIf="followupAction?.name" class="modal-footer">
                 <div class="container-fluid" *ngIf="followupAction?.name == 'MOXFQ'">
