@@ -95,4 +95,7 @@
     <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'PAIN VAS'">
         <painvas-component [(followupAction)]="followupAction"></painvas-component>
     </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOFAS'">
+        <aofas-component [(followupAction)]="followupAction"></aofas-component>
+    </div>
 </div>
