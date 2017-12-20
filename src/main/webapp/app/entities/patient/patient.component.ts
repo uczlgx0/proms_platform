@@ -68,12 +68,14 @@ currentAccount: any;
             (res: ResponseWrapper) => this.onError(res.json)
         );
     }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
         this.router.navigate(['/patient'], {queryParams:
             {
@@ -95,8 +97,9 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     search(query) {
-        if (!query) {
+        if (!query || query.length < 2) {
             return this.clear();
         }
         this.page = 0;
@@ -108,6 +111,7 @@ currentAccount: any;
         }]);
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
         this.principal.identity().then((account) => {
