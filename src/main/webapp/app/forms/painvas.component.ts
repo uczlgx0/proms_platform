@@ -10,6 +10,7 @@ import { FollowupAction } from '../entities/followup-action/followup-action.mode
 import { ResponseItem } from '../entities/followup-action/response-item.model';
 import { FollowupActionService } from '../entities/followup-action/followup-action.service';
 import { ResponseWrapper } from '../shared';
+import { FormsService } from './forms.service'
 
 @Component({
     selector: 'painvas-component',
@@ -20,12 +21,12 @@ export class PainvasComponent implements OnInit {
     @Input() followupAction: FollowupAction;
     isSaving: boolean;
     formData: any;
-    //range: number[] = [0];
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private followupActionService: FollowupActionService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private formsService: FormsService
     ) {
     }
 
@@ -33,7 +34,7 @@ export class PainvasComponent implements OnInit {
         this.isSaving = false;
         this.formData = {};
         if (this.followupAction.responseItems) {
-            this.convertToFormData(this.followupAction.responseItems);
+            this.formsService.convertToFormData(this.followupAction.responseItems, this.formData);
         }
         // if formData.q1 is not set, we set it to 0
         if(!this.formData['q1']) {
@@ -51,7 +52,7 @@ export class PainvasComponent implements OnInit {
         let items: Array<ResponseItem> = [];
         Object.keys(data).forEach((key) => {
             if(key != 'comment' && data[key]) {
-                items.push(this.convertToResponseItem(key, data[key]));
+                items.push(this.formsService.convertToResponseItem(key, data[key], this.followupAction));
             }
         });
         console.log("items  = " , items );
@@ -77,21 +78,5 @@ export class PainvasComponent implements OnInit {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
-    }
-
-    private convertToResponseItem(key: string, value: string) {
-        let responseItem = new ResponseItem();
-        responseItem.followupActionId = this.followupAction.id;
-        // process key which looks like 'qN' where N is the key we want
-        let k = key.substr(1);
-        responseItem.localId = parseInt(k);
-        responseItem.value = parseInt(value);
-        return responseItem;
-    }
-
-    private convertToFormData(items: ResponseItem[]) {
-        items.forEach(item => {
-            this.formData['q'+item.localId] = item.value;
-        })
     }
 }
