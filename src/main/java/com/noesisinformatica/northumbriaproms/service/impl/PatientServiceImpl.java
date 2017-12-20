@@ -1,18 +1,18 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
-import com.noesisinformatica.northumbriaproms.service.PatientService;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
 import com.noesisinformatica.northumbriaproms.repository.PatientRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.PatientSearchRepository;
+import com.noesisinformatica.northumbriaproms.service.PatientService;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Patient.
@@ -95,7 +95,16 @@ public class PatientServiceImpl implements PatientService{
     @Transactional(readOnly = true)
     public Page<Patient> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Patients for query {}", query);
-        Page<Patient> result = patientSearchRepository.search(queryStringQuery(query), pageable);
+        QueryBuilder queryBuilder = null;
+        // try to see if query is number, if it is try as nhs number otherwise try as name
+        try {
+            Long number = Long.parseLong(query);
+            queryBuilder = QueryBuilders.termQuery("nhsNumber", number);
+        } catch (NumberFormatException e) {
+            queryBuilder =
+                QueryBuilders.multiMatchQuery(query, "givenName", "familyName").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+        }
+        Page<Patient> result = patientSearchRepository.search(queryBuilder, pageable);
         return result;
     }
 }
