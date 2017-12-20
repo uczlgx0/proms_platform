@@ -98,4 +98,7 @@
     <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOFAS'">
         <aofas-component [(followupAction)]="followupAction"></aofas-component>
     </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOS'">
+        <aos-component [(followupAction)]="followupAction"></aos-component>
+    </div>
 </div>

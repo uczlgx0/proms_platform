@@ -5,6 +5,7 @@ import { NorthumbriapromsSharedModule } from '../shared';
 import { MoxfqComponent } from './moxfq.component'
 import { PainvasComponent } from './painvas.component'
 import { AofasComponent } from './aofas.component'
+import { AosComponent } from './aos.component'
 import { FormsService } from './forms.service'
 
 @NgModule({
@@ -14,12 +15,14 @@ import { FormsService } from './forms.service'
     declarations: [
         MoxfqComponent,
         PainvasComponent,
-        AofasComponent
+        AofasComponent,
+        AosComponent
     ],
     exports: [
         MoxfqComponent,
         PainvasComponent,
-        AofasComponent
+        AofasComponent,
+        AosComponent
     ],
     providers: [
         FormsService
