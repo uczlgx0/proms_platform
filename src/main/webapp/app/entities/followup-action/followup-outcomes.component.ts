@@ -8,11 +8,19 @@ import { FollowupAction } from './followup-action.model';
 import { Query } from './query.model';
 import { Category } from './category.model';
 import { FollowupActionService } from './followup-action.service';
+import { ProcedureService } from '../procedure/procedure.service';
+import { HealthcareProviderService } from '../healthcare-provider/healthcare-provider.service';
+import { UserService } from '../../shared/user/user.service';
+import { User } from '../../shared/user/user.model';
 import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
+import {IOption} from 'ng-select';
 
 @Component({
     selector: 'followup-outcomes',
-    templateUrl: './followup-outcomes.component.html'
+    templateUrl: './followup-outcomes.component.html',
+    styleUrls: [
+        'followup-outcomes.css'
+    ]
 })
 export class FollowupOutcomesComponent implements OnInit, OnDestroy {
 
@@ -33,6 +41,10 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    consultants: Array<IOption>;
+    locations: Array<IOption>;
+    procedures: Array<IOption>;
+    proceduresLookup: any;
 
     constructor(
         private followupActionService: FollowupActionService,
@@ -41,6 +53,9 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private activatedRoute: ActivatedRoute,
         private router: Router,
+        private userService: UserService,
+        private healthcareProviderService: HealthcareProviderService,
+        private procedureService: ProcedureService,
         private eventManager: JhiEventManager
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
@@ -51,6 +66,30 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
             this.predicate = data['pagingParams'].predicate;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
+    }
+
+    ngOnInit() {
+        this.query = new Query();
+        this.loadAll();
+        this.principal.identity().then((account) => {
+            this.currentAccount = account;
+        });
+
+        // load consultants
+        this.userService.consultants()
+            .subscribe((res: ResponseWrapper) => {this.consultants = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
+        // load locations
+        this.healthcareProviderService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => {this.locations = res.json; }, (res: ResponseWrapper) => this.onError(res.json()));
+        // load procedures
+        this.procedureService.allAsSelectOptions()
+            .subscribe((res: ResponseWrapper) => {
+                this.procedures = res.json;
+                this.proceduresLookup = _.indexBy(res.json, 'value');
+            },
+            (res: ResponseWrapper) => this.onError(res.json()));
+
+        this.registerChangeInFollowupActions();
     }
 
     loadAll() {
@@ -97,10 +136,10 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/followup-action', {
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }]);
+        //this.router.navigate(['/followup-action', {
+        //    page: this.page,
+        //    sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+        //}]);
         this.loadAll();
     }
 
@@ -118,13 +157,23 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.loadAll();
     }
 
-    ngOnInit() {
-        this.query = new Query();
-        this.loadAll();
-        this.principal.identity().then((account) => {
-            this.currentAccount = account;
-        });
-        this.registerChangeInFollowupActions();
+    onConsultantSelected(option: IOption) {
+        this.query.consultants = [];
+        this.query.consultants.push(option.value);
+        this.search(null);
+    }
+
+    onLocationSelected(option: IOption) {
+        console.log("option  = " , option );
+        this.query.locations = [];
+        this.query.locations.push(option.value);
+        this.search(null);
+    }
+
+    onProcedureSelected(option: IOption) {
+        this.query.procedures = [];
+        this.query.procedures.push(option.value);
+        this.search(null);
     }
 
     ngOnDestroy() {
@@ -148,7 +197,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
 
     private onSuccess(data, headers) {
         console.log("data  = " , data );
-        if(data.results !== undefined && data.results.length > 0) {
+        if(data.results !== undefined) {
             this.links = this.parseLinks.parse(headers.get('link'));
             this.totalItems = headers.get('X-Total-Count');
             this.queryCount = this.totalItems;
