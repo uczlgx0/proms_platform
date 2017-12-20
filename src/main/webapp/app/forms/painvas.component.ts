@@ -20,6 +20,7 @@ export class PainvasComponent implements OnInit {
     @Input() followupAction: FollowupAction;
     isSaving: boolean;
     formData: any;
+    //range: number[] = [0];
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -34,9 +35,14 @@ export class PainvasComponent implements OnInit {
         if (this.followupAction.responseItems) {
             this.convertToFormData(this.followupAction.responseItems);
         }
+        // if formData.q1 is not set, we set it to 0
+        if(!this.formData['q1']) {
+            this.formData['q1'] = 0;
+        }
     }
 
-    clear() {
+    onChange(event: any, questionKey: string) {
+        this.formData[questionKey] = event;
     }
 
     submitData(data: any) {

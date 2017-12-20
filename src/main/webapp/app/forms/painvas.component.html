@@ -1,7 +1,8 @@
 <form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
     <div class="form-group">
         <label for="q1">How bad is your foot/ankle pain today?</label>
-        <input [(ngModel)]="formData.q1" type="number" id="q1" name="q1" class="form-control" aria-describedby="pain vas score">
+        <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.q1" [tooltips]="[true ]" style="margin-top: 2em;"
+                    id="q1" name="q1" (ngModelChange)="onChange($event, 'q1')"></nouislider>
         <small id="scoreHelpBlock" class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
