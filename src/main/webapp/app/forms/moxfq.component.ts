@@ -11,6 +11,7 @@ import { FollowupAction } from '../entities/followup-action/followup-action.mode
 import { ResponseItem } from '../entities/followup-action/response-item.model';
 import { FollowupActionService } from '../entities/followup-action/followup-action.service';
 import { ResponseWrapper } from '../shared';
+import { FormsService } from './forms.service';
 
 @Component({
     selector: 'moxfq-component',
@@ -25,7 +26,8 @@ export class MoxfqComponent implements OnInit {
     constructor(
         private jhiAlertService: JhiAlertService,
         private followupActionService: FollowupActionService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private formsService: FormsService
     ) {
     }
 
@@ -33,11 +35,8 @@ export class MoxfqComponent implements OnInit {
         this.isSaving = false;
         this.formData = {};
         if (this.followupAction.responseItems) {
-            this.convertToFormData(this.followupAction.responseItems);
+            this.formsService.convertToFormData(this.followupAction.responseItems, this.formData);
         }
-    }
-
-    clear() {
     }
 
     save() {
@@ -62,28 +61,12 @@ export class MoxfqComponent implements OnInit {
         let items: Array<ResponseItem> = [];
         Object.keys(data).forEach((key) => {
             if(key != 'comment' && data[key]) {
-                items.push(this.convertToResponseItem(key, data[key]));
+                items.push(this.formsService.convertToResponseItem(key, data[key], this.followupAction));
             }
         });
         console.log("items  = " , items );
         this.followupAction.responseItems = items;
         this.save();
-    }
-
-    private convertToResponseItem(key: string, value: string) {
-        let responseItem = new ResponseItem();
-        responseItem.followupActionId = this.followupAction.id;
-        // process key which looks like 'qN' where N is the key we want
-        let k = key.substr(1);
-        responseItem.localId = parseInt(k);
-        responseItem.value = parseInt(value);
-        return responseItem;
-    }
-
-    private convertToFormData(items: ResponseItem[]) {
-        items.forEach(item => {
-            this.formData['q'+item.localId] = item.value;
-        })
     }
 
     private onError(error: any) {

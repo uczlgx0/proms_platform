@@ -10,7 +10,7 @@ import { FollowupAction } from '../entities/followup-action/followup-action.mode
 import { ResponseItem } from '../entities/followup-action/response-item.model';
 import { FollowupActionService } from '../entities/followup-action/followup-action.service';
 import { ResponseWrapper } from '../shared';
-import { FormsService } from './forms.service'
+import { FormsService } from './forms.service';
 
 @Component({
     selector: 'painvas-component',
