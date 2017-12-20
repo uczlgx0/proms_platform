@@ -10,6 +10,7 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 export class FollowupPlanService {
 
     private resourceUrl = SERVER_API_URL + 'api/followup-plans';
+    private procedureBookingsResourceUrl = SERVER_API_URL + 'api/procedure-bookings/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/followup-plans';
 
     constructor(private http: Http) { }
@@ -32,6 +33,13 @@ export class FollowupPlanService {
 
     find(id: number): Observable<FollowupPlan> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
+        });
+    }
+
+    findByProcedureBookingId(id: number): Observable<FollowupPlan> {
+        return this.http.get(this.procedureBookingsResourceUrl + id + '/followup-plan').map((res: Response) => {
             const jsonResponse = res.json();
             return this.convertItemFromServer(jsonResponse);
         });

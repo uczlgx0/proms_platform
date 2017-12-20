@@ -105,7 +105,8 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         if(!this.followupAction.patient) {
             this.followupAction.patient = new Patient();
         }
-        this.followupAction.patient.id = parseInt(option.value);
+        this.patientId = option.value;
+        this.followupAction.patient.id = parseInt(this.patientId);
 
         // now get procedure bookings
         this.loadBookings();
@@ -128,17 +129,25 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.questionnaireId = null;
 
         // now process booking and reset questionnaires
+        console.log("booking  = " , booking );
         this.selectedProcedureBooking = booking;
-        this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
-        console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
-        this.followupAction.followupPlan = this.selectedFollowupPlan;
-        // get questionnaires for procedure in booking
-        this.loadQuestionnaires(booking);
+        this.followupPlanService.findByProcedureBookingId(this.selectedProcedureBooking.id)
+            .subscribe((followupPlan) => {
+                this.selectedFollowupPlan = followupPlan;
+                //this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
+                console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
+                this.followupAction.followupPlan = this.selectedFollowupPlan;
+                // get questionnaires for procedure in booking
+                this.loadQuestionnaires(booking);
+            }
+        );
     }
 
     private loadBookings() {
         // now get procedure bookings for patient
-        this.procedureBookingService.findByPatientId(this.followupAction.patient.id,  {
+        console.log("this.patientId  = " , this.patientId );
+        console.log("this.followupAction  = " , this.followupAction );
+        this.procedureBookingService.findByPatientId(this.patientId,  {
             page: 0,
             size: 50,
             sort: this.sort()}).subscribe(
