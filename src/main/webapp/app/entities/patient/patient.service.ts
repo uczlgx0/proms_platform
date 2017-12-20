@@ -47,7 +47,7 @@ export class PatientService {
 
     allAsSelectOptions(req?: any): Observable<ResponseWrapper> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
+        return this.http.get(this.resourceSearchUrl, options)
             .map((res: Response) => this.convertToSelectOption(res));
     }
 

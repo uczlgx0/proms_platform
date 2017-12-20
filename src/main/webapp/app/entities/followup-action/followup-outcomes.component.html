@@ -78,7 +78,7 @@
             </form>
         </div>
         <div class="col-md-8">
-            <div class="table-responsive" *ngIf="followupActions.length > 0">
+            <div class="table-responsive" *ngIf="followupActions?.length > 0">
                 <table class="table table-striped">
                     <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -152,7 +152,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="alert alert-warning text-center" *ngIf="followupActions && followupActions.length == 0">
+            <div class="alert alert-warning text-center" *ngIf="followupActions && followupActions?.length == 0">
                 <h6>No matches found for selected search criteria</h6>
             </div>
             <div *ngIf="followupActions && followupActions.length">

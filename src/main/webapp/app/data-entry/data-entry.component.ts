@@ -68,8 +68,6 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.isSaving = false;
         this.followupPlanService.query()
             .subscribe((res: ResponseWrapper) => { this.followupplans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.patientService.allAsSelectOptions()
-            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.questionnaireService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.registerChangeInProcedureBookings();
@@ -90,6 +88,14 @@ export class DataEntryComponent implements OnInit, OnDestroy {
 
     trackQuestionnaireById(index: number, item: Questionnaire) {
         return item.id;
+    }
+
+    filterInputChanged(event: any) {
+        this.patientService.allAsSelectOptions({
+            page: 0,
+            query: event,
+            size: 20})
+            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     onPatientSelected(option: IOption) {

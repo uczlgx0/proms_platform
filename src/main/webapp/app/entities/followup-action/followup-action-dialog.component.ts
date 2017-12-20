@@ -59,8 +59,6 @@ export class FollowupActionDialogComponent implements OnInit, OnDestroy {
         this.isSaving = false;
         this.followupPlanService.query()
             .subscribe((res: ResponseWrapper) => { this.followupplans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.patientService.allAsSelectOptions()
-            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.questionnaireService.allAsSelectOptions()
             .subscribe((res: ResponseWrapper) => { this.questionnaires = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
@@ -97,6 +95,14 @@ export class FollowupActionDialogComponent implements OnInit, OnDestroy {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
+    }
+
+    filterInputChanged(event: any) {
+        this.patientService.allAsSelectOptions({
+            page: 0,
+            query: event,
+            size: 20})
+            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     trackFollowupPlanById(index: number, item: FollowupPlan) {

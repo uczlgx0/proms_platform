@@ -58,8 +58,6 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.patientService.allAsSelectOptions()
-            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.followupPlanService
             .query({filter: 'procedurebooking-is-null'})
             .subscribe((res: ResponseWrapper) => {
@@ -98,6 +96,14 @@ export class ProcedureBookingDialogComponent implements OnInit {
             this.procedureBooking.patient = new Patient();
         }
         this.procedureBooking.patient.id = parseInt(option.value);
+    }
+
+    filterInputChanged(event: any) {
+        this.patientService.allAsSelectOptions({
+            page: 0,
+            query: event,
+            size: 20})
+            .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     save() {

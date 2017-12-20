@@ -12,7 +12,9 @@
             <label class="col-sm-2 col-form-label" for="field_patient">Patient</label>
             <div class="col-sm-10">
                 <ng-select class="form-control" name="patient" id="field_patient"
-                           placeholder="Type/Select patient name"
+                           placeholder="Select patient"
+                           filterPlaceholder="Enter name or NHS number to search..."
+                           (noOptionsFound)="filterInputChanged($event)"
                            [options]="patients"
                            (selected)="onPatientSelected($event)"
                            [(ngModel)]="patientId">
