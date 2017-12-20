@@ -15,6 +15,7 @@ import { FollowupAction, ActionType, FollowupActionService } from '../entities/f
 import { FollowupPlan, FollowupPlanService } from '../entities/followup-plan';
 import { Patient, PatientService } from '../entities/patient';
 import { ProcedureBooking, ProcedureBookingService } from '../entities/procedure-booking';
+import { ProcedureService } from '../entities/procedure/procedure.service';
 import { Questionnaire, QuestionnaireService } from '../entities/questionnaire';
 import {IOption} from 'ng-select';
 import { MoxfqComponent } from '../forms/moxfq.component';
@@ -50,11 +51,12 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         dateFormat: 'dd/mm/yyyy',
         minYear: 1850
     };
+    proceduresLookup: any;
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private parseLinks: JhiParseLinks,
-        private followupActionService: FollowupActionService,
+        private procedureService: ProcedureService,
         private followupPlanService: FollowupPlanService,
         private patientService: PatientService,
         private procedureBookingService: ProcedureBookingService,
@@ -66,6 +68,12 @@ export class DataEntryComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.isSaving = false;
+        // load procedures lookup
+        this.procedureService.allAsSelectOptions().subscribe((res: ResponseWrapper) => {
+                this.proceduresLookup = _.indexBy(res.json, 'value');
+            },
+            (res: ResponseWrapper) => this.onError(res.json())
+        );
         this.followupPlanService.query()
             .subscribe((res: ResponseWrapper) => { this.followupplans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.questionnaireService.allAsSelectOptions()

@@ -81,7 +81,7 @@
                                     <td>{{procedureBooking.consultantName}}</td>
                                     <td>{{procedureBooking.hospitalSite}}</td>
                                     <td>{{procedureBooking.performedDate | date:'medium'}}</td>
-                                    <td>{{procedureBooking.primaryProcedure}}</td>
+                                    <td>{{proceduresLookup[procedureBooking.primaryProcedure].label}}</td>
                                     <td class="text-right">
                                         <div class="form-check">
                                             <label class="form-check-label">

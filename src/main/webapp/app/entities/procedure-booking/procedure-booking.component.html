@@ -55,7 +55,7 @@
                     <!--</td>-->
                     <td>{{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</td>
                     <td>{{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</td>
-                    <td>{{procedureBooking.primaryProcedure}}</td>
+                    <td>{{proceduresLookup[procedureBooking.primaryProcedure].label}}</td>
                     <!--<td>{{procedureBooking.otherProcedures}}</td>-->
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
