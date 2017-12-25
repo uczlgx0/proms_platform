@@ -59,11 +59,8 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        console.log("this.procedureBooking  = " , this.procedureBooking );
         if(this.procedureBooking.scheduledDate) {
-            console.log("this.procedureBooking.scheduledDate  = " , this.procedureBooking.scheduledDate );
             let scheduledDate: Date = new Date(this.procedureBooking.scheduledDate);
-            console.log("scheduledDate  = " , scheduledDate );
             this.selectedScheduledDate = {year: scheduledDate.getFullYear(),
                 month: scheduledDate.getMonth() + 1,
                 day: scheduledDate.getDate()};
