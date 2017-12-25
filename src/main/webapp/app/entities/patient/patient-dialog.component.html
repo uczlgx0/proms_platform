@@ -7,69 +7,63 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <!--<div class="form-group" [hidden]="!patient.id">-->
-            <!--<label for="id">ID</label>-->
-            <!--<input type="text" class="form-control" id="id" name="id"-->
-                   <!--[(ngModel)]="patient.id" readonly />-->
-        <!--</div>-->
-        <div class="form-group">
-            <label class="form-control-label" for="field_familyName">Family Name</label>
-            <input type="text" class="form-control" name="familyName" id="field_familyName"
-                [(ngModel)]="patient.familyName" required/>
-            <div [hidden]="!(editForm.controls.familyName?.dirty && editForm.controls.familyName?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.familyName?.errors?.required">
-                   This field is required.
-                </small>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_familyName">Family Name</label>
+                <input type="text" class="form-control" name="familyName" id="field_familyName"
+                       [(ngModel)]="patient.familyName" required/>
+                <div [hidden]="!(editForm.controls.familyName?.dirty && editForm.controls.familyName?.invalid)">
+                    <small class="form-text text-danger"
+                           [hidden]="!editForm.controls.familyName?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_givenName">Given Name</label>
+                <input type="text" class="form-control" name="givenName" id="field_givenName"
+                       [(ngModel)]="patient.givenName" required/>
+                <div [hidden]="!(editForm.controls.givenName?.dirty && editForm.controls.givenName?.invalid)">
+                    <small class="form-text text-danger"
+                           [hidden]="!editForm.controls.givenName?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_givenName">Given Name</label>
-            <input type="text" class="form-control" name="givenName" id="field_givenName"
-                [(ngModel)]="patient.givenName" required/>
-            <div [hidden]="!(editForm.controls.givenName?.dirty && editForm.controls.givenName?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.givenName?.errors?.required">
-                   This field is required.
-                </small>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_birthDate">Birth Date</label>
+                <my-date-picker class="form-control" id="field_birthDate" name="birthDate" [options]="datePickerOptions"
+                                (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" required></my-date-picker>
+                <div [hidden]="!(editForm.controls.birthDate?.dirty && editForm.controls.birthDate?.invalid)">
+                    <small class="form-text text-danger"
+                           [hidden]="!editForm.controls.birthDate?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_gender">Gender</label>
+                <select class="form-control" name="gender" [(ngModel)]="patient.gender" id="field_gender" >
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                    <option value="OTHER">OTHER</option>
+                    <option value="UNKNOWN">UNKNOWN</option>
+                </select>
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_birthDate">Birth Date</label>
-            <!--<div class="input-group">-->
-                <!--<input id="field_birthDate" type="text" class="form-control" name="birthDate" ngbDatepicker  #birthDateDp="ngbDatepicker" [(ngModel)]="patient.birthDate"-->
-                       <!--required/>-->
-                <!--<span class="input-group-btn">-->
-                    <!--<button type="button" class="btn btn-secondary" (click)="birthDateDp.toggle()"><i class="fa fa-calendar"></i></button>-->
-                <!--</span>-->
-            <!--</div>-->
-            <my-date-picker class="form-control" id="field_birthDate" name="birthDate" [options]="datePickerOptions"
-                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" required></my-date-picker>
-            <div [hidden]="!(editForm.controls.birthDate?.dirty && editForm.controls.birthDate?.invalid)">
-                <small class="form-text text-danger"
-                       [hidden]="!editForm.controls.birthDate?.errors?.required">
-                    This field is required.
-                </small>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_nhsNumber">Nhs Number</label>
+                <input type="number" class="form-control" name="nhsNumber" id="field_nhsNumber"
+                       [(ngModel)]="patient.nhsNumber" />
             </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_gender">Gender</label>
-            <select class="form-control" name="gender" [(ngModel)]="patient.gender" id="field_gender" >
-                <option value="MALE">MALE</option>
-                <option value="FEMALE">FEMALE</option>
-                <option value="OTHER">OTHER</option>
-                <option value="UNKNOWN">UNKNOWN</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_nhsNumber">Nhs Number</label>
-            <input type="number" class="form-control" name="nhsNumber" id="field_nhsNumber"
-                [(ngModel)]="patient.nhsNumber" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_email">Email</label>
-            <input type="text" class="form-control" name="email" id="field_email"
-                [(ngModel)]="patient.email" />
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_email">Email</label>
+                <input type="text" class="form-control" name="email" id="field_email"
+                       [(ngModel)]="patient.email" />
+            </div>
         </div>
 
     </div>
