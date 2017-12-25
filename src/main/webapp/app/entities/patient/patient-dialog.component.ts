@@ -36,11 +36,9 @@ export class PatientDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         if(this.patient.birthDate) {
-            console.log("this.patient.birthDate  = " , this.patient.birthDate );
             this.selectedDate = {year: this.patient.birthDate.year,
                 month: this.patient.birthDate.month ,
                 day: this.patient.birthDate.day};
-            console.log("this.selectedDate  = " , this.selectedDate );
         }
     }
 
@@ -49,13 +47,15 @@ export class PatientDialogComponent implements OnInit {
     }
 
     onDateChanged(event: IMyDateModel) {
-        // Update value of selectedDate variable
+        // update selected date
         this.selectedDate = event.date;
         this.patient.birthDate = event;
     }
 
     save() {
         this.isSaving = true;
+        // assign dob from selected date; otherwise updates won't have dob
+        this.patient.birthDate = this.selectedDate;
         if (this.patient.id !== undefined) {
             this.subscribeToSaveResponse(
                 this.patientService.update(this.patient));
