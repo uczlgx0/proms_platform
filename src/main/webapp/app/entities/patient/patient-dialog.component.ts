@@ -9,7 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Patient } from './patient.model';
 import { PatientPopupService } from './patient-popup.service';
 import { PatientService } from './patient.service';
-import {IMyDpOptions} from 'mydatepicker';
+import {IMyDate, IMyDateModel, IMyDpOptions} from 'mydatepicker';
 
 @Component({
     selector: 'jhi-patient-dialog',
@@ -19,6 +19,7 @@ export class PatientDialogComponent implements OnInit {
 
     patient: Patient;
     isSaving: boolean;
+    selectedDate: IMyDate;
     public datePickerOptions: IMyDpOptions = {
         dateFormat: 'dd/mm/yyyy',
         minYear: 1850
@@ -34,10 +35,23 @@ export class PatientDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        if(this.patient.birthDate) {
+            console.log("this.patient.birthDate  = " , this.patient.birthDate );
+            this.selectedDate = {year: this.patient.birthDate.year,
+                month: this.patient.birthDate.month ,
+                day: this.patient.birthDate.day};
+            console.log("this.selectedDate  = " , this.selectedDate );
+        }
     }
 
     clear() {
         this.activeModal.dismiss('cancel');
+    }
+
+    onDateChanged(event: IMyDateModel) {
+        // Update value of selectedDate variable
+        this.selectedDate = event.date;
+        this.patient.birthDate = event;
     }
 
     save() {

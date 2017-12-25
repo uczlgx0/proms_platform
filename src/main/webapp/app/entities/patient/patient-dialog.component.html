@@ -44,7 +44,7 @@
                 <!--</span>-->
             <!--</div>-->
             <my-date-picker class="form-control" id="field_birthDate" name="birthDate" [options]="datePickerOptions"
-                            [(ngModel)]="patient.birthDate" required></my-date-picker>
+                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" required></my-date-picker>
             <div [hidden]="!(editForm.controls.birthDate?.dirty && editForm.controls.birthDate?.invalid)">
                 <small class="form-text text-danger"
                        [hidden]="!editForm.controls.birthDate?.errors?.required">
