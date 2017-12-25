@@ -44,10 +44,12 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     consultants: Array<IOption>;
     locations: Array<IOption>;
     procedures: Array<IOption>;
+    genders: Array<IOption>;
     proceduresLookup: any;
     selectedConsultant: any;
     selectedLocation: any;
     selectedProcedure: any;
+    selectedGender: any;
     ageRange = [10, 100];
 
     constructor(
@@ -94,6 +96,8 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
                 this.proceduresLookup = _.indexBy(res.json, 'value');
             },
             (res: ResponseWrapper) => this.onError(res.json()));
+        // set genders
+        this.genders =[{value: 'MALE', label: 'Male'}, {value: 'FEMALE', label: 'Female'}];
 
         this.registerChangeInFollowupActions();
     }
@@ -184,6 +188,12 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.search(null);
     }
 
+    onGenderSelected(option: IOption) {
+        this.query.genders = [];
+        this.query.genders.push(option.value);
+        this.search(null);
+    }
+
     onAgeChange(event: any) {
         this.search(null);
     }
@@ -212,6 +222,12 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     clearProcedures() {
         this.query.procedures = [];
         this.selectedProcedure = null;
+        this.search(null);
+    }
+
+    clearGenders() {
+        this.query.genders = [];
+        this.selectedGender = null;
         this.search(null);
     }
 

@@ -167,7 +167,7 @@ public class FollowupActionServiceImpl implements FollowupActionService{
 
         BoolQueryBuilder genderQueryBuilder = QueryBuilders.boolQuery();
         for(String gender : query.getGenders()) {
-            genderQueryBuilder.should(QueryBuilders.matchQuery("patient.gender", gender));
+            genderQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.patient.gender", gender));
         }
 
         if(query.getMinAge() != null) {
@@ -240,7 +240,7 @@ public class FollowupActionServiceImpl implements FollowupActionService{
             .addAggregation(new TermsBuilder("procedures").field("followupPlan.procedureBooking.primaryProcedure").size(100).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("consultants").field("followupPlan.procedureBooking.consultantName").size(100).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("locations").field("followupPlan.procedureBooking.hospitalSite").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("genders").field("patient.gender").size(5).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("genders").field("followupPlan.patient.gender").size(5).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("phases").field("phase").size(10).order(Terms.Order.term(true)))
             .build();
 
