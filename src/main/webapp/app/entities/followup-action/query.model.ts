@@ -6,7 +6,8 @@ export class Query {
                 public phases?:Array<string>,
                 public types?:Array<string>,
                 public patientIds?:Array<string>,
-                public age?:number,
+                public minAge?:number,
+                public maxAge?:number,
                 public token?:string) {
         this.procedures = [];
         this.locations = [];

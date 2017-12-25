@@ -17,7 +17,8 @@ public class QueryModel {
     List<String> phases = new ArrayList<>();
     List<String> types = new ArrayList<>();
     List<String> genders = new ArrayList<>();
-    Integer age;
+    Integer minAge;
+    Integer maxAge;
     String token;
 
     public List<String> getProcedures() {
@@ -76,12 +77,20 @@ public class QueryModel {
         this.genders = genders;
     }
 
-    public Integer getAge() {
-        return age;
+    public Integer getMinAge() {
+        return minAge;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setMinAge(Integer minAge) {
+        this.minAge = minAge;
+    }
+
+    public Integer getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(Integer maxAge) {
+        this.maxAge = maxAge;
     }
 
     public String getToken() {
@@ -94,7 +103,8 @@ public class QueryModel {
 
     public boolean isEmpty() {
         return procedures.isEmpty() && consultants.isEmpty() && locations.isEmpty() && phases.isEmpty()
-            && patientIds.isEmpty() && types.isEmpty() && genders.isEmpty() && (age == null) && (token == null);
+            && patientIds.isEmpty() && types.isEmpty() && genders.isEmpty() && (minAge == null) && (maxAge == null)
+            && (token == null);
     }
 
     @Override
@@ -107,7 +117,8 @@ public class QueryModel {
         sb.append(", phases=").append(phases);
         sb.append(", types=").append(types);
         sb.append(", genders=").append(genders);
-        sb.append(", age=").append(age);
+        sb.append(", minAge=").append(minAge);
+        sb.append(", maxAge=").append(maxAge);
         sb.append(", token='").append(token).append('\'');
         sb.append('}');
         return sb.toString();

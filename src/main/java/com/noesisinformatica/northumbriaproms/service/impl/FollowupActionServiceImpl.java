@@ -170,14 +170,17 @@ public class FollowupActionServiceImpl implements FollowupActionService{
             genderQueryBuilder.should(QueryBuilders.matchQuery("patient.gender", gender));
         }
 
-        if(query.getAge() != null) {
+        if(query.getMinAge() != null) {
             boolQueryBuilder.must(
-                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("patient.age.value").lte(query.getAge()))
-                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("patient.age.value")))
+                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("followupPlan.procedureBooking.patientAge").gte(query.getMinAge()))
+                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("followupPlan.procedureBooking.patientAge")))
             );
+        }
+
+        if(query.getMaxAge() != null) {
             boolQueryBuilder.must(
-                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("patient.age.value").gte(query.getAge()))
-                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("patient.age.value")))
+                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("followupPlan.procedureBooking.patientAge").lte(query.getMaxAge()))
+                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("followupPlan.procedureBooking.patientAge")))
             );
         }
 
