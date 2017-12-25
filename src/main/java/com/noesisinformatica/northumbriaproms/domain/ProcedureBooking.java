@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
 
@@ -56,6 +57,9 @@ public class ProcedureBooking implements Serializable {
     @JsonIgnore
     @JoinColumn(unique = true)
     private FollowupPlan followupPlan;
+
+    @Column(name = "patient_age")
+    private Integer patientAge;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -166,10 +170,35 @@ public class ProcedureBooking implements Serializable {
         return this;
     }
 
+    public Integer getPatientAge() {
+        return patientAge;
+    }
+
+    public void setPatientAge(Integer patientAge) {
+        this.patientAge = patientAge;
+    }
+
     public void setFollowupPlan(FollowupPlan followupPlan) {
         this.followupPlan = followupPlan;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
+
+    @PrePersist @PreUpdate
+    public void setAge() {
+        /*
+            NOTE this could change between scheduledDate and completionDate, we need need both prePersist and preUpdate.
+            We set default value from current date. Then we first see if complete date is set, if so we use it.
+            Otherwise since scheduled date is mandatory, we use it
+         */
+        int age = Period.between(getPatient().getBirthDate(), LocalDate.now()).getYears();
+        if(getPerformedDate() != null) {
+            age = Period.between(getPatient().getBirthDate(), getPerformedDate()).getYears();
+        } else if (getScheduledDate() != null) {
+            age = Period.between(getPatient().getBirthDate(), getScheduledDate()).getYears();
+        }
+        // set age of patient at time of surgery
+        this.setPatientAge(age);
+    }
 
     @Override
     public boolean equals(Object o) {

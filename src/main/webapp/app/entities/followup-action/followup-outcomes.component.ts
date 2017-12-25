@@ -48,6 +48,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     selectedConsultant: any;
     selectedLocation: any;
     selectedProcedure: any;
+    ageRange = [10, 100];
 
     constructor(
         private followupActionService: FollowupActionService,
@@ -73,6 +74,8 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.query = new Query();
+        this.query.minAge = this.ageRange[0];
+        this.query.maxAge = this.ageRange[1];
         this.loadAll();
         this.principal.identity().then((account) => {
             this.currentAccount = account;
@@ -96,6 +99,9 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        // update min and max ages for query
+        this.query.minAge = this.ageRange[0];
+        this.query.maxAge = this.ageRange[1];
         if (this.currentSearch) {
             this.followupActionService.search({
                 page: this.page - 1,
@@ -178,11 +184,16 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.search(null);
     }
 
+    onAgeChange(event: any) {
+        this.search(null);
+    }
+
     clearFilters() {
         this.query = new Query();
         this.selectedProcedure = null;
         this.selectedConsultant = null;
         this.selectedLocation = null;
+        this.ageRange = [10, 100];
         this.search(null);
     }
 

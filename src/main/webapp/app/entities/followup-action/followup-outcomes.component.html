@@ -30,7 +30,8 @@
             <h4>
                 Search Filters
                 <button class="btn btn-sm btn-warning float-right" (click)="clearFilters()"
-                        *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0"
+                        *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0
+                        || query.minAge !== 10 || query.maxAge !== 100"
                     >Clear</button>
             </h4>
             <form>
@@ -78,6 +79,13 @@
             </form>
         </div>
         <div class="col-md-9">
+            <div class="form-group row">
+                <label for="ageSlider" class="col-sm-2 col-form-label"><strong>Patient Age</strong></label>
+                <div class="col-sm-10">
+                    <nouislider id="ageSlider" [connect]="true" [min]="0" [max]="150" [step]="1" [(ngModel)]="ageRange"
+                                (ngModelChange)="onAgeChange($event)" [tooltips]="[true, true]"></nouislider>
+                </div>
+            </div>
             <div class="table-responsive" *ngIf="followupActions?.length > 0">
                 <table class="table table-striped">
                     <thead>
