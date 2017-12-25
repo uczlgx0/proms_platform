@@ -92,19 +92,11 @@ export class ProcedureBookingService {
      */
     private convert(procedureBooking: ProcedureBooking): ProcedureBooking {
         const copy: ProcedureBooking = Object.assign({}, procedureBooking);
-        console.log("procedureBooking.scheduledDate  = " , procedureBooking.scheduledDate );
-        console.log("procedureBooking.performedDate  = " , procedureBooking.performedDate );
-        copy.scheduledDate = this.dateUtils.convertLocalDateToServer(procedureBooking.scheduledDate.date);
+        copy.scheduledDate = this.dateUtils.convertLocalDateToServer(procedureBooking.scheduledDate);
 
         if (procedureBooking.performedDate) {
-            copy.performedDate = this.dateUtils.convertLocalDateToServer(procedureBooking.performedDate.date);
+            copy.performedDate = this.dateUtils.convertLocalDateToServer(procedureBooking.performedDate);
         }
-        console.log("procedureBooking.patient.birthDate  = " , procedureBooking.patient.birthDate );
-        console.log("copy  = " , copy );
-        //copy.patient.birthDate = this.dateUtils.convertLocalDateToServer(procedureBooking.patient.birthDate);
-        //copy.patient.birthDate = this.dateUtils.toDate(new Date().toISOString().slice(0,10));
-        //copy.patient = null;
-        console.log("copy  = " , copy );
         return copy;
     }
 }

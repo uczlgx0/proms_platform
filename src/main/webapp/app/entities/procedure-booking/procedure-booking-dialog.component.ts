@@ -18,7 +18,7 @@ import { Patient, PatientService } from '../patient';
 import { FollowupPlan, FollowupPlanService } from '../followup-plan';
 import { ResponseWrapper } from '../../shared';
 import {IOption} from 'ng-select';
-import {IMyDpOptions} from 'mydatepicker';
+import { IMyDate, IMyDateModel, IMyDpOptions } from 'mydatepicker';
 
 @Component({
     selector: 'jhi-procedure-booking-dialog',
@@ -40,7 +40,8 @@ export class ProcedureBookingDialogComponent implements OnInit {
     locations: Array<IOption>;
     procedures: Array<IOption>;
     proceduresLookup: any;
-
+    selectedScheduledDate: IMyDate;
+    selectedPerformedDate: IMyDate;
     followupplans: FollowupPlan[];
 
     constructor(
@@ -58,6 +59,21 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        console.log("this.procedureBooking  = " , this.procedureBooking );
+        if(this.procedureBooking.scheduledDate) {
+            console.log("this.procedureBooking.scheduledDate  = " , this.procedureBooking.scheduledDate );
+            let scheduledDate: Date = new Date(this.procedureBooking.scheduledDate);
+            console.log("scheduledDate  = " , scheduledDate );
+            this.selectedScheduledDate = {year: scheduledDate.getFullYear(),
+                month: scheduledDate.getMonth() + 1,
+                day: scheduledDate.getDate()};
+        }
+        if(this.procedureBooking.performedDate) {
+            let performedDate: Date = new Date(this.procedureBooking.performedDate);
+            this.selectedPerformedDate = {year: performedDate.getFullYear(),
+                month: performedDate.getMonth() + 1,
+                day: performedDate.getDate()};
+        }
         this.followupPlanService
             .query({filter: 'procedurebooking-is-null'})
             .subscribe((res: ResponseWrapper) => {
@@ -91,6 +107,18 @@ export class ProcedureBookingDialogComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
+    onScheduledDateChanged(event: IMyDateModel) {
+        // Update scheduled date
+        this.selectedScheduledDate = event.date;
+        this.procedureBooking.scheduledDate = event;
+    }
+
+    onPerformedDateChanged(event: IMyDateModel) {
+        // Update scheduled date
+        this.selectedPerformedDate = event.date;
+        this.procedureBooking.performedDate = event;
+    }
+
     onPatientSelected(option: IOption) {
         if(!this.procedureBooking.patient) {
             this.procedureBooking.patient = new Patient();
@@ -108,6 +136,9 @@ export class ProcedureBookingDialogComponent implements OnInit {
 
     save() {
         this.isSaving = true;
+        // reassign scheduled and performed dates
+        this.procedureBooking.scheduledDate = this.selectedScheduledDate;
+        this.procedureBooking.performedDate = this.selectedPerformedDate;
         if (this.procedureBooking.id !== undefined) {
             this.subscribeToSaveResponse(
                 this.procedureBookingService.update(this.procedureBooking));

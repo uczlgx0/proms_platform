@@ -76,14 +76,14 @@
                     <!--<input id="field_scheduledDate" type="datetime-local" class="form-control" name="scheduledDate" [(ngModel)]="procedureBooking.scheduledDate"-->
                         <!--/>-->
                     <my-date-picker class="form-control" id="field_scheduledDate" name="scheduledDate" [options]="myDatePickerOptions"
-                                    [(ngModel)]="procedureBooking.scheduledDate" required></my-date-picker>
+                                    (dateChanged)="onScheduledDateChanged($event)" [selDate]="selectedScheduledDate" required></my-date-picker>
                 <!--</div>-->
             </div>
             <div class="col-md-6">
                 <label class="form-control-label" for="field_performedDate">Performed Date</label>
                 <!--<div class="d-flex">-->
                 <my-date-picker class="form-control" id="field_performedDate" name="performedDate" [options]="myDatePickerOptions"
-                                [(ngModel)]="procedureBooking.performedDate"></my-date-picker>
+                                (dateChanged)="onPerformedDateChanged($event)" [selDate]="selectedPerformedDate" ></my-date-picker>
                     <!--<input id="field_performedDate" type="datetime-local" class="form-control" name="performedDate" [(ngModel)]="procedureBooking.performedDate"-->
                         <!--/>-->
                 <!--</div>-->
