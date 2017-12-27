@@ -10,6 +10,7 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 export class AddressService {
 
     private resourceUrl = SERVER_API_URL + 'api/addresses';
+    private patientResourceUrl = SERVER_API_URL + 'api/patient/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/addresses';
 
     constructor(private http: Http) { }
@@ -35,6 +36,11 @@ export class AddressService {
             const jsonResponse = res.json();
             return this.convertItemFromServer(jsonResponse);
         });
+    }
+
+    findByPatientId(id: any): Observable<ResponseWrapper> {
+        return this.http.get(this.patientResourceUrl+id+'/addresses')
+            .map((res: Response) => this.convertResponse(res));
     }
 
     query(req?: any): Observable<ResponseWrapper> {

@@ -20,6 +20,7 @@ export class AddressDialogComponent implements OnInit {
 
     address: Address;
     isSaving: boolean;
+    hidePatients: boolean;
 
     patients: Patient[];
 
@@ -34,6 +35,7 @@ export class AddressDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        console.log("this.address  = " , this.address );
         this.patientService.query()
             .subscribe((res: ResponseWrapper) => { this.patients = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
@@ -75,6 +77,10 @@ export class AddressDialogComponent implements OnInit {
     trackPatientById(index: number, item: Patient) {
         return item.id;
     }
+
+    deleteLine(index: any) {
+        this.address.lines.splice(index, 1);
+    }
 }
 
 @Component({
@@ -94,10 +100,13 @@ export class AddressPopupComponent implements OnInit, OnDestroy {
         this.routeSub = this.route.params.subscribe((params) => {
             if ( params['id'] ) {
                 this.addressPopupService
-                    .open(AddressDialogComponent as Component, params['id']);
+                    .open(AddressDialogComponent as Component, params['id'], false);
+            } else if ( params['patientId'] ) {
+                this.addressPopupService
+                    .open(AddressDialogComponent as Component, params['patientId'], true);
             } else {
                 this.addressPopupService
-                    .open(AddressDialogComponent as Component);
+                    .open(AddressDialogComponent as Component, null, true);
             }
         });
     }

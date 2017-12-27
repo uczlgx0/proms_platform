@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
@@ -57,6 +59,19 @@ public class AddressServiceImpl implements AddressService{
     public Page<Address> findAll(Pageable pageable) {
         log.debug("Request to get all Addresses");
         return addressRepository.findAll(pageable);
+    }
+
+    /**
+     * Get all the addresses for patient.
+     *
+     * @param patientId the id of patient
+     * @return the list of addresses
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Address> findAllForPatientId(Long patientId) {
+        log.debug("Request to get all Addresses for Patient Id {}", patientId);
+        return addressRepository.findAllByPatientId(patientId);
     }
 
     /**

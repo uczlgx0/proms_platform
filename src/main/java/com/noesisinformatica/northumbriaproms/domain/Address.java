@@ -1,6 +1,5 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -48,7 +47,7 @@ public class Address implements Serializable {
     private String country;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
     private Patient patient;
 
     public Address() {

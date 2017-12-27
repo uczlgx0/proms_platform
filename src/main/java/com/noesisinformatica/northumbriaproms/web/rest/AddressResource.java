@@ -2,12 +2,12 @@ package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.noesisinformatica.northumbriaproms.domain.Address;
+import com.noesisinformatica.northumbriaproms.service.AddressQueryService;
 import com.noesisinformatica.northumbriaproms.service.AddressService;
+import com.noesisinformatica.northumbriaproms.service.dto.AddressCriteria;
 import com.noesisinformatica.northumbriaproms.web.rest.errors.BadRequestAlertException;
 import com.noesisinformatica.northumbriaproms.web.rest.util.HeaderUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.PaginationUtil;
-import com.noesisinformatica.northumbriaproms.service.dto.AddressCriteria;
-import com.noesisinformatica.northumbriaproms.service.AddressQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Address.
@@ -117,6 +113,20 @@ public class AddressResource {
         log.debug("REST request to get Address : {}", id);
         Address address = addressService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(address));
+    }
+
+    /**
+     * GET  /patient/:id/addresses : get the addresses of "id" patient.
+     *
+     * @param id the id of the patient to retrieve addresses for
+     * @return the ResponseEntity with status 200 (OK) and with body the addresses list, or with status 404 (Not Found)
+     */
+    @GetMapping("/patient/{id}/addresses")
+    @Timed
+    public ResponseEntity<List<Address>> getAddressForPatientId(@PathVariable Long id) {
+        log.debug("REST request to get Address for Patient Id : {}", id);
+        List<Address> addresses = addressService.findAllForPatientId(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(addresses));
     }
 
     /**
