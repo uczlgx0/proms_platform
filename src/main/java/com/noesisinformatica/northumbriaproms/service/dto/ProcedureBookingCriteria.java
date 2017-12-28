@@ -1,5 +1,6 @@
 package com.noesisinformatica.northumbriaproms.service.dto;
 
+import com.noesisinformatica.northumbriaproms.domain.enumeration.Laterality;
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
@@ -17,6 +18,13 @@ import java.io.Serializable;
  * fix type specific filters.
  */
 public class ProcedureBookingCriteria implements Serializable {
+
+    /**
+     * Class for filtering Laterality
+     */
+    public static class LateralityFilter extends Filter<Laterality> {
+    }
+
     private static final long serialVersionUID = 1L;
 
 
@@ -31,6 +39,8 @@ public class ProcedureBookingCriteria implements Serializable {
     private LocalDateFilter performedDate;
 
     private StringFilter primaryProcedure;
+
+    private LateralityFilter side;
 
     private StringFilter otherProcedures;
 
@@ -113,6 +123,14 @@ public class ProcedureBookingCriteria implements Serializable {
         this.followupPlanId = followupPlanId;
     }
 
+    public LateralityFilter getSide() {
+        return side;
+    }
+
+    public void setSide(LateralityFilter side) {
+        this.side = side;
+    }
+
     @Override
     public String toString() {
         return "ProcedureBookingCriteria{" +
@@ -122,6 +140,7 @@ public class ProcedureBookingCriteria implements Serializable {
                 (scheduledDate != null ? "scheduledDate=" + scheduledDate + ", " : "") +
                 (performedDate != null ? "performedDate=" + performedDate + ", " : "") +
                 (primaryProcedure != null ? "primaryProcedure=" + primaryProcedure + ", " : "") +
+                (side != null ? "side=" + side + ", " : "") +
                 (otherProcedures != null ? "otherProcedures=" + otherProcedures + ", " : "") +
                 (patientId != null ? "patientId=" + patientId + ", " : "") +
                 (followupPlanId != null ? "followupPlanId=" + followupPlanId + ", " : "") +

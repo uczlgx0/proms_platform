@@ -160,6 +160,11 @@ public class FollowupActionServiceImpl implements FollowupActionService{
             phaseQueryBuilder.should(QueryBuilders.matchQuery("phases", phase));
         }
 
+        BoolQueryBuilder lateralityQueryBuilder = QueryBuilders.boolQuery();
+        for(String phase : query.getSides()) {
+            lateralityQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.procedureBooking.side", phase));
+        }
+
         BoolQueryBuilder typeQueryBuilder = QueryBuilders.boolQuery();
         for(String type : query.getTypes()) {
             typeQueryBuilder.should(QueryBuilders.matchQuery("type", type));
@@ -197,6 +202,11 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         // we only add phases clause if there are more than 1 phase specified
         if (query.getPhases().size() > 0){
             boolQueryBuilder.must(phaseQueryBuilder);
+        }
+
+        // we only add laterality clause if there are more than 1 sides specified
+        if (query.getSides().size() > 0){
+            boolQueryBuilder.must(lateralityQueryBuilder);
         }
 
         // we only add consultants clause if there are more than 1 consultant specified
