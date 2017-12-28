@@ -50,6 +50,13 @@ public interface FollowupActionService {
     FacetedPage<FollowupAction> findAllWithCategories(Pageable pageable);
 
     /**
+     *  Index all the followup actions.
+     *
+     *  @return the boolean that represents the success of the index action
+     */
+    boolean indexAll();
+
+    /**
      * Search for the followupAction corresponding to the query.
      *
      * @param query the query of the search

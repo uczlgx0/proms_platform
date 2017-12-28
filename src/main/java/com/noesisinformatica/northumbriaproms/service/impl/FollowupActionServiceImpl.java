@@ -5,6 +5,7 @@ import com.noesisinformatica.northumbriaproms.repository.FollowupActionRepositor
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupActionSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
 import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -113,6 +114,34 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         log.debug("Request to search for a page of Trials for page {}", pageable);
         // build and return match all query
         return getFacetedPageForQuery(QueryBuilders.matchAllQuery(), pageable);
+    }
+
+    /**
+     *  Index all the followup actions.
+     *
+     *  @return the boolean that represents the success of the index action
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public boolean indexAll() {
+        log.debug("Request to index followup actions");
+        boolean result = false;
+
+        // delete existing indices
+        try {
+            elasticsearchTemplate.deleteIndex(FollowupAction.class);
+        } catch (IndexNotFoundException e) {
+            log.error("Error deleting indices. Assuming index does not exist.");
+        }
+
+        try {
+            followupActionRepository.findAll().forEach(followupActionSearchRepository::save);
+            result = true;
+        } catch (Exception e) {
+            log.error("Error indexing followup actions .Nested exception is : ", e);
+        }
+
+        return result;
     }
 
     /**

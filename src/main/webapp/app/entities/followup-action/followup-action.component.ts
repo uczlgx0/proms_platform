@@ -142,6 +142,13 @@ export class FollowupActionComponent implements OnInit, OnDestroy {
         return item.id;
     }
 
+    indexAll() {
+        this.followupActionService.indexAll().subscribe(
+            (res: ResponseWrapper) => {console.log("this.res  = " , res.json )},
+            (res: ResponseWrapper) => this.onError(res.json)
+        )
+    }
+
     registerChangeInFollowupActions() {
         this.eventSubscriber = this.eventManager.subscribe('followupActionListModification', (response) => this.loadAll());
     }

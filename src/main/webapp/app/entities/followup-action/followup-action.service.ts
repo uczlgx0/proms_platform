@@ -14,6 +14,7 @@ export class FollowupActionService {
     private resourceUrl = SERVER_API_URL + 'api/followup-actions';
     private patientResourceUrl = SERVER_API_URL + 'api/patient/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/followup-actions';
+    private resourceIndexUrl = SERVER_API_URL + 'api/_index/followup-actions';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
@@ -54,6 +55,11 @@ export class FollowupActionService {
 
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
+    }
+
+    indexAll(): Observable<ResponseWrapper> {
+        return this.http.get(this.resourceIndexUrl)
+            .map((res: Response) => this.convertResponse(res));
     }
 
     search(req?: any): Observable<ResponseWrapper> {

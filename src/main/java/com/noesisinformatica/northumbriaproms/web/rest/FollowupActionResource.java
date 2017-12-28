@@ -213,4 +213,22 @@ public class FollowupActionResource {
         return resultsMap;
     }
 
+    /**
+     * INDEX  /_index/followup-actions : index all followup-actions
+     *
+     * @return the result of the index action
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/_index/followup-actions")
+    @Timed
+    public ResponseEntity<Boolean> indexFollowupActions() throws URISyntaxException {
+        log.debug("REST request to bulk index all followup actions");
+        Boolean result = followupActionService.indexAll();
+        if (result) {
+            return ResponseEntity.ok().body(true);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
 }
