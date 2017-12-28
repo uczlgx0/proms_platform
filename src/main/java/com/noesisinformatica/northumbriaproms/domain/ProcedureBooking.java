@@ -1,6 +1,7 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.Laterality;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -57,6 +58,10 @@ public class ProcedureBooking implements Serializable {
     @JsonIgnore
     @JoinColumn(unique = true)
     private FollowupPlan followupPlan;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "side")
+    private Laterality side;
 
     @Column(name = "patient_age")
     private Integer patientAge;
@@ -168,6 +173,14 @@ public class ProcedureBooking implements Serializable {
     public ProcedureBooking followupPlan(FollowupPlan followupPlan) {
         this.followupPlan = followupPlan;
         return this;
+    }
+
+    public Laterality getSide() {
+        return side;
+    }
+
+    public void setSide(Laterality side) {
+        this.side = side;
     }
 
     public Integer getPatientAge() {

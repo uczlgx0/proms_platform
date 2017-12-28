@@ -44,6 +44,16 @@
         </div>
         <div class="col-md-6">
             <dl class="row-md jh-entity-details">
+                <dt><span>Primary Procedure</span></dt>
+                <dd>
+                    <span *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</span>
+                    <span class="alert-danger" *ngIf="procedureBooking.side">[{{procedureBooking.side}}]</span>
+                </dd>
+                <dt><span>Other Procedures</span></dt>
+                <dd>
+                    <span>{{procedureBooking.otherProcedures}}</span>
+                    <span class="alert-danger" *ngIf="procedureBooking.side && procedureBooking.otherProcedures">[{{procedureBooking.side}}]</span>
+                </dd>
                 <dt><span>Scheduled Date</span></dt>
                 <dd>
                     <span>{{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</span>
@@ -51,14 +61,6 @@
                 <dt><span>Performed Date</span></dt>
                 <dd>
                     <span>{{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</span>
-                </dd>
-                <dt><span>Primary Procedure</span></dt>
-                <dd>
-                    <span *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</span>
-                </dd>
-                <dt><span>Other Procedures</span></dt>
-                <dd>
-                    <span>{{procedureBooking.otherProcedures}}</span>
                 </dd>
                 <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span>Followup Plan</span></dt>
                 <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">

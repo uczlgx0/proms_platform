@@ -89,13 +89,6 @@
                 <!--</div>-->
             </div>
         </div>
-        <!--<div class="form-group">-->
-            <!--<label class="form-control-label" for="field_performedDate">Performed Date</label>-->
-            <!--<div class="d-flex">-->
-                <!--<input id="field_performedDate" type="datetime-local" class="form-control" name="performedDate" [(ngModel)]="procedureBooking.performedDate"-->
-                <!--/>-->
-            <!--</div>-->
-        <!--</div>-->
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="field_primaryProcedure">Primary Procedure</label>
             <div class="col-sm-10">
@@ -112,6 +105,21 @@
                    [hidden]="!editForm.controls.primaryProcedure?.errors?.required">
                    This field is required.
                 </small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label" for="field_phase">Side</label>
+            <div class="col-sm-10" id="field_phase">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox1" type="radio" name="side" [(ngModel)]="procedureBooking.side" value="LEFT"> Left
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox2" type="radio" name="side" [(ngModel)]="procedureBooking.side" value="RIGHT"> Right
+                    </label>
+                </div>
             </div>
         </div>
         <div class="form-group row">
