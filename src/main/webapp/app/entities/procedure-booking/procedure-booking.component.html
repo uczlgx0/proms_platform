@@ -55,7 +55,10 @@
                     <!--</td>-->
                     <td>{{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</td>
                     <td>{{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</td>
-                    <td>{{proceduresLookup[procedureBooking.primaryProcedure].label}}</td>
+                    <td>
+                        {{proceduresLookup[procedureBooking.primaryProcedure].label}}
+                        <span class="alert-danger" *ngIf="procedureBooking.side">[{{procedureBooking.side}}]</span>
+                    </td>
                     <!--<td>{{procedureBooking.otherProcedures}}</td>-->
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -95,6 +98,7 @@
                     <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-muted" *ngIf="proceduresLookup">
                             {{proceduresLookup[procedureBooking.primaryProcedure].label}}
+                            <span class="alert-danger" *ngIf="procedureBooking.side">[{{procedureBooking.side}}]</span>
                         </h6>
                     </div>
                     <ul class="list-group list-group-flush borderless">

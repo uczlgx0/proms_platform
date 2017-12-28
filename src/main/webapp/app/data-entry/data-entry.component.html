@@ -81,7 +81,10 @@
                                     <td>{{procedureBooking.consultantName}}</td>
                                     <td>{{procedureBooking.hospitalSite}}</td>
                                     <td>{{procedureBooking.performedDate | date:'medium'}}</td>
-                                    <td>{{proceduresLookup[procedureBooking.primaryProcedure].label}}</td>
+                                    <td>
+                                        {{proceduresLookup[procedureBooking.primaryProcedure].label}}
+                                        <span class="alert-danger" *ngIf="procedureBooking.side">[{{procedureBooking.side}}]</span>
+                                    </td>
                                     <td class="text-right">
                                         <div class="form-check">
                                             <label class="form-check-label">
