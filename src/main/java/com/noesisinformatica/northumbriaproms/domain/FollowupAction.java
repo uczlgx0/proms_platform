@@ -1,6 +1,7 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionStatus;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -33,6 +34,10 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
     @Enumerated(EnumType.STRING)
     @Column(name = "phase")
     private ActionPhase phase;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ActionStatus status = ActionStatus.UNINITIALISED;
 
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;
@@ -218,6 +223,19 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
             responseItem.setFollowupAction(this);
         });
         this.responseItems = responseItems;
+    }
+
+    public ActionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ActionStatus status) {
+        this.status = status;
+    }
+
+    public FollowupAction status(ActionStatus status) {
+        this.status = status;
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove

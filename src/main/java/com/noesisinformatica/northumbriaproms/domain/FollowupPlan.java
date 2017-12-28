@@ -28,7 +28,7 @@ public class FollowupPlan implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "followupPlan")
+    @OneToOne(mappedBy = "followupPlan", fetch = FetchType.EAGER)
     private ProcedureBooking procedureBooking;
 
     @ManyToOne(optional = false)
