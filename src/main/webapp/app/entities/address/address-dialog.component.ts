@@ -78,8 +78,16 @@ export class AddressDialogComponent implements OnInit {
         return item.id;
     }
 
+    trackByVal(index: number, item: string) {
+        return index;
+    }
+
     deleteLine(index: any) {
         this.address.lines.splice(index, 1);
+    }
+
+    addLine() {
+        this.address.lines.push('');
     }
 }
 

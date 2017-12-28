@@ -20,16 +20,21 @@
                 </div>
             </div>
         </div>
-        <div *ngFor="let line of address.lines; let i=index;" class="form-group row">
+        <div *ngFor="let line of address.lines; let i=index; trackBy: trackByVal" class="form-group row">
             <div class="col-md-2">
                 <label class="form-control-label">Line {{i + 1}}</label>
-                <button type="button" class="btn btn-danger btn-sm" (click)="deleteLine(i)">
-                    <span class="fa fa-remove"></span>
-                </button>
             </div>
             <div class="col-md-10">
-                <input type="text" class="form-control" name="lines{{i}}"
-                       [(ngModel)]="address.lines[i]" />
+                <div class="input-group">
+                    <input type="text" class="form-control" name="lines{{i}}"
+                           [(ngModel)]="address.lines[i]" />
+                    <button type="button" class="btn btn-danger btn-sm input-group-addon" (click)="deleteLine(i)">
+                        <span class="fa fa-remove"></span>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm input-group-addon" (click)="addLine()">
+                        <span class="fa fa-plus"></span>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="form-group row">

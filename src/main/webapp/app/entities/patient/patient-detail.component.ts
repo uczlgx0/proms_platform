@@ -64,6 +64,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
             this.load(params['id']);
         });
         this.registerChangeInPatients();
+        this.registerChangeInAddress();
     }
 
     load(id) {
@@ -107,6 +108,18 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe(
             'patientListModification',
             (response) => this.load(this.patient.id)
+        );
+    }
+
+    registerChangeInAddress() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'addressListModification',
+            (response) => {
+                this.addressService.findByPatientId(this.patient.id).subscribe(
+                    (res: ResponseWrapper) => this.addresses = res.json,
+                    (res: ResponseWrapper) => this.onError(res.json)
+                );
+            }
         );
     }
 
