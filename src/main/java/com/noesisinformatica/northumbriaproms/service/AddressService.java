@@ -4,6 +4,8 @@ import com.noesisinformatica.northumbriaproms.domain.Address;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * Service Interface for managing Address.
  */
@@ -26,6 +28,14 @@ public interface AddressService {
     Page<Address> findAll(Pageable pageable);
 
     /**
+     * Get all the addresses for patient.
+     *
+     * @param patientId the id of patient
+     * @return the list of addresses
+     */
+    List<Address> findAllForPatientId(Long patientId);
+
+    /**
      * Get the "id" address.
      *
      * @param id the id of the entity
@@ -44,7 +54,7 @@ public interface AddressService {
      * Search for the address corresponding to the query.
      *
      * @param query the query of the search
-     * 
+     *
      * @param pageable the pagination information
      * @return the list of entities
      */

@@ -5,6 +5,8 @@ import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
 import { Patient } from './patient.model';
 import { PatientService } from './patient.service';
+import { Address } from '../address/address.model';
+import { AddressService } from '../address/address.service';
 import { ProcedureBooking } from '../procedure-booking/procedure-booking.model';
 import { ProcedureBookingService } from '../procedure-booking/procedure-booking.service';
 import { ProcedureBookingComponent } from '../procedure-booking/procedure-booking.component';
@@ -19,6 +21,7 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 export class PatientDetailComponent implements OnInit, OnDestroy {
 
     patient: Patient;
+    addresses: Array<Address>;
     procedureBookings: Array<ProcedureBooking>;
     followupActions: Array<FollowupAction>;
     private subscription: Subscription;
@@ -42,6 +45,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         private jhiAlertService: JhiAlertService,
         private activatedRoute: ActivatedRoute,
         private patientService: PatientService,
+        private addressService: AddressService,
         private procedureBookingService: ProcedureBookingService,
         private followupActionService: FollowupActionService,
         private route: ActivatedRoute
@@ -60,6 +64,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
             this.load(params['id']);
         });
         this.registerChangeInPatients();
+        this.registerChangeInAddress();
     }
 
     load(id) {
@@ -67,6 +72,11 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
             this.patient = patient;
             console.log("this.patient  = " , this.patient );
         });
+        // find addresses
+        this.addressService.findByPatientId(id).subscribe(
+            (res: ResponseWrapper) => this.addresses = res.json,
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
         // find procedure bookings
         this.procedureBookingService.findByPatientId(id, {
             page: this.page - 1,
@@ -98,6 +108,18 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe(
             'patientListModification',
             (response) => this.load(this.patient.id)
+        );
+    }
+
+    registerChangeInAddress() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'addressListModification',
+            (response) => {
+                this.addressService.findByPatientId(this.patient.id).subscribe(
+                    (res: ResponseWrapper) => this.addresses = res.json,
+                    (res: ResponseWrapper) => this.onError(res.json)
+                );
+            }
         );
     }
 

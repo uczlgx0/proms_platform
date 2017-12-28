@@ -52,8 +52,8 @@ public class Patient implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
-//    @JsonIgnore
+    @OneToMany(mappedBy = "patient", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Address> addresses = new HashSet<>();
 

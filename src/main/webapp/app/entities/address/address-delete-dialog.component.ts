@@ -54,7 +54,7 @@ export class AddressDeletePopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.routeSub = this.route.params.subscribe((params) => {
             this.addressPopupService
-                .open(AddressDeleteDialogComponent as Component, params['id']);
+                .open(AddressDeleteDialogComponent as Component, params['id'], true);
         });
     }
 

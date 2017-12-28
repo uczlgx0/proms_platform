@@ -60,6 +60,16 @@ export const addressPopupRoute: Routes = [
         outlet: 'popup'
     },
     {
+        path: 'address/:patientId/create',
+        component: AddressPopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Addresses'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
         path: 'address/:id/edit',
         component: AddressPopupComponent,
         data: {
