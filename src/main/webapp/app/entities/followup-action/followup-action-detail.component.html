@@ -52,12 +52,12 @@
                 <dd>
                     <span>{{followupAction.outcomeScore}}</span>
                 </dd>
-                <!--<dt><span>Name</span></dt>-->
-                <!--<dd>-->
-                    <!--<span>{{followupAction.name}}</span>-->
-                <!--</dd>-->
-                <dt><span>Followup Plan</span></dt>
+                <dt><span>Status</span></dt>
                 <dd>
+                    <span>{{followupAction.status | titlecase}}</span>
+                </dd>
+                <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span>Followup Plan</span></dt>
+                <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
                     <div *ngIf="followupAction.followupPlan">
                         <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
                     </div>
@@ -68,11 +68,11 @@
             <dl class="row-md jh-entity-details">
                 <dt><span>Scheduled Date</span></dt>
                 <dd>
-                    <span>{{followupAction.scheduledDate | date:'medium'}}</span>
+                    <span>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</span>
                 </dd>
                 <dt><span>Completed Date</span></dt>
                 <dd>
-                    <span>{{followupAction.completedDate | date:'medium'}}</span>
+                    <span>{{followupAction.completedDate | date:'dd/MM/yyyy'}}</span>
                 </dd>
                 <dt><span>Last updated Date</span></dt>
                 <dd>
@@ -82,12 +82,17 @@
                 <dd>
                     <span>{{followupAction.lastModifiedBy}}</span>
                 </dd>
-                <dt><span>Outcome Comment</span></dt>
+                <dt><span>Outcome Score</span></dt>
                 <dd>
-                    <span>{{followupAction.outcomeComment}}</span>
+                    <span *ngIf="followupAction.status == 'COMPLETED'">{{followupAction.outcomeScore}}</span>
+                    <span *ngIf="followupAction.status != 'COMPLETED'">No score to display as action is not completed</span>
                 </dd>
             </dl>
         </div>
+    </div>
+    <div *ngIf="followupAction.outcomeComment" class="row">
+        <h4>Outcome comment</h4>
+        {{followupAction.outcomeComment}}
     </div>
     <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'MOXFQ'">
         <moxfq-component [(followupAction)]="followupAction"></moxfq-component>
