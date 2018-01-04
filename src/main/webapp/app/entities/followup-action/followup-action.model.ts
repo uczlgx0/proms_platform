@@ -4,19 +4,27 @@ import { FollowupPlan } from '../followup-plan/followup-plan.model';
 
 export const enum ActionPhase {
     'PRE_OPERATIVE',
-    ' POST_OPERATIVE',
-    ' UKNOWN'
+    'POST_OPERATIVE',
+    'UKNOWN'
+}
+
+export enum ActionStatus {
+    'PENDING',
+    'UNINITIALISED',
+    'COMPLETED',
+    'STARTED'
 }
 
 export const enum ActionType {
     'QUESTIONNAIRE',
-    ' UKNOWN'
+    'UKNOWN'
 }
 
 export class FollowupAction implements BaseEntity {
     constructor(
         public id?: number,
         public phase?: ActionPhase,
+        public status?: string,
         public scheduledDate?: any,
         public name?: string,
         public type?: ActionType,
@@ -26,7 +34,7 @@ export class FollowupAction implements BaseEntity {
         public followupPlan?: FollowupPlan,
         public patient?: BaseEntity,
         public questionnaire?: BaseEntity,
-        public responseItems?: ResponseItem[],
+        public responseItems?: ResponseItem[]
     ) {
         responseItems = [];
     }

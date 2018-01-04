@@ -13,21 +13,44 @@
                 Refresh Index
             </span>
         </button>
+        <div *ngIf="selectedPatientId" class="btn-group float-right" data-toggle="buttons">
+            <label class="btn-outline-success" ngbButtonLabel>
+                <input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started
+            </label>
+            <label class="btn-outline-success" ngbButtonLabel>
+                <input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending
+            </label>
+            <label class="btn-outline-success" ngbButtonLabel>
+                <input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised
+            </label>
+        </div>
     </h2>
     <jhi-alert></jhi-alert>
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row">
+    <div *ngIf="!selectedPatientId" class="row">
         <div class="col-sm-12">
-            <form name="searchForm" class="form-inline">
+            <div class="form-inline">
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
-                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
-                    </button>
-                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
-                    </button>
+                    <input *ngIf="!selectedPatientId" type="text" class="form-control" [ngModel]="currentSearch" id="currentSearch"
+                           (ngModelChange)="search($event)" name="currentSearch" placeholder="Enter NHS number">
+                    <!--<button class="input-group-addon btn btn-info" (click)="search(currentSearch)">-->
+                        <!--<span class="fa fa-search"></span>-->
+                    <!--</button>-->
+                    <!--<button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">-->
+                        <!--<span class="fa fa-trash-o"></span>-->
+                    <!--</button>-->
+                    <div class="btn-group ml-2" data-toggle="buttons">
+                        <label class="btn-outline-success" ngbButtonLabel>
+                            <input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started
+                        </label>
+                        <label class="btn-outline-success" ngbButtonLabel>
+                            <input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending
+                        </label>
+                        <label class="btn-outline-success" ngbButtonLabel>
+                            <input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised
+                        </label>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     <br/>
@@ -36,14 +59,13 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
-            <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
+            <th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
             <!--<th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>-->
-            <th jhiSortBy="outcomeScore"><span>Outcome Score</span> <span class="fa fa-sort"></span></th>
             <!--<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>-->
-            <th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>
+            <!--<th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>-->
             <!--<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>-->
             <!--<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>-->
             <th></th>
@@ -59,13 +81,23 @@
                         </a>
                     </div>
                 </td>
-                <td>{{followupAction.phase}}</td>
-                <td>{{followupAction.scheduledDate | date:'medium'}}</td>
+                <td>
+                    <a *ngIf="followupAction.followupPlan?.procedureBooking"
+                        [routerLink]="['../procedure-booking', followupAction.followupPlan?.procedureBooking?.id ]" >
+                        <span *ngIf="proceduresLookup && followupAction.followupPlan?.procedureBooking?.primaryProcedure">
+                            {{proceduresLookup[followupAction.followupPlan?.procedureBooking?.primaryProcedure].label}}
+                        </span>
+                        <span *ngIf="followupAction.followupPlan?.procedureBooking?.side" class="alert-danger">
+                            [{{followupAction.followupPlan?.procedureBooking?.side}}]
+                        </span>
+                    </a>
+                </td>
                 <td>{{followupAction.name}}</td>
+                <td>{{followupAction.phase}}</td>
+                <td>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</td>
                 <!--<td>{{followupAction.type}}</td>-->
-                <td>{{followupAction.outcomeScore}}</td>
                 <!--<td>{{followupAction.outcomeComment}}</td>-->
-                <td>{{followupAction.completedDate | date:'medium'}}</td>
+                <!--<td>{{followupAction.completedDate | date:'medium'}}</td>-->
                 <!--<td>-->
                     <!--<div *ngIf="followupAction.followupPlan">-->
                         <!--<a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>-->
