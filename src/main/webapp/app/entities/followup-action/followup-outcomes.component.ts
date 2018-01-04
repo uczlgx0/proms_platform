@@ -109,6 +109,9 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         // update min and max ages for query
         this.query.minAge = this.ageRange[0];
         this.query.maxAge = this.ageRange[1];
+        // always set status to completed
+        this.query.statuses = [];
+        this.query.statuses.push('COMPLETED');
         if (this.currentSearch) {
             this.followupActionService.search({
                 page: this.page - 1,
