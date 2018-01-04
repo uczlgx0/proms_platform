@@ -53,7 +53,7 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
         log.debug("Request to save ProcedureBooking : {}", procedureBooking);
         ProcedureBooking result = procedureBookingRepository.save(procedureBooking);
         procedureBookingSearchRepository.save(result);
-        rabbitTemplate.convertAndSend(Constants.DEFAULT_QUEUE, result);
+        rabbitTemplate.convertAndSend(Constants.BOOKINGS_QUEUE, result);
         log.info("Sent off ProcedureBooking to message queue");
         return result;
     }

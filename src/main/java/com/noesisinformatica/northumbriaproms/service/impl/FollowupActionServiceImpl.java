@@ -1,6 +1,8 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
+import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
+import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.repository.FollowupActionRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupActionSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
@@ -17,6 +19,7 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,7 +38,10 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class FollowupActionServiceImpl implements FollowupActionService{
+//@EnableBinding(FollowupActionService.class)
+//@RabbitListener(queues = Constants.ACTIONS_QUEUE)
+//@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.ACTIONS_QUEUE, durable = "true") , exchange = @Exchange(value = "exch", autoDelete = "true") , key = "key") )
+public class FollowupActionServiceImpl implements FollowupActionService {
 
     private final Logger log = LoggerFactory.getLogger(FollowupActionServiceImpl.class);
 
@@ -63,6 +69,34 @@ public class FollowupActionServiceImpl implements FollowupActionService{
         FollowupAction result = followupActionRepository.save(followupAction);
         followupActionSearchRepository.save(result);
         return result;
+    }
+
+    /**
+     * Process a followupAction.
+     *
+     * @param followupAction the entity to process
+     */
+    @Override
+//    @RabbitHandler
+    @RabbitListener(queues = Constants.ACTIONS_QUEUE)
+    public void processFollowupAction(FollowupAction followupAction) {
+        log.debug("Request to process FollowupAction : {}", followupAction);
+        this.save(followupAction);
+    }
+
+    /**
+     * Utility method that handles processing of a {@link com.noesisinformatica.northumbriaproms.domain.FollowupPlan}s
+     * @param followupPlan the plan to process
+     */
+    @Override
+    @RabbitListener(queues = Constants.PLANS_QUEUE)
+    public void processFollowupPlan(FollowupPlan followupPlan) {
+        log.debug("Request to process FollowupPlan : {}", followupPlan);
+        // get all associated actions in plan
+        followupPlan.getFollowupActions().forEach(action -> {
+            log.info("action = {}", action);
+            processFollowupAction(action);
+        });
     }
 
     /**
@@ -186,7 +220,12 @@ public class FollowupActionServiceImpl implements FollowupActionService{
 
         BoolQueryBuilder phaseQueryBuilder = QueryBuilders.boolQuery();
         for(String phase : query.getPhases()) {
-            phaseQueryBuilder.should(QueryBuilders.matchQuery("phases", phase));
+            phaseQueryBuilder.should(QueryBuilders.matchQuery("phase", phase));
+        }
+
+        BoolQueryBuilder statusQueryBuilder = QueryBuilders.boolQuery();
+        for(String status : query.getStatuses()) {
+            statusQueryBuilder.should(QueryBuilders.matchQuery("status", status));
         }
 
         BoolQueryBuilder lateralityQueryBuilder = QueryBuilders.boolQuery();
@@ -218,53 +257,75 @@ public class FollowupActionServiceImpl implements FollowupActionService{
             );
         }
 
-        // we only add procedures clause if there are more than 1 procedure specified
+        // we only add procedures clause if there are 1 or more procedure specified
         if(query.getProcedures().size() > 0){
             boolQueryBuilder.must(proceduresQueryBuilder);
         }
 
-        // we only add locations clause if there are more than 1 locations specified
+        // we only add locations clause if there are 1 or more locations specified
         if(query.getLocations().size() > 0){
             boolQueryBuilder.must(sourcesQueryBuilder);
         }
 
-        // we only add phases clause if there are more than 1 phase specified
+        // we only add phases clause if there are 1 or more phase specified
         if (query.getPhases().size() > 0){
             boolQueryBuilder.must(phaseQueryBuilder);
         }
 
-        // we only add laterality clause if there are more than 1 sides specified
+        // we only add statuses clause if there are 1 or more statuses specified
+        if (query.getStatuses().size() > 0){
+            boolQueryBuilder.must(statusQueryBuilder);
+        }
+
+        // we only add laterality clause if there are 1 or more sides specified
         if (query.getSides().size() > 0){
             boolQueryBuilder.must(lateralityQueryBuilder);
         }
 
-        // we only add consultants clause if there are more than 1 consultant specified
+        // we only add consultants clause if there are 1 or more consultant specified
         if(query.getConsultants().size() > 0){
             boolQueryBuilder.must(consultantsQueryBuilder);
         }
 
-        // we only add patient ids clause if there are more than 1 id specified
+        // we only add patient ids clause if there are 1 or more id specified
         if(query.getPatientIds().size() > 0){
             boolQueryBuilder.must(patientIdsQueryBuilder);
         }
 
-        // we only add types clause if there are more than 1 type specified
+        // we only add types clause if there are 1 or more type specified
         if(query.getTypes().size() > 0){
             boolQueryBuilder.must(typeQueryBuilder);
         }
 
-        // we only add gender clause if there are more than 1 gender specified
+        // we only add gender clause if there are 1 or more gender specified
         if (query.getGenders().size() > 0){
             boolQueryBuilder.must(genderQueryBuilder);
         }
 
         // we only add token clause if there is a token specified
-        if (query.getToken() != null && query.getToken().length() > 2){
+        String token = query.getToken();
+        log.info("token = {}", token);
+        if("null".equalsIgnoreCase(token)) {
+            log.debug("Resetting token");
+            token = "";
+        }
+        if(token == null){
+            log.debug("Token is null");
+            log.debug("boolQueryBuilder = " + boolQueryBuilder);
+        }
+        if (token != null && token.length() > 2){
             BoolQueryBuilder tokenBuilder = QueryBuilders.boolQuery();
-            tokenBuilder.should(QueryBuilders.multiMatchQuery(query.getToken(), "patient.address.*", "patient.nhsNumber", "patient.id").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
+            // try to see if token is number, if it is try as nhs number otherwise try as other fields
+            try {
+                Long number = Long.parseLong(token);
+                tokenBuilder.should(QueryBuilders.multiMatchQuery(number, "patient.nhsNumber", "patient.id").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
+            } catch (NumberFormatException e) {
+                tokenBuilder.should(QueryBuilders.multiMatchQuery(token, "patient.address.*").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX));
+            }
 
             boolQueryBuilder.must(tokenBuilder);
         }
+
         log.debug("boolQueryBuilder = " + boolQueryBuilder);
         // build and return boolean query
         return getFacetedPageForQuery(boolQueryBuilder, pageable);

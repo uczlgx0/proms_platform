@@ -51,6 +51,16 @@ public class RabbitListenerConfig implements RabbitListenerConfigurer {
 
     @Bean
     public Queue bookingsQueue() {
-        return new Queue(Constants.DEFAULT_QUEUE);
+        return new Queue(Constants.BOOKINGS_QUEUE);
+    }
+
+    @Bean
+    public Queue plansQueue() {
+        return new Queue(Constants.PLANS_QUEUE);
+    }
+
+    @Bean
+    public Queue actionsQueue() {
+        return new Queue(Constants.ACTIONS_QUEUE);
     }
 }

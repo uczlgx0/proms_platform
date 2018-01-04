@@ -37,7 +37,7 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ActionStatus status = ActionStatus.UNINITIALISED;
+    private ActionStatus status;
 
     @Column(name = "scheduled_date")
     private LocalDate scheduledDate;
@@ -265,6 +265,7 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
         return "FollowupAction{" +
             "id=" + getId() +
             ", phase='" + getPhase() + "'" +
+            ", status='" + getStatus() + "'" +
             ", scheduledDate='" + getScheduledDate() + "'" +
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +

@@ -13,11 +13,10 @@ import com.noesisinformatica.northumbriaproms.service.FollowupPlanService;
 import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +32,13 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  */
 @Service
 @Transactional
-@RabbitListener(queues = Constants.DEFAULT_QUEUE)
+//@EnableBinding(FollowupPlanService.class)
+//@RabbitListener(queues = Constants.BOOKINGS_QUEUE)
+//@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.BOOKINGS_QUEUE, durable = "true") , exchange = @Exchange(value = "exch", autoDelete = "true") , key = "key") )
 public class FollowupPlanServiceImpl implements FollowupPlanService {
 
     private final Logger log = LoggerFactory.getLogger(FollowupPlanServiceImpl.class);
-
+    private final RabbitTemplate rabbitTemplate;
     private final FollowupPlanRepository followupPlanRepository;
     private final ProcedureBookingRepository procedureBookingRepository;
     private final ProcedureBookingSearchRepository procedureBookingSearchRepository;
@@ -48,12 +49,14 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
                                    ProcedureBookingRepository procedureBookingRepository,
                                    ProcedureBookingSearchRepository procedureBookingSearchRepository,
                                    FollowupPlanSearchRepository followupPlanSearchRepository,
-                                   ProcedurelinkService procedurelinkService) {
+                                   ProcedurelinkService procedurelinkService,
+                                   RabbitTemplate rabbitTemplate) {
         this.followupPlanRepository = followupPlanRepository;
         this.procedureBookingRepository = procedureBookingRepository;
         this.procedureBookingSearchRepository = procedureBookingSearchRepository;
         this.followupPlanSearchRepository = followupPlanSearchRepository;
         this.procedurelinkService = procedurelinkService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -62,8 +65,10 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
      * @param booking the ProcedureBooking to process
      */
     @Override
-    @RabbitHandler
-    public void processBooking(@Payload ProcedureBooking booking) {
+//    @RabbitHandler
+    @RabbitListener(queues = Constants.BOOKINGS_QUEUE)
+//    @SendTo(value = Constants.ACTIONS_QUEUE)
+    public void processBooking(ProcedureBooking booking) {
         log.debug("Request to process ProcedureBooking : {}", booking);
         // see if booking has already been processed - we know this by seeing if follow-up plan is set
         Optional<FollowupPlan> existing = findOneByProcedureBookingId(booking.getId());
@@ -120,6 +125,8 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
         log.debug("Request to save FollowupPlan : {}", followupPlan);
         FollowupPlan result = followupPlanRepository.save(followupPlan);
         followupPlanSearchRepository.save(result);
+        // now send off all associated actions to message queue
+        rabbitTemplate.convertAndSend(Constants.PLANS_QUEUE, result);
         // now update procedure booking with plan
         ProcedureBooking booking = result.getProcedureBooking();
         booking.setFollowupPlan(followupPlan);
