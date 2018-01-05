@@ -100,7 +100,7 @@ currentAccount: any;
 
     search(query) {
         if (!query || query.length < 2) {
-            return this.clear();
+            return;
         }
         this.page = 0;
         this.currentSearch = query;
