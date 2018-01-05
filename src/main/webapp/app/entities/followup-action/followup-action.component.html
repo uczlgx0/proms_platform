@@ -1,4 +1,4 @@
-<div>
+<div class="followup-actions-page">
     <h2>
         <span>Followup Actions</span>
         <button *ngIf="!selectedPatientId" class="btn btn-primary float-right jh-create-entity create-followup-action" [routerLink]="['/', { outlets: { popup: ['followup-action-new'] } }]">
@@ -13,141 +13,373 @@
                 Refresh Index
             </span>
         </button>
-        <div *ngIf="selectedPatientId" class="btn-group float-right" data-toggle="buttons">
-            <label class="btn-outline-success" ngbButtonLabel>
-                <input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started
-            </label>
-            <label class="btn-outline-success" ngbButtonLabel>
-                <input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending
-            </label>
-            <label class="btn-outline-success" ngbButtonLabel>
-                <input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised
-            </label>
-        </div>
+        <!--<div *ngIf="selectedPatientId" class="btn-group float-right" data-toggle="buttons">-->
+            <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                <!--<input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started-->
+            <!--</label>-->
+            <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                <!--<input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending-->
+            <!--</label>-->
+            <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                <!--<input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised-->
+            <!--</label>-->
+        <!--</div>-->
     </h2>
     <jhi-alert></jhi-alert>
-    <div *ngIf="!selectedPatientId" class="row">
-        <div class="col-sm-12">
-            <div class="form-inline">
-                <div class="input-group w-100 mt-3">
-                    <input *ngIf="!selectedPatientId" type="text" class="form-control" [ngModel]="currentSearch" id="currentSearch"
-                           (ngModelChange)="search($event)" name="currentSearch" placeholder="Enter NHS number">
-                    <!--<button class="input-group-addon btn btn-info" (click)="search(currentSearch)">-->
-                        <!--<span class="fa fa-search"></span>-->
-                    <!--</button>-->
-                    <!--<button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">-->
-                        <!--<span class="fa fa-trash-o"></span>-->
-                    <!--</button>-->
-                    <div class="btn-group ml-2" data-toggle="buttons">
-                        <label class="btn-outline-success" ngbButtonLabel>
-                            <input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started
-                        </label>
-                        <label class="btn-outline-success" ngbButtonLabel>
-                            <input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending
-                        </label>
-                        <label class="btn-outline-success" ngbButtonLabel>
-                            <input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised
-                        </label>
+    <!--<div class="row m-1" *ngIf="selectedPatientId && (!followupActions || followupActions?.length < 1)">-->
+        <!--<div class="col-sm-12 alert alert-warning text-center">-->
+            <!--<h6>No follow up actions found for patient</h6>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="row m-1">
+        <div class="col-md-3 alert alert-dark">
+            <h4>
+                Search Filters
+                <button class="btn btn-sm btn-warning float-right" (click)="clearFilters()"
+                        *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0
+                        || query.statuses.length > 0
+                        || query.minAge !== 10 || query.maxAge !== 100"
+                    >Clear</button>
+            </h4>
+            <form>
+                <div class="form-group">
+                    <label for="field_sides">Status
+                        <small *ngIf="query.statuses.length > 0">
+                            [<a class="alert-danger" (click)="clearStatus()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="status" id="field_status"
+                               placeholder="Select Status"
+                               [options]="statuses"
+                               (selected)="onStatusSelected($event)"
+                               [(ngModel)]="selectedStatus"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_sides">Phase
+                        <small *ngIf="query.phases.length > 0">
+                            [<a class="alert-danger" (click)="clearPhases()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="side" id="field_sides"
+                               placeholder="Select Phase"
+                               [options]="phases"
+                               (selected)="onPhaseSelected($event)"
+                               [(ngModel)]="selectedPhase"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_consultantName">Consultant
+                        <small *ngIf="query.consultants.length > 0">
+                            [<a class="alert-danger" (click)="clearConsultants()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="consultantName" id="field_consultantName"
+                               placeholder="Type/Select consultant name"
+                               [options]="consultants"
+                               (selected)="onConsultantSelected($event)"
+                               [(ngModel)]="selectedConsultant"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_hospitalSite">Hospital
+                        <small *ngIf="query.locations.length > 0">
+                            [<a class="alert-danger" (click)="clearLocations()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
+                               placeholder="Type/Select hospital name"
+                               [options]="locations"
+                               (selected)="onLocationSelected($event)"
+                               [(ngModel)]="selectedLocation"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_primaryProcedure">Procedure <small *ngIf="query.procedures.length > 0">
+                        [<a class="alert-danger" (click)="clearProcedures()">Clear</a>]
+                    </small>
+                    </label>
+                    <ng-select class="form-control" name="primaryProcedure" id="field_primaryProcedure"
+                               placeholder="Type/Select procedure name"
+                               [options]="procedures"
+                               (selected)="onProcedureSelected($event)"
+                               [(ngModel)]="selectedProcedure"
+                        >
+                    </ng-select>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label for="field_genders">Gender-->
+                        <!--<small *ngIf="query.genders.length > 0">-->
+                            <!--[<a class="alert-danger" (click)="clearGenders()">Clear</a>]-->
+                        <!--</small>-->
+                    <!--</label>-->
+                    <!--<ng-select class="form-control" name="gender" id="field_genders"-->
+                               <!--placeholder="Type/Select gender"-->
+                               <!--[options]="genders"-->
+                               <!--(selected)="onGenderSelected($event)"-->
+                               <!--[(ngModel)]="selectedGender"-->
+                        <!-->
+                    <!--</ng-select>-->
+                <!--</div>-->
+            </form>
+        </div>
+        <div class="col-md-9">
+            <div class="form-group row">
+                <!--<label for="ageSlider" class="col-sm-2 col-form-label"><strong>Patient Age</strong></label>-->
+                <!--<div class="col-sm-10">-->
+                    <!--<nouislider id="ageSlider" [connect]="true" [min]="0" [max]="150" [step]="1" [(ngModel)]="ageRange"-->
+                                <!--(ngModelChange)="onAgeChange($event)" [tooltips]="[true, true]"></nouislider>-->
+                <!--</div>-->
+                <div class="col-sm-12">
+                    <div class="form-inline">
+                        <div class="input-group w-100 mt-3">
+                            <input *ngIf="!selectedPatientId" type="text" class="form-control" [ngModel]="currentSearch" id="currentSearch"
+                                   (ngModelChange)="search($event)" name="currentSearch" placeholder="Enter NHS number">
+                            <!--<button class="input-group-addon btn btn-info" (click)="search(currentSearch)">-->
+                            <!--<span class="fa fa-search"></span>-->
+                            <!--</button>-->
+                            <!--<button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">-->
+                            <!--<span class="fa fa-trash-o"></span>-->
+                            <!--</button>-->
+                            <!--<div class="btn-group ml-2" data-toggle="buttons">-->
+                                <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                                    <!--<input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started-->
+                                <!--</label>-->
+                                <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                                    <!--<input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending-->
+                                <!--</label>-->
+                                <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                                    <!--<input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised-->
+                                <!--</label>-->
+                            <!--</div>-->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <br/>
-    <div class="table-responsive" *ngIf="followupActions">
-        <table class="table table-striped">
-            <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
-            <!--<th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>-->
-            <!--<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>-->
-            <!--<th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>-->
-            <!--<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>-->
-            <!--<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>-->
-            <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
-                <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
-                <td *ngIf="!selectedPatientId">
-                    <div *ngIf="followupAction.patient">
-                        <a [routerLink]="['../patient', followupAction.patient?.id ]" >
-                            {{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}
-                        </a>
-                    </div>
-                </td>
-                <td>
-                    <a *ngIf="followupAction.followupPlan?.procedureBooking"
-                        [routerLink]="['../procedure-booking', followupAction.followupPlan?.procedureBooking?.id ]" >
+            <div class="table-responsive" *ngIf="followupActions?.length > 0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                        <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
+                        <!--<th jhiSortBy="outcomeScore"><span>Outcome Score</span> <span class="fa fa-sort"></span></th>-->
+                        <!--<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>-->
+                        <!--<th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>-->
+                        <!--<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>-->
+                        <!--<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>-->
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
+                        <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
+                        <td>
+                            <!--{{followupAction?.followupPlan?.patient | json}}-->
+                            <div *ngIf="followupAction.patient">
+                                <a [routerLink]="['../patient', followupAction.patient?.id ]" >
+                                    {{followupAction.followupPlan?.patient?.givenName}} {{followupAction.followupPlan?.patient?.familyName}}
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <a *ngIf="followupAction.followupPlan?.procedureBooking"
+                               [routerLink]="['../procedure-booking', followupAction.followupPlan?.procedureBooking?.id ]" >
                         <span *ngIf="proceduresLookup && followupAction.followupPlan?.procedureBooking?.primaryProcedure">
                             {{proceduresLookup[followupAction.followupPlan?.procedureBooking?.primaryProcedure].label}}
                         </span>
                         <span *ngIf="followupAction.followupPlan?.procedureBooking?.side" class="alert-danger">
                             [{{followupAction.followupPlan?.procedureBooking?.side}}]
                         </span>
-                    </a>
-                </td>
-                <td>{{followupAction.name}}</td>
-                <td>{{followupAction.phase}}</td>
-                <td>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</td>
-                <!--<td>{{followupAction.type}}</td>-->
-                <!--<td>{{followupAction.outcomeComment}}</td>-->
-                <!--<td>{{followupAction.completedDate | date:'medium'}}</td>-->
-                <!--<td>-->
-                    <!--<div *ngIf="followupAction.followupPlan">-->
+                            </a>
+                        </td>
+                        <td>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</td>
+                        <td>{{followupAction.name}}</td>
+                        <td>{{followupAction.phase}}</td>
+                        <!--<td>{{followupAction.type}}</td>-->
+                        <!--<td>{{followupAction.outcomeScore}}</td>-->
+                        <!--<td>{{followupAction.outcomeComment}}</td>-->
+                        <!--<td>{{followupAction.completedDate | date:'dd/MM/yyyy'}}</td>-->
+                        <!--<td>-->
+                        <!--<div *ngIf="followupAction.followupPlan">-->
                         <!--<a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>-->
-                    <!--</div>-->
-                <!--</td>-->
-                <!--<td>-->
-                    <!--<div *ngIf="followupAction.questionnaire">-->
+                        <!--</div>-->
+                        <!--</td>-->
+                        <!--<td>-->
+                        <!--<div *ngIf="followupAction.questionnaire">-->
                         <!--<a [routerLink]="['../questionnaire', followupAction.questionnaire?.id ]" >{{followupAction.questionnaire?.name}}</a>-->
-                    <!--</div>-->
-                <!--</td>-->
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button *ngIf="selectedPatientId" type="submit"
-                                [routerLink]="['../../followup-action', followupAction.id ]"
-                                class="btn btn-info btn-sm">
-                            <!--<span class="fa fa-eye"></span>-->
-                            <span class="d-none d-md-inline">View</span>
-                        </button>
-                        <button *ngIf="!selectedPatientId" type="submit"
-                                [routerLink]="['../followup-action', followupAction.id ]"
-                                class="btn btn-info btn-sm">
-                            <!--<span class="fa fa-eye"></span>-->
-                            <span class="d-none d-md-inline">View</span>
-                        </button>
-                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
-                                replaceUrl="true"
-                                class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
-                            <span class="d-none d-md-inline">Edit</span>
-                        </button>
-                        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"
-                                replaceUrl="true"
-                                class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
-                            <span class="d-none d-md-inline">Delete</span>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-        <div *ngIf="followupActions && followupActions.length">
-            <div class="row justify-content-center">
-                <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                        <!--</div>-->
+                        <!--</td>-->
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button type="submit"
+                                        [routerLink]="['../followup-action', followupAction.id ]"
+                                        class="btn btn-info btn-sm">
+                                    <!--<span class="fa fa-eye"></span>-->
+                                    <span class="d-none d-md-inline">View</span>
+                                </button>
+                                <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
+                                        replaceUrl="true"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="fa fa-pencil"></span>
+                                    <span class="d-none d-md-inline">Edit</span>
+                                </button>
+                                <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"
+                                        replaceUrl="true"
+                                        class="btn btn-danger btn-sm">
+                                    <span class="fa fa-remove"></span>
+                                    <span class="d-none d-md-inline">Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="row justify-content-center">
-                <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            <div class="alert alert-warning text-center" *ngIf="followupActions && followupActions?.length == 0">
+                <h6 *ngIf="selectedPatientId">No matching followup actions found for this patient for given search criteria</h6>
+                <h6 *ngIf="!selectedPatientId">No matches found for selected search criteria</h6>
+            </div>
+            <div *ngIf="followupActions && followupActions.length">
+                <div class="row justify-content-center">
+                    <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                </div>
+                <div class="row justify-content-center">
+                    <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+                </div>
             </div>
         </div>
+    </div>
+    <!--<div *ngIf="!selectedPatientId" class="row">-->
+        <!--<div class="col-sm-12">-->
+            <!--<div class="form-inline">-->
+                <!--<div class="input-group w-100 mt-3">-->
+                    <!--<input *ngIf="!selectedPatientId" type="text" class="form-control" [ngModel]="currentSearch" id="currentSearch"-->
+                           <!--(ngModelChange)="search($event)" name="currentSearch" placeholder="Enter NHS number">-->
+                    <!--&lt;!&ndash;<button class="input-group-addon btn btn-info" (click)="search(currentSearch)">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="fa fa-search"></span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<span class="fa fa-trash-o"></span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                    <!--<div class="btn-group ml-2" data-toggle="buttons">-->
+                        <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                            <!--<input type="checkbox" ngbButton [ngModel]="includeStarted" (ngModelChange)="toggleState('STARTED')"> Started-->
+                        <!--</label>-->
+                        <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                            <!--<input type="checkbox" ngbButton [ngModel]="includePending" (ngModelChange)="toggleState('PENDING')"> Pending-->
+                        <!--</label>-->
+                        <!--<label class="btn-outline-success" ngbButtonLabel>-->
+                            <!--<input type="checkbox" ngbButton [ngModel]="includeUninitialised" (ngModelChange)="toggleState('UNINITIALISED')"> Uninitialised-->
+                        <!--</label>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<br/>-->
+    <!--<div class="table-responsive" *ngIf="followupActions">-->
+        <!--<table class="table table-striped">-->
+            <!--<thead>-->
+            <!--<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">-->
+            <!--<th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>-->
+            <!--<th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>-->
+            <!--<th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>-->
+            <!--<th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>-->
+            <!--<th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>-->
+            <!--&lt;!&ndash;<th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th jhiSortBy="outcomeComment"><span>Outcome Comment</span> <span class="fa fa-sort"></span></th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th jhiSortBy="completedDate"><span>Completed Date</span> <span class="fa fa-sort"></span></th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th jhiSortBy="questionnaire.name"><span>Questionnaire</span> <span class="fa fa-sort"></span></th>&ndash;&gt;-->
+            <!--<th></th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr *ngFor="let followupAction of followupActions ;trackBy: trackId">-->
+                <!--&lt;!&ndash;<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>&ndash;&gt;-->
+                <!--<td *ngIf="!selectedPatientId">-->
+                    <!--<div *ngIf="followupAction.patient">-->
+                        <!--<a [routerLink]="['../patient', followupAction.patient?.id ]" >-->
+                            <!--{{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}-->
+                        <!--</a>-->
+                    <!--</div>-->
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<a *ngIf="followupAction.followupPlan?.procedureBooking"-->
+                        <!--[routerLink]="['../procedure-booking', followupAction.followupPlan?.procedureBooking?.id ]" >-->
+                        <!--<span *ngIf="proceduresLookup && followupAction.followupPlan?.procedureBooking?.primaryProcedure">-->
+                            <!--{{proceduresLookup[followupAction.followupPlan?.procedureBooking?.primaryProcedure].label}}-->
+                        <!--</span>-->
+                        <!--<span *ngIf="followupAction.followupPlan?.procedureBooking?.side" class="alert-danger">-->
+                            <!--[{{followupAction.followupPlan?.procedureBooking?.side}}]-->
+                        <!--</span>-->
+                    <!--</a>-->
+                <!--</td>-->
+                <!--<td>{{followupAction.name}}</td>-->
+                <!--<td>{{followupAction.phase}}</td>-->
+                <!--<td>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</td>-->
+                <!--&lt;!&ndash;<td>{{followupAction.type}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>{{followupAction.outcomeComment}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>{{followupAction.completedDate | date:'medium'}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div *ngIf="followupAction.followupPlan">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<a [routerLink]="['../followup-plan', followupAction.followupPlan?.id ]" >{{followupAction.followupPlan?.id}}</a>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div *ngIf="followupAction.questionnaire">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<a [routerLink]="['../questionnaire', followupAction.questionnaire?.id ]" >{{followupAction.questionnaire?.name}}</a>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                <!--<td class="text-right">-->
+                    <!--<div class="btn-group flex-btn-group-container">-->
+                        <!--<button *ngIf="selectedPatientId" type="submit"-->
+                                <!--[routerLink]="['../../followup-action', followupAction.id ]"-->
+                                <!--class="btn btn-info btn-sm">-->
+                            <!--&lt;!&ndash;<span class="fa fa-eye"></span>&ndash;&gt;-->
+                            <!--<span class="d-none d-md-inline">View</span>-->
+                        <!--</button>-->
+                        <!--<button *ngIf="!selectedPatientId" type="submit"-->
+                                <!--[routerLink]="['../followup-action', followupAction.id ]"-->
+                                <!--class="btn btn-info btn-sm">-->
+                            <!--&lt;!&ndash;<span class="fa fa-eye"></span>&ndash;&gt;-->
+                            <!--<span class="d-none d-md-inline">View</span>-->
+                        <!--</button>-->
+                        <!--<button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"-->
+                                <!--[routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"-->
+                                <!--replaceUrl="true"-->
+                                <!--class="btn btn-primary btn-sm">-->
+                            <!--<span class="fa fa-pencil"></span>-->
+                            <!--<span class="d-none d-md-inline">Edit</span>-->
+                        <!--</button>-->
+                        <!--<button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"-->
+                                <!--[routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"-->
+                                <!--replaceUrl="true"-->
+                                <!--class="btn btn-danger btn-sm">-->
+                            <!--<span class="fa fa-remove"></span>-->
+                            <!--<span class="d-none d-md-inline">Delete</span>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
+        <!--</table>-->
+    <!--</div>-->
+        <!--<div *ngIf="followupActions && followupActions.length">-->
+            <!--<div class="row justify-content-center">-->
+                <!--<jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>-->
+            <!--</div>-->
+            <!--<div class="row justify-content-center">-->
+                <!--<ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>-->
+            <!--</div>-->
+        <!--</div>-->
 </div>
