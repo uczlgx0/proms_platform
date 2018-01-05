@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -99,9 +100,14 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
                     .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.PRE_OPERATIVE)
                     .patient(patient).status(ActionStatus.UNINITIALISED);
                 // if procedure booking scheduled date is present, then we can assign tentative date
-                if (booking.getScheduledDate() != null) {
-                    action.status(ActionStatus.UNINITIALISED).setScheduledDate(booking.getScheduledDate());
+                if (booking.getScheduledDate() != null && booking.getScheduledDate().isBefore(LocalDate.now())) {
+                    action.status(ActionStatus.STARTED).setScheduledDate(booking.getScheduledDate());
                 }
+                // if procedure performed date is not present, we have change action status to PENDING
+                if (booking.getPerformedDate() == null) {
+                    action.status(ActionStatus.PENDING);
+                }
+
                 if ("OUTCOME".equalsIgnoreCase(questionnaire.getName())) {
                     action.setPhase(ActionPhase.POST_OPERATIVE);
                 }
