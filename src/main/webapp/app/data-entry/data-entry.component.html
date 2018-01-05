@@ -106,23 +106,23 @@
                         </small>
                     </div>
                 </div>
-                <div *ngIf="selectedProcedureBooking" class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="field_questionnaire">Questionnaire</label>
-                    <div class="col-sm-10">
-                        <ng-select class="form-control" name="questionnaire" id="field_questionnaire"
-                                   placeholder="Type/Select questionnaire"
-                                   [options]="questionnaires"
-                                   (selected)="onQuestionnaireSelected($event)"
-                                   [(ngModel)]="questionnaireId">
-                        </ng-select>
-                    </div>
-                    <div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">
-                        <small class="form-text text-danger"
-                               [hidden]="!editForm.controls.questionnaire?.errors?.required">
-                            This field is required.
-                        </small>
-                    </div>
-                </div>
+                <!--<div *ngIf="selectedProcedureBooking" class="form-group row">-->
+                    <!--<label class="col-sm-2 col-form-label" for="field_questionnaire">Questionnaire</label>-->
+                    <!--<div class="col-sm-10">-->
+                        <!--<ng-select class="form-control" name="questionnaire" id="field_questionnaire"-->
+                                   <!--placeholder="Type/Select questionnaire"-->
+                                   <!--[options]="questionnaires"-->
+                                   <!--(selected)="onQuestionnaireSelected($event)"-->
+                                   <!--[(ngModel)]="questionnaireId">-->
+                        <!--</ng-select>-->
+                    <!--</div>-->
+                    <!--<div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">-->
+                        <!--<small class="form-text text-danger"-->
+                               <!--[hidden]="!editForm.controls.questionnaire?.errors?.required">-->
+                            <!--This field is required.-->
+                        <!--</small>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <!--<div class="form-group">-->
                 <!--<label class="form-control-label" for="field_questionnaire">Questionnaire</label>-->
                 <!--<select class="form-control" id="field_questionnaire" name="questionnaire" [(ngModel)]="followupAction.questionnaire" >-->
@@ -130,7 +130,7 @@
                 <!--<option [ngValue]="questionnaireOption.id === followupAction.questionnaire?.id ? followupAction.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>-->
                 <!--</select>-->
                 <!--</div>-->
-                <div *ngIf="followupAction?.questionnaire" class="form-group row">
+                <div *ngIf="selectedProcedureBooking" class="form-group row">
                     <label class="col-sm-2 form-control-label" for="field_phase">Phase</label>
                     <div class="col-sm-10" id="field_phase">
                         <div class="form-check form-check-inline">
@@ -180,7 +180,7 @@
                 <!--<input type="text" class="form-control" name="outcomeComment" id="field_outcomeComment"-->
                 <!--[(ngModel)]="followupAction.outcomeComment" />-->
                 <!--</div>-->
-                <div *ngIf="followupAction?.questionnaire" class="form-group row">
+                <div *ngIf="selectedProcedureBooking" class="form-group row">
                     <!--<label class="form-control-label" for="field_completedDate">Completed Date</label>-->
                     <!--<div class="d-flex">-->
                         <!--<input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"-->
@@ -205,35 +205,37 @@
                     </div>
                 </div>
 
-                <div *ngIf="followupAction?.questionnaire" class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="field_outcomescore">Outcome score</label>
-                    <div class="col-sm-10" id="field_outcomescore">
-                        <input [(ngModel)]="followupAction.outcomeScore" type="number" id="outcomeScore" name="outcomeScore" class="form-control">
-                    </div>
+                <!--<div *ngIf="followupAction?.questionnaire" class="form-group row">-->
+                    <!--<label class="col-sm-2 col-form-label" for="field_outcomescore">Outcome score</label>-->
+                    <!--<div class="col-sm-10" id="field_outcomescore">-->
+                        <!--<input [(ngModel)]="followupAction.outcomeScore" type="number" id="outcomeScore" name="outcomeScore" class="form-control">-->
+                    <!--</div>-->
                     <!--<select class="form-control" id="field_followupPlan" name="followupPlan" [(ngModel)]="followupAction.followupPlan"  required>-->
                         <!--<option *ngIf="!editForm.value.followupPlan" [ngValue]="null" selected></option>-->
                         <!--<option [ngValue]="followupPlanOption.id === followupAction.followupPlan?.id ? followupAction.followupPlan : followupPlanOption" *ngFor="let followupPlanOption of followupplans; trackBy: trackFollowupPlanById">{{followupPlanOption.id}}</option>-->
                     <!--</select>-->
-                </div>
-                <div [hidden]="!(editForm.controls.outcomeScore?.dirty && editForm.controls.outcomeScore?.invalid)">
-                    <small class="form-text text-danger"
-                           [hidden]="!editForm.controls.outcomeScore?.errors?.required">
-                        This field is required.
-                    </small>
-                </div>
+                <!--</div>-->
+                <!--<div [hidden]="!(editForm.controls.outcomeScore?.dirty && editForm.controls.outcomeScore?.invalid)">-->
+                    <!--<small class="form-text text-danger"-->
+                           <!--[hidden]="!editForm.controls.outcomeScore?.errors?.required">-->
+                        <!--This field is required.-->
+                    <!--</small>-->
+                <!--</div>-->
             </div>
-            <div *ngIf="followupAction?.name" class="modal-footer">
-                <div class="container-fluid" *ngIf="followupAction?.name == 'MOXFQ'">
-                    <moxfq-component [(followupAction)]="followupAction"></moxfq-component>
-                </div>
-                <div class="container-fluid" *ngIf="followupAction?.name == 'PAIN VAS'">
-                    <painvas-component [(followupAction)]="followupAction"></painvas-component>
-                </div>
-                <div class="container-fluid" *ngIf="followupAction?.name == 'AOFAS'">
-                    <aofas-component [(followupAction)]="followupAction"></aofas-component>
-                </div>
-                <div class="container-fluid" *ngIf="followupAction?.name == 'AOS'">
-                    <aos-component [(followupAction)]="followupAction"></aos-component>
+            <div *ngIf="selectedProcedureBooking">
+                <div *ngFor="let q of followupActions" class="modal-footer">
+                    <div class="container-fluid" *ngIf="q.name == 'MOXFQ'">
+                        <moxfq-component [followupAction]="q"></moxfq-component>
+                    </div>
+                    <div class="container-fluid" *ngIf="q.name == 'PAIN VAS'">
+                        <painvas-component [followupAction]="followupAction"></painvas-component>
+                    </div>
+                    <div class="container-fluid" *ngIf="q.name == 'AOFAS'">
+                        <aofas-component [followupAction]="followupAction"></aofas-component>
+                    </div>
+                    <div class="container-fluid" *ngIf="q.name == 'AOS'">
+                        <aos-component [followupAction]="followupAction"></aos-component>
+                    </div>
                 </div>
             </div>
         </form>

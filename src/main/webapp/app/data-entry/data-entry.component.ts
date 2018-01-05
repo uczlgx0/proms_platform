@@ -5,13 +5,13 @@ import { JhiEventManager, JhiAlertService, JhiParseLinks } from 'ng-jhipster';
 import { Router } from '@angular/router';
 import * as _ from 'underscore';
 
-import { Account, LoginModalService, Principal, ResponseWrapper } from '../shared';
+import { Account, LoginModalService, Principal, ResponseWrapper, ITEMS_PER_PAGE } from '../shared';
 
 import { ActivatedRoute } from '@angular/router';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import { FollowupAction, ActionType, FollowupActionService } from '../entities/followup-action';
+import { FollowupAction, ActionType, FollowupActionService, Query } from '../entities/followup-action';
 import { FollowupPlan, FollowupPlanService } from '../entities/followup-plan';
 import { Patient, PatientService } from '../entities/patient';
 import { ProcedureBooking, ProcedureBookingService } from '../entities/procedure-booking';
@@ -39,12 +39,17 @@ export class DataEntryComponent implements OnInit, OnDestroy {
     patientId: string;
     questionnaireId: string;
     followupplans: FollowupPlan[];
+    followupActions: FollowupAction[];
     procedureBookings: any;
     selectedProcedureBooking: ProcedureBooking;
     selectedFollowupPlan: FollowupPlan;
     bookingLinks: any;
     bookingTotalItems: any;
     bookingQueryCount: any;
+    actionLinks: any;
+    actionTotalItems: any;
+    actionQueryCount: any;
+    itemsPerPage: any;
     patients: Patient[];
     questionnaires: Questionnaire[];
     datePickerOptions: IMyDpOptions = {
@@ -52,18 +57,22 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         minYear: 1850
     };
     proceduresLookup: any;
+    query: Query;
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private parseLinks: JhiParseLinks,
         private procedureService: ProcedureService,
         private followupPlanService: FollowupPlanService,
+        private followupActionService: FollowupActionService,
         private patientService: PatientService,
         private procedureBookingService: ProcedureBookingService,
         private questionnaireService: QuestionnaireService,
         private eventManager: JhiEventManager
     ) {
+        this.itemsPerPage = ITEMS_PER_PAGE;
         this.followupAction = new FollowupAction();
+        this.query = new Query();
     }
 
     ngOnInit() {
@@ -144,10 +153,31 @@ export class DataEntryComponent implements OnInit, OnDestroy {
                 this.selectedFollowupPlan = followupPlan;
                 //this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
                 console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
-                this.followupAction.followupPlan = this.selectedFollowupPlan;
+                //this.followupAction.followupPlan = this.selectedFollowupPlan;
                 // get questionnaires for procedure in booking
                 this.loadQuestionnaires(booking);
+
+                this.loadFollowupActions();
             }
+        );
+    }
+
+    private loadFollowupActions() {
+        this.query = new Query();
+        this.query.token = '';
+        this.query.patientIds = [];
+        this.query.patientIds.push(this.patientId);
+        this.query.statuses = [];
+        this.query.statuses.push('STARTED');
+        this.query.procedures = [];
+        this.query.procedures.push(this.selectedProcedureBooking.primaryProcedure);
+        this.followupActionService.search({
+            page: 0,
+            query: this.query,
+            size: this.itemsPerPage,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+            (res: ResponseWrapper) => this.onError(res.json)
         );
     }
 
@@ -173,6 +203,23 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.formHeight = '750px';
     }
 
+    private onSuccess(data, headers) {
+        this.actionLinks = this.parseLinks.parse(headers.get('link'));
+        this.actionTotalItems = headers.get('X-Total-Count');
+        this.actionQueryCount = this.actionTotalItems;
+        // this.page = pagingParams.page;
+        this.followupActions = data.results;
+        // assign values for actions
+        for(let action of this.followupActions) {
+            action.followupPlan = this.selectedFollowupPlan;
+            action.patient.id = this.patientId;
+            if (!action.type) {
+                action.type = ActionType['QUESTIONNAIRE'];
+            }
+        }
+        console.log("this.followupActions  = " , this.followupActions );
+    }
+
     private onBookingsSuccess(data, headers) {
         this.bookingLinks = this.parseLinks.parse(headers.get('link'));
         this.bookingTotalItems = headers.get('X-Total-Count');
@@ -190,6 +237,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.followupAction = new FollowupAction();
         // update form height
         this.formHeight = '450px';
+        //this.onBookingSelected(this.selectedProcedureBooking);
     }
 
     private registerChangeInProcedureBookings() {
@@ -197,7 +245,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
     }
 
     private registerChangeInFollowupActions() {
-        this.eventSubscriber = this.eventManager.subscribe('followupActionListModification', (response) => this.resetValues());
+        this.eventSubscriber = this.eventManager.subscribe('followupActionListModification', (response) => this.loadFollowupActions());
     }
 
     ngOnDestroy() {
