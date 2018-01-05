@@ -90,9 +90,9 @@
             </dl>
         </div>
     </div>
-    <div *ngIf="followupAction.outcomeComment" class="row">
+    <div *ngIf="followupAction.outcomeComment">
         <h4>Outcome comment</h4>
-        {{followupAction.outcomeComment}}
+        <p>{{followupAction.outcomeComment}}</p>
     </div>
     <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'MOXFQ'">
         <moxfq-component [(followupAction)]="followupAction"></moxfq-component>
