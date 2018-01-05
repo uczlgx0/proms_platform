@@ -46,12 +46,14 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     procedures: Array<IOption>;
     genders: Array<IOption>;
     sides: Array<IOption>;
+    phases: Array<IOption>;
     proceduresLookup: any;
     selectedConsultant: any;
     selectedLocation: any;
     selectedProcedure: any;
     selectedGender: any;
     selectedSide: any;
+    selectedPhase: any;
     ageRange = [10, 100];
 
     constructor(
@@ -101,6 +103,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         // set genders
         this.genders =[{value: 'MALE', label: 'Male'}, {value: 'FEMALE', label: 'Female'}];
         this.sides =[{value: 'LEFT', label: 'Left'}, {value: 'RIGHT', label: 'Right'}];
+        this.phases =[{value: 'PRE_OPERATIVE', label: 'Pre Op'}, {value: 'POST_OPERATIVE', label: 'Post Op'}];
 
         this.registerChangeInFollowupActions();
     }
@@ -206,6 +209,12 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.search(null);
     }
 
+    onPhaseSelected(option: IOption) {
+        this.query.phases = [];
+        this.query.phases.push(option.value);
+        this.search(null);
+    }
+
     onAgeChange(event: any) {
         this.search(null);
     }
@@ -217,6 +226,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.selectedLocation = null;
         this.selectedGender = null;
         this.selectedSide = null;
+        this.selectedPhase = null;
         this.ageRange = [10, 100];
         this.search(null);
     }
@@ -248,6 +258,12 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     clearSides() {
         this.query.sides = [];
         this.selectedSide = null;
+        this.search(null);
+    }
+
+    clearPhases() {
+        this.query.phases = [];
+        this.selectedPhase = null;
         this.search(null);
     }
 

@@ -31,7 +31,7 @@
                 Search Filters
                 <button class="btn btn-sm btn-warning float-right" (click)="clearFilters()"
                         *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0
-                        || query.genders.length > 0 || query.sides.length > 0
+                        || query.genders.length > 0 || query.sides.length > 0 || query.phases.length > 0
                         || query.minAge !== 10 || query.maxAge !== 100"
                     >Clear</button>
             </h4>
@@ -102,6 +102,20 @@
                                [options]="sides"
                                (selected)="onSideSelected($event)"
                                [(ngModel)]="selectedSide"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_sides">Phase
+                        <small *ngIf="query.phases.length > 0">
+                            [<a class="alert-danger" (click)="clearPhases()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="side" id="field_sides"
+                               placeholder="Select Phase"
+                               [options]="phases"
+                               (selected)="onPhaseSelected($event)"
+                               [(ngModel)]="selectedPhase"
                         >
                     </ng-select>
                 </div>
