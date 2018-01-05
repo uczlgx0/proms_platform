@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity ProcedureTimepoint.
+    -->
+    <changeSet id="20180104070155-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="procedure_id"
+                                 baseTableName="procedure_timepoint"
+                                 constraintName="fk_procedure_timepoint_procedure_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="procedures_table"/>
+
+        <addForeignKeyConstraint baseColumnNames="timepoint_id"
+                                 baseTableName="procedure_timepoint"
+                                 constraintName="fk_procedure_timepoint_timepoint_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="timepoint"/>
+
+    </changeSet>
+</databaseChangeLog>
