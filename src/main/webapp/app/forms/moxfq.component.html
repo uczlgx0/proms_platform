@@ -1,3 +1,4 @@
+<h4>{{followupAction?.name}}</h4>
 <form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
 
     <div class="form-group">
@@ -550,6 +551,17 @@
     <div class="form-group">
         <label for="comment">Comment</label>
         <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5" cols="40"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="outcomeScore">Outcome Score</label>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control" name="outcomeScore"/>
+    </div>
+    <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
+        <small class="form-text text-danger"
+               [hidden]="!qForm.controls.outcomeScore?.errors?.required">
+            This field is required.
+        </small>
     </div>
 
     <br>

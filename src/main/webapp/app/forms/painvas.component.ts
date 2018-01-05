@@ -44,20 +44,16 @@ export class PainvasComponent implements OnInit {
 
     onChange(event: any, questionKey: string) {
         this.formData[questionKey] = event;
+        //this.calculateScore();
     }
 
     submitData(data: any) {
-        console.log("form data  = " , data );
-        // loop through data keys and collect as response items
-        let items: Array<ResponseItem> = [];
-        Object.keys(data).forEach((key) => {
-            if(key != 'comment' && data[key]) {
-                items.push(this.formsService.convertToResponseItem(key, data[key], this.followupAction));
-            }
-        });
-        console.log("items  = " , items );
-        this.followupAction.responseItems = items;
+        this.followupAction = this.formsService.prepareFormData(this.followupAction, data);
         this.save();
+    }
+
+    private calculateScore() {
+        this.followupAction.outcomeScore = this.formData['q1'];
     }
 
     save() {
