@@ -5,6 +5,7 @@ import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.config.DefaultProfileUtil;
 import com.noesisinformatica.northumbriaproms.domain.*;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.GenderType;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.TimeUnit;
 import com.noesisinformatica.northumbriaproms.repository.*;
 import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
 import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
@@ -110,6 +111,8 @@ public class NorthumbriapromsApp {
             verifyAndImportHealthcareProviders(ctx);
             verifyAndImportPatients(ctx);
             verifyAndImportConsultants(ctx);
+            verifyAndImportTimepoints(ctx);
+            verifyAndImportFollowupTimepoints(ctx);
 
             // clear security context
             log.info("Logging out admin user after importing entities");
@@ -283,6 +286,106 @@ public class NorthumbriapromsApp {
                 }
             } catch (IOException e){
                 log.error("Unable to read healthcare_providers.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports followup time points if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportFollowupTimepoints(ConfigurableApplicationContext ctx) {
+
+        ProcedureRepository procedureRepository = ctx.getBean(ProcedureRepository.class);
+        TimepointRepository timepointRepository = ctx.getBean(TimepointRepository.class);
+        ProcedureTimepointService procedureTimepointService = ctx.getBean(ProcedureTimepointService.class);
+        long count = ctx.getBean(ProcedureTimepointRepository.class).count();
+        log.info("No of existing procedure time points : {} " , count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/followup_timepoints.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                // get and store time points in a list for processing later
+                List<Timepoint> timepoints = new ArrayList<>();
+                String[] names = {"PRE-OP", "6th Month", "1st Year", "Annual"};  // note names must exactly match time point names
+                Arrays.stream(names).forEach(name -> {
+                    Optional<Timepoint> timepoint = timepointRepository.findOneByName(name);
+                    if(timepoint.isPresent()) {
+                        timepoints.add(timepoint.get());
+                    }
+                });
+
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        String[] parts = line.split(",");
+                        // create procedure time points form parts
+                        Optional<Procedure> procedure =  procedureRepository.findOneByLocalCode(Integer.valueOf(parts[0]));
+                        if(procedure.isPresent()) {
+                            // process rest of parts and if they contain a 'x' then create procedure time point
+                            for(int i=1; i < parts.length; i++) {
+                                String entry = parts[i];
+                                if("X".equalsIgnoreCase(entry)) {
+                                    /*
+                                     use 'i' to figure out what timepoint it matches - columns are listed as '6M', '1Y'
+                                      and 'ANNUAL'. We ignore Annual for now and process 6M as '6th Moth' and 1Y as
+                                      1st Year
+                                     */
+                                    ProcedureTimepoint procedureTimepoint = new ProcedureTimepoint();
+                                    procedureTimepoint.setProcedure(procedure.get());
+                                    Timepoint timepoint = timepoints.get(i - 1);
+                                    // save entity
+                                    if(timepoint != null) {
+                                        procedureTimepoint.setTimepoint(timepoint);
+                                        procedureTimepointService.save(procedureTimepoint);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read followup_timepoints.csv from class path. Nested exception is : ", e);
+            }
+        }
+    }
+
+    /**
+     * Utility bootstrap method that imports time points if none found.
+     * @param ctx the application context
+     */
+    private static void verifyAndImportTimepoints(ConfigurableApplicationContext ctx) {
+
+        TimepointService timepointService = ctx.getBean(TimepointService.class);
+        long count = ctx.getBean(TimepointRepository.class).count();
+        log.info("No of existing time points : {} " , count);
+
+        if (count == 0) {
+
+            try (InputStream inputStream = NorthumbriapromsApp.class.getClassLoader().getResourceAsStream("config/timepoints.csv")){
+                BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                int counter = 0;
+                String line = bufReader.readLine();
+                while(line != null){
+                    if(counter > 0){
+                        Timepoint timepoint = new Timepoint();
+                        String[] parts = line.split(",");
+                        // create time point form parts
+                        timepoint.setValue(Integer.valueOf(parts[0].trim()));
+                        timepoint.setUnit(TimeUnit.valueOf(parts[1].trim()));
+                        timepoint.setName(parts[2].trim());
+                        // save time point
+                        timepointService.save(timepoint);
+                    }
+                    counter++;
+                    line = bufReader.readLine();
+                }
+            } catch (IOException e){
+                log.error("Unable to read timepoints.csv from class path. Nested exception is : ", e);
             }
         }
     }
