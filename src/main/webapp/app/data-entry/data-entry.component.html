@@ -137,8 +137,9 @@
                             <label class="form-check-label">
                                 <input class="form-check-input" id="careEventCheckbox" type="radio" name="careEvent"
                                        (change)="onCareEventSelected(careEvent)" name="selectedCareEvent"
-                                       [checked]="careEvent === selectedCareEvent" value="careEvent">
-                                {{careEvent?.timepoint?.name}}
+                                       [checked]="careEvent === selectedCareEvent" value="careEvent"
+                                       [disabled]="careEvent.status !== 'STARTED'">
+                                {{careEvent?.timepoint?.name}} <span *ngIf="careEvent.status !== 'STARTED'">[InActive]</span>
                             </label>
                         </div>
                         <!--<div class="form-check form-check-inline">-->
