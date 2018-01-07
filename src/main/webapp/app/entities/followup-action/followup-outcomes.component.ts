@@ -136,6 +136,57 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         );
     }
 
+    exportAll() {
+        // update min and max ages for query
+        this.query.minAge = this.ageRange[0];
+        this.query.maxAge = this.ageRange[1];
+        // always set status to completed
+        this.query.statuses = [];
+        this.query.statuses.push('COMPLETED');
+        if (this.currentSearch) {
+            this.followupActionService.export({
+                page: this.page - 1,
+                query: this.currentSearch,
+                size: this.itemsPerPage,
+                sort: this.sort()}).subscribe(
+                    (res: ResponseWrapper) => {
+                        console.log("res  = " , res );
+                    },
+                    (res: ResponseWrapper) => this.onError(res.json)
+                );
+            return;
+        }
+        this.followupActionService.export({
+            page: this.page - 1,
+            query: this.query,
+            size: this.itemsPerPage,
+            sort: this.sort()}).subscribe(
+            (res: ResponseWrapper) => {
+                console.log("res  = " , res );
+                this.downloadFile(res);
+            },
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
+    }
+
+    downloadFile(data: any) {
+        let parsedResponse = data.text();
+        let blob = new Blob([parsedResponse], { type: 'text/csv' });
+        let url = window.URL.createObjectURL(blob);
+
+        if(navigator.msSaveOrOpenBlob) {
+            navigator.msSaveBlob(blob, 'export.csv');
+        } else {
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'export.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        window.URL.revokeObjectURL(url);
+    }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;

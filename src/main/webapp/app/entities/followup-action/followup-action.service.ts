@@ -15,6 +15,7 @@ export class FollowupActionService {
     private patientResourceUrl = SERVER_API_URL + 'api/patient/';
     private careEventResourceUrl = SERVER_API_URL + 'api/care-events/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/followup-actions';
+    private resourceExportUrl = SERVER_API_URL + 'api/_export/followup-actions';
     private resourceIndexUrl = SERVER_API_URL + 'api/_index/followup-actions';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
@@ -73,6 +74,11 @@ export class FollowupActionService {
         const options = createRequestOption(req);
         return this.http.post(this.resourceSearchUrl, req.query, options)
             .map((res: any) => this.convertSearchResponse(res));
+    }
+
+    export(req?: any): Observable<Response> {
+        const options = createRequestOption(req);
+        return this.http.post(this.resourceExportUrl, req.query, options);
     }
 
     private convertResponse(res: Response): ResponseWrapper {

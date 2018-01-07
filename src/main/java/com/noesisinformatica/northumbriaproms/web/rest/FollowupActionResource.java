@@ -9,6 +9,12 @@ import com.noesisinformatica.northumbriaproms.web.rest.errors.BadRequestAlertExc
 import com.noesisinformatica.northumbriaproms.web.rest.util.HeaderUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.PaginationUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -23,7 +29,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -188,6 +197,46 @@ public class FollowupActionResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query.toString(), page, "/api/_search/followup-actions");
         // wrap results page in a response entity with faceted results turned into a map
         return new ResponseEntity<>(getResultMapMapForResults(page), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Download  /_export/followup-actions : export the followup action corresponding to the query.
+     *
+     * @param query the query of the followupAction search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @PostMapping("/_export/followup-actions")
+    @Timed
+    public void exportFollowupActions(@RequestBody QueryModel query, Pageable pageable,
+                                                                     HttpServletResponse response) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+        log.debug("REST request to search for a page of FollowupActions for query {}", query);
+        FacetedPage<FollowupAction> page = followupActionService.search(query, pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_export/followup-actions");
+//        headers.set("Content-Type", "text/plain; charset=utf-8");
+//        response.setHeader("Content-Type", "text/plain; charset=utf-8");
+        response.setContentType("text/csv");
+//        headers.set("content-disposition","attachment;filename =filename.csv");
+        response.setHeader("content-disposition","attachment;filename=export.csv");
+//        response.setHeader("Content-Disposition", "attachment");
+        // wrap results page in a response entity with faceted results turned into a map
+        ColumnPositionMappingStrategy mapStrategy = new ColumnPositionMappingStrategy();
+        mapStrategy.setType(FollowupAction.class);
+
+        String[] columns = new String[]{"id", "name", "outcomeScore", "type", "phase", "status"};
+        mapStrategy.setColumnMapping(columns);
+
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
+        StatefulBeanToCsv btcsv = new StatefulBeanToCsvBuilder(osw)
+            .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+            .withMappingStrategy(mapStrategy)
+            .withSeparator(',')
+            .build();
+        btcsv.write(page.getContent());
+//        osw.flush();
+        osw.close();
+        response.flushBuffer();
+//        return new ResponseEntity<>(getResultMapMapForResults(page), headers, HttpStatus.OK);
     }
 
     /**
