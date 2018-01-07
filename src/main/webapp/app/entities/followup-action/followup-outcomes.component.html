@@ -154,7 +154,7 @@
                             <!--{{followupAction?.followupPlan?.patient | json}}-->
                             <div *ngIf="followupAction.patient">
                                 <a [routerLink]="['../patient', followupAction.patient?.id ]" >
-                                    {{followupAction.followupPlan?.patient?.givenName}} {{followupAction.followupPlan?.patient?.familyName}}
+                                    {{followupAction.careEvent?.followupPlan?.patient?.givenName}} {{followupAction.careEvent.followupPlan?.patient?.familyName}}
                                 </a>
                             </div>
                         </td>

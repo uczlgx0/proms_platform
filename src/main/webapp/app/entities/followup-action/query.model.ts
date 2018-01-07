@@ -8,6 +8,7 @@ export class Query {
                 public sides?:Array<string>,
                 public types?:Array<string>,
                 public patientIds?:Array<string>,
+                public careEvents?:Array<string>,
                 public minAge?:number,
                 public maxAge?:number,
                 public token?:string) {
@@ -20,6 +21,7 @@ export class Query {
         this.sides = [];
         this.types = [];
         this.patientIds = [];
+        this.careEvents = [];
         this.token = '';
     }
 }

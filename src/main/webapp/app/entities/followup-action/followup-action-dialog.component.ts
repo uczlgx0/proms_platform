@@ -152,7 +152,7 @@ export class FollowupActionDialogComponent implements OnInit, OnDestroy {
             .subscribe((followupPlan) => {
                 this.selectedFollowupPlan = followupPlan;
                 //this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
-                this.followupAction.followupPlan = this.selectedFollowupPlan;
+                //this.followupAction.followupPlan = this.selectedFollowupPlan;
                 // get questionnaires for procedure in booking
                 this.loadQuestionnaires(booking);
             }

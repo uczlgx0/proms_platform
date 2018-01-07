@@ -13,6 +13,7 @@ export class FollowupActionService {
 
     private resourceUrl = SERVER_API_URL + 'api/followup-actions';
     private patientResourceUrl = SERVER_API_URL + 'api/patient/';
+    private careEventResourceUrl = SERVER_API_URL + 'api/care-events/';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/followup-actions';
     private resourceIndexUrl = SERVER_API_URL + 'api/_index/followup-actions';
 
@@ -44,6 +45,12 @@ export class FollowupActionService {
     findByPatientId(id: any, req?: any): Observable<ResponseWrapper> {
         const options = createRequestOption(req);
         return this.http.get(this.patientResourceUrl+id+'/followup-actions', options)
+            .map((res: Response) => this.convertResponse(res));
+    }
+
+    findByCareEventId(id: any, req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.careEventResourceUrl+id+'/followup-actions', options)
             .map((res: Response) => this.convertResponse(res));
     }
 

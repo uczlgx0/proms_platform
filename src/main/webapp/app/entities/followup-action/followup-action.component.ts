@@ -111,7 +111,7 @@ export class FollowupActionComponent implements OnInit, OnDestroy {
         this.genders =[{value: 'MALE', label: 'Male'}, {value: 'FEMALE', label: 'Female'}];
         this.sides =[{value: 'LEFT', label: 'Left'}, {value: 'RIGHT', label: 'Right'}];
         this.phases =[{value: 'PRE_OPERATIVE', label: 'Pre Op'}, {value: 'POST_OPERATIVE', label: 'Post Op'}];
-        this.statuses =[{value: 'STARTED', label: 'Started'}, {value: 'PENDING', label: 'Pending'}, {value: 'UNINITIALISED', label: 'Uninitialised'}];
+        this.statuses =[{value: 'STARTED', label: 'Started'}, {value: 'PENDING', label: 'Pending'}, {value: 'UNKNOWN', label: 'Unknown'}, {value: 'UNINITIALISED', label: 'Uninitialised'}];
 
         this.registerChangeInFollowupActions();
         this.registerChangeInBookings();
@@ -158,7 +158,7 @@ export class FollowupActionComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/followup-outcomes'], {queryParams:
+        this.router.navigate(['/followup-action'], {queryParams:
             {
             page: this.page,
             size: this.itemsPerPage,
