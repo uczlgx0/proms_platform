@@ -6,6 +6,8 @@ import { MoxfqComponent } from './moxfq.component'
 import { PainvasComponent } from './painvas.component'
 import { AofasComponent } from './aofas.component'
 import { AosComponent } from './aos.component'
+import { CofasComponent } from './cofas.component'
+import { Eq5d3lComponent } from './eq5d3l.component'
 import { FormsService } from './forms.service'
 
 @NgModule({
@@ -16,12 +18,16 @@ import { FormsService } from './forms.service'
         MoxfqComponent,
         PainvasComponent,
         AofasComponent,
+        CofasComponent,
+        Eq5d3lComponent,
         AosComponent
     ],
     exports: [
         MoxfqComponent,
         PainvasComponent,
         AofasComponent,
+        CofasComponent,
+        Eq5d3lComponent,
         AosComponent
     ],
     providers: [

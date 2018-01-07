@@ -238,6 +238,12 @@
                 <div class="container-fluid" *ngIf="followupAction.name == 'AOS'">
                     <aos-component [followupAction]="followupAction"></aos-component>
                 </div>
+                <div class="container-fluid" *ngIf="followupAction.name == 'COFAS-AOS'">
+                    <cofas-component [followupAction]="followupAction"></cofas-component>
+                </div>
+                <div class="container-fluid" *ngIf="followupAction.name == 'EQ-5D 3L INDEX'">
+                    <eq5d3l-component [followupAction]="followupAction"></eq5d3l-component>
+                </div>
             </div>
         </form>
     </div>

@@ -1,0 +1,135 @@
+<h4>{{followupAction?.name}}</h4>
+<form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
+
+    <div class="form-group">
+        <label>Q1.Mobility</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="1">
+                I have no problems in walking about
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="2">
+                I have some problems in walking about
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="3">
+                I am confined to bed
+            </label>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>Q2.Self Care</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="1">
+                I have no problems with self-care
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="2">
+                I have some problems washing or dressing myself
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="3">
+                I am unable to wash or dress myself
+            </label>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>Q3.Usual Activities (e.g. work, study, housework, family or leisure activities)</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="1">
+                I have no problems with performing my usual activities
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="2">
+                I have some problems with performing my usual activities
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="3">
+                I am unable to perform my usual activities
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Q4.Pain/Discomfort</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="1">
+                I have no pain or discomfort
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="2">
+                I have moderate pain or discomfort
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="3">
+                I have extreme pain or discomfort
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Q5.Pain/Discomfort</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="1">
+                I am not anxious or depressed
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="2">
+                I am moderately anxious or depressed
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="3">
+                I am extremely anxious or depressed
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="comment">Comment</label>
+        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5" cols="40"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="outcomeScore">Outcome Score</label>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control" name="outcomeScore"/>
+    </div>
+    <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
+        <small class="form-text text-danger"
+               [hidden]="!qForm.controls.outcomeScore?.errors?.required">
+            This field is required.
+        </small>
+    </div>
+
+    <br>
+    <button type="submit" class="btn btn-info">Submit</button>
+    <br>
+</form>
