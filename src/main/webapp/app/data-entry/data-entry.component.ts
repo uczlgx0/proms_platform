@@ -15,6 +15,7 @@ import { FollowupAction, ActionType, FollowupActionService, Query } from '../ent
 import { FollowupPlan, FollowupPlanService } from '../entities/followup-plan';
 import { Patient, PatientService } from '../entities/patient';
 import { ProcedureBooking, ProcedureBookingService } from '../entities/procedure-booking';
+import { CareEvent, CareEventService } from '../entities/care-event';
 import { ProcedureService } from '../entities/procedure/procedure.service';
 import { Questionnaire, QuestionnaireService } from '../entities/questionnaire';
 import {IOption} from 'ng-select';
@@ -52,12 +53,15 @@ export class DataEntryComponent implements OnInit, OnDestroy {
     itemsPerPage: any;
     patients: Patient[];
     questionnaires: Questionnaire[];
+    careEvents: CareEvent[];
     datePickerOptions: IMyDpOptions = {
         dateFormat: 'dd/mm/yyyy',
         minYear: 1850
     };
     proceduresLookup: any;
     query: Query;
+    selectedCareEvent: CareEvent;
+    selectedQuestionnaire: any;
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -67,6 +71,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         private followupActionService: FollowupActionService,
         private patientService: PatientService,
         private procedureBookingService: ProcedureBookingService,
+        private careEventService: CareEventService,
         private questionnaireService: QuestionnaireService,
         private eventManager: JhiEventManager
     ) {
@@ -154,15 +159,28 @@ export class DataEntryComponent implements OnInit, OnDestroy {
                 //this.selectedFollowupPlan = this.selectedProcedureBooking.followupPlan;
                 console.log("this.selectedFollowupPlan  = " , this.selectedFollowupPlan );
                 //this.followupAction.followupPlan = this.selectedFollowupPlan;
-                // get questionnaires for procedure in booking
-                this.loadQuestionnaires(booking);
-
-                this.loadFollowupActions();
+                // get care events for plan
+                this.loadCareEvents(this.selectedFollowupPlan);
             }
         );
     }
 
+    onCareEventSelected(careEvent: CareEvent) {
+
+        // now refresh followup actions
+        console.log("careEvent  = " , careEvent );
+        this.selectedCareEvent = careEvent;
+        this.loadFollowupActions();
+        //this.followupActionService.findByCareEventId(this.selectedCareEvent.id)
+        //    .subscribe(
+        //    (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
+        //    (res: ResponseWrapper) => this.onError(res.json)
+        //);
+    }
+
     private loadFollowupActions() {
+        // reset followup action name to clear any questionnaire being displayed
+        this.followupAction.name = null;
         this.query = new Query();
         this.query.token = '';
         this.query.patientIds = [];
@@ -171,6 +189,8 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.query.statuses.push('STARTED');
         this.query.procedures = [];
         this.query.procedures.push(this.selectedProcedureBooking.primaryProcedure);
+        this.query.careEvents = [];
+        this.query.careEvents.push(this.selectedCareEvent.id.toString());
         this.followupActionService.search({
             page: 0,
             query: this.query,
@@ -194,9 +214,18 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.formHeight = '500px';
     }
 
-    private loadQuestionnaires(booking: ProcedureBooking) {
-        this.questionnaireService.questinnairesForProcedureLocalCode(booking.primaryProcedure).subscribe(
-            (res: ResponseWrapper) => this.questionnaires = res.json,
+    //private loadQuestionnaires(booking: ProcedureBooking) {
+    //    this.questionnaireService.questinnairesForProcedureLocalCode(booking.primaryProcedure).subscribe(
+    //        (res: ResponseWrapper) => this.questionnaires = res.json,
+    //        (res: ResponseWrapper) => this.onError(res.json)
+    //    );
+    //    // update form height
+    //    this.formHeight = '750px';
+    //}
+
+    private loadCareEvents(plan: FollowupPlan) {
+        this.careEventService.findByPlanId(plan.id).subscribe(
+            (res: ResponseWrapper) => this.onCareEventsSuccess(res.json, res.headers),
             (res: ResponseWrapper) => this.onError(res.json)
         );
         // update form height
@@ -211,7 +240,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.followupActions = data.results;
         // assign values for actions
         for(let action of this.followupActions) {
-            action.followupPlan = this.selectedFollowupPlan;
+            action.careEvent = this.selectedCareEvent;
             action.patient.id = this.patientId;
             if (!action.type) {
                 action.type = ActionType['QUESTIONNAIRE'];
@@ -225,6 +254,11 @@ export class DataEntryComponent implements OnInit, OnDestroy {
         this.bookingTotalItems = headers.get('X-Total-Count');
         this.bookingQueryCount = this.bookingTotalItems;
         this.procedureBookings = data;
+    }
+
+    private onCareEventsSuccess(data, headers) {
+        this.careEvents = data;
+        console.log("this.careEvents  = " , this.careEvents );
     }
 
     private sort() {

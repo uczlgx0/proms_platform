@@ -133,16 +133,24 @@
                 <div *ngIf="selectedProcedureBooking" class="form-group row">
                     <label class="col-sm-2 form-control-label" for="field_phase">Phase</label>
                     <div class="col-sm-10" id="field_phase">
-                        <div class="form-check form-check-inline">
+                        <div *ngFor="let careEvent of careEvents;" class="form-check form-check-inline">
                             <label class="form-check-label">
-                                <input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative
+                                <input class="form-check-input" id="careEventCheckbox" type="radio" name="careEvent"
+                                       (change)="onCareEventSelected(careEvent)" name="selectedCareEvent"
+                                       [checked]="careEvent === selectedCareEvent" value="careEvent">
+                                {{careEvent?.timepoint?.name}}
                             </label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <label class="form-check-label">
-                                <input class="form-check-input" id="inlineCheckbox2" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE"> Post Operative
-                            </label>
-                        </div>
+                        <!--<div class="form-check form-check-inline">-->
+                            <!--<label class="form-check-label">-->
+                                <!--<input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <!--<div class="form-check form-check-inline">-->
+                            <!--<label class="form-check-label">-->
+                                <!--<input class="form-check-input" id="inlineCheckbox2" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE"> Post Operative-->
+                            <!--</label>-->
+                        <!--</div>-->
                     </div>
                 </div>
                 <!--<div class="form-group">-->
@@ -180,30 +188,6 @@
                 <!--<input type="text" class="form-control" name="outcomeComment" id="field_outcomeComment"-->
                 <!--[(ngModel)]="followupAction.outcomeComment" />-->
                 <!--</div>-->
-                <div *ngIf="selectedProcedureBooking" class="form-group row">
-                    <!--<label class="form-control-label" for="field_completedDate">Completed Date</label>-->
-                    <!--<div class="d-flex">-->
-                        <!--<input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"-->
-                            <!--/>-->
-                    <!--</div>-->
-                    <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
-                    <div class="col-sm-10">
-                        <!--<input id="field_completedDate" type="datetime-local" class="form-control" name="completedDate" [(ngModel)]="followupAction.completedDate"-->
-                            <!--/>-->
-                        <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
-                                        [(ngModel)]="followupAction.completedDate"></my-date-picker>
-                        <!--<div class="form-check form-check-inline">-->
-                            <!--<label class="form-check-label">-->
-                                <!--<input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="form-check form-check-inline">-->
-                            <!--<label class="form-check-label">-->
-                                <!--<input class="form-check-input" id="inlineCheckbox2" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE"> Post Operative-->
-                            <!--</label>-->
-                        <!--</div>-->
-                    </div>
-                </div>
 
                 <!--<div *ngIf="followupAction?.questionnaire" class="form-group row">-->
                     <!--<label class="col-sm-2 col-form-label" for="field_outcomescore">Outcome score</label>-->
@@ -221,21 +205,37 @@
                         <!--This field is required.-->
                     <!--</small>-->
                 <!--</div>-->
+                <div *ngIf="selectedCareEvent" class="form-group row">
+                    <label class="col-sm-2 form-control-label" for="field_questionnaire">Questionnaire</label>
+                    <div class="col-sm-10 container-fluid">
+                        <div *ngIf="selectedCareEvent" class="btn-group btn-group-toggle" id="field_questionnaire"
+                             ngbRadioGroup name="radioBasic" [(ngModel)]="followupAction">
+                            <label ngbButtonLabel class="btn-outline-info btn-sm" *ngFor="let q of followupActions">
+                                <input ngbButton type="radio" [value]="q"> {{q.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="selectedCareEvent" class="form-group row">
+                    <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
+                    <div class="col-sm-10">
+                        <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                                        [(ngModel)]="followupAction.completedDate"></my-date-picker>
+                    </div>
+                </div>
             </div>
-            <div *ngIf="selectedProcedureBooking">
-                <div *ngFor="let q of followupActions" class="modal-footer">
-                    <div class="container-fluid" *ngIf="q.name == 'MOXFQ'">
-                        <moxfq-component [followupAction]="q"></moxfq-component>
-                    </div>
-                    <div class="container-fluid" *ngIf="q.name == 'PAIN VAS'">
-                        <painvas-component [followupAction]="followupAction"></painvas-component>
-                    </div>
-                    <div class="container-fluid" *ngIf="q.name == 'AOFAS'">
-                        <aofas-component [followupAction]="followupAction"></aofas-component>
-                    </div>
-                    <div class="container-fluid" *ngIf="q.name == 'AOS'">
-                        <aos-component [followupAction]="followupAction"></aos-component>
-                    </div>
+            <div *ngIf="followupAction?.name" class="m-1 alert alert-dark">
+                <div class="container-fluid" *ngIf="followupAction.name == 'MOXFQ'">
+                    <moxfq-component [followupAction]="followupAction"></moxfq-component>
+                </div>
+                <div class="container-fluid" *ngIf="followupAction.name == 'PAIN VAS'">
+                    <painvas-component [followupAction]="followupAction"></painvas-component>
+                </div>
+                <div class="container-fluid" *ngIf="followupAction.name == 'AOFAS'">
+                    <aofas-component [followupAction]="followupAction"></aofas-component>
+                </div>
+                <div class="container-fluid" *ngIf="followupAction.name == 'AOS'">
+                    <aos-component [followupAction]="followupAction"></aos-component>
                 </div>
             </div>
         </form>
