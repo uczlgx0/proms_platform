@@ -65,10 +65,17 @@ public class CareEventServiceImpl implements CareEventService {
     private void processCareEvent(CareEvent careEvent, ProcedureBooking booking) {
 
         Timepoint timepoint = careEvent.getTimepoint();
+        // skip annual events for now - they'll have value of -1
+        if(timepoint.getValue() < 0) {
+            return;
+        }
+
+        // otherwise we process...
         boolean isPreOpTimepoint = false;
         if(timepoint.getValue() == 0 && timepoint.getUnit() == TimeUnit.DAY){
             isPreOpTimepoint = true;
         }
+
         List<Questionnaire> questionnaires = procedurelinkService.findAllQuestionnairesByProcedureLocalCode(Integer.valueOf(booking.getPrimaryProcedure()));
         for(Questionnaire questionnaire : questionnaires) {
             // create a new follow up action
@@ -101,12 +108,10 @@ public class CareEventServiceImpl implements CareEventService {
                 } else {
                     // calculate relative date from completed date, using time point
                     LocalDate calculatedDate = this.calculateDateFromTimePoint(timepoint, booking);
-                    log.info("booking.getPerformedDate() = {}", booking.getPerformedDate());
-                    log.info("calculatedDate = {}", calculatedDate);
                     action.setScheduledDate(calculatedDate);
-                    if(! calculatedDate.isAfter(booking.getPerformedDate())) {
+                    if(! calculatedDate.isAfter(LocalDate.now())) {
                         action.status(ActionStatus.STARTED);
-                        careEvent.status(ActionStatus.STARTED);
+                        careEvent.setStatus(ActionStatus.STARTED);
                     }
                 }
             }
@@ -125,12 +130,8 @@ public class CareEventServiceImpl implements CareEventService {
 
     private LocalDate calculateDateFromTimePoint(Timepoint timepoint, ProcedureBooking booking) {
         LocalDate date = LocalDate.from(booking.getPerformedDate());
-        log.info("date before = {}", date);
         TimeUnit unit = timepoint.getUnit();
-        log.info("unit = {}", unit);
-        log.info("timepoint.getValue() = {}", timepoint.getValue());
         if(TimeUnit.MONTH == unit) {
-            log.info("Updating month");
             date = date.plusMonths(Long.valueOf(timepoint.getValue()));
         } else if(TimeUnit.YEAR == unit) {
             date = date.plusYears(Long.valueOf(timepoint.getValue()));
@@ -141,7 +142,6 @@ public class CareEventServiceImpl implements CareEventService {
             date = date.plusDays(Long.valueOf(timepoint.getValue()));
         }
 
-        log.info("date after = {}", date);
         return date;
     }
 
