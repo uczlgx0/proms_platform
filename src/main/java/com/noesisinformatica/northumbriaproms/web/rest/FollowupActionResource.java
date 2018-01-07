@@ -224,22 +224,11 @@ public class FollowupActionResource {
         mapStrategy.setColumnMapping(columns);
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
-//        StatefulBeanToCsv btcsv = new StatefulBeanToCsvBuilder(osw)
-//            .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-//            .withMappingStrategy(mapStrategy)
-//            .withSeparator(',')
-//            .build();
-//        btcsv.write(page.getContent());
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         CSVWriter csvWriter = new CSVWriter(osw);
         csvWriter.writeNext(columns);
         page.getContent().forEach(action -> {
             List<String> row = new ArrayList<>();
-            log.info("action.getCareEvent() = {}", action.getCareEvent());
-            log.info("action.getCareEvent().getFollowupPlan() = {}", action.getCareEvent().getFollowupPlan());
-            log.info("action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient() = {}",
-                action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient());
-            log.info("action.getCareEvent().getTimepoint() = {}", action.getCareEvent().getTimepoint());
             row.add(action.getId().toString());
             row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getFamilyName());
             row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getGivenName());

@@ -147,7 +147,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
             this.followupActionService.export({
                 page: this.page - 1,
                 query: this.currentSearch,
-                size: this.itemsPerPage,
+                size: 100000,
                 sort: this.sort()}).subscribe(
                     (res: ResponseWrapper) => {
                         console.log("res  = " , res );
@@ -159,7 +159,7 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         this.followupActionService.export({
             page: this.page - 1,
             query: this.query,
-            size: this.itemsPerPage,
+            size: 100000,
             sort: this.sort()}).subscribe(
             (res: ResponseWrapper) => {
                 console.log("res  = " , res );
