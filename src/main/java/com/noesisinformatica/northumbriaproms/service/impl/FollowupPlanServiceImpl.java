@@ -80,7 +80,8 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
             List<Timepoint> timepoints = procedureTimepointService.findAllTimepointsByProcedureLocalCode(Integer.valueOf(booking.getPrimaryProcedure()));
             for(Timepoint timepoint: timepoints) {
                 // add all time points to plan as scheduled care events
-                CareEvent careEvent = new CareEvent().timepoint(timepoint).patient(patient).type(EventType.SCHEDULED).status(ActionStatus.UNINITIALISED);
+                CareEvent careEvent = new CareEvent().timepoint(timepoint).patient(patient)
+                    .type(EventType.SCHEDULED).status(ActionStatus.UNINITIALISED);
                 // add event to plan
                 plan.addCareEvent(careEvent);
             }

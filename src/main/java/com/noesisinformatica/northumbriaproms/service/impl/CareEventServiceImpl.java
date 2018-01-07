@@ -83,10 +83,12 @@ public class CareEventServiceImpl implements CareEventService {
                 // now status if scheduled date is before today or today - otherwise stays as 'uninitialised'
                 if(!booking.getScheduledDate().isAfter(LocalDate.now())) {
                     action.setStatus(ActionStatus.STARTED);
+                    careEvent.status(ActionStatus.STARTED);
 
                     // if procedure performed date is not present, we change action status to UNKNOWN
                     if (booking.getPerformedDate() == null) {
                         action.status(ActionStatus.UNKNOWN);
+                        careEvent.status(ActionStatus.UNKNOWN);
                     }
                 }
             } else {
@@ -95,14 +97,16 @@ public class CareEventServiceImpl implements CareEventService {
                 // if procedure performed date is not present, we change action status to UNKNOWN
                 if (booking.getPerformedDate() == null) {
                     action.status(ActionStatus.UNKNOWN);
+                    careEvent.status(ActionStatus.UNKNOWN);
                 } else {
                     // calculate relative date from completed date, using time point
                     LocalDate calculatedDate = this.calculateDateFromTimePoint(timepoint, booking);
                     log.info("booking.getPerformedDate() = {}", booking.getPerformedDate());
                     log.info("calculatedDate = {}", calculatedDate);
                     action.setScheduledDate(calculatedDate);
-                    if(!booking.getPerformedDate().isAfter(calculatedDate)) {
+                    if(! calculatedDate.isAfter(booking.getPerformedDate())) {
                         action.status(ActionStatus.STARTED);
+                        careEvent.status(ActionStatus.STARTED);
                     }
                 }
             }
