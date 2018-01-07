@@ -219,7 +219,7 @@ public class FollowupActionResource {
 
         String[] columns = new String[]{"id","last_name", "first_name", "nhs_number", "gender", "age",
             "consultant_name", "hospital_name", "primary_procedure", "performed_date",
-            "name", "time_point", "outcomeScore", "completed_date",  "phase", "status", "outcome_comment",
+            "name", "time_point", "outcomeScore", "completed_date",  "phase", "outcome_comment",
             };
         mapStrategy.setColumnMapping(columns);
 
