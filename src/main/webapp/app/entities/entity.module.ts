@@ -11,6 +11,7 @@ import { NorthumbriapromsFollowupActionModule } from './followup-action/followup
 import { NorthumbriapromsHealthcareProviderModule } from './healthcare-provider/healthcare-provider.module';
 import { NorthumbriapromsTimepointModule } from './timepoint/timepoint.module';
 import { NorthumbriapromsProcedureTimepointModule } from './procedure-timepoint/procedure-timepoint.module';
+import { NorthumbriapromsCareEventModule } from './care-event/care-event.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -26,6 +27,7 @@ import { NorthumbriapromsProcedureTimepointModule } from './procedure-timepoint/
         NorthumbriapromsHealthcareProviderModule,
         NorthumbriapromsTimepointModule,
         NorthumbriapromsProcedureTimepointModule,
+        NorthumbriapromsCareEventModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
