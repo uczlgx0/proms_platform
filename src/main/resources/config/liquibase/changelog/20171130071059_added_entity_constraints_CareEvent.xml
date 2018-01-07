@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity CareEvent.
+    -->
+    <changeSet id="20171130071059-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="timepoint_id"
+                                 baseTableName="care_event"
+                                 constraintName="fk_care_event_timepoint_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="timepoint"/>
+
+        <addForeignKeyConstraint baseColumnNames="patient_id"
+                                 baseTableName="care_event"
+                                 constraintName="fk_care_event_patient_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="patient"/>
+
+        <addForeignKeyConstraint baseColumnNames="followup_plan_id"
+                                 baseTableName="care_event"
+                                 constraintName="fk_care_event_followup_plan_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="followup_plan"/>
+
+    </changeSet>
+</databaseChangeLog>

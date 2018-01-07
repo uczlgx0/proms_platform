@@ -1,10 +1,7 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
-import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
-import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
-import com.noesisinformatica.northumbriaproms.domain.Patient;
-import com.noesisinformatica.northumbriaproms.domain.Questionnaire;
+import com.noesisinformatica.northumbriaproms.domain.*;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
 import com.noesisinformatica.northumbriaproms.repository.FollowupActionRepository;
@@ -121,10 +118,10 @@ public class FollowupActionResourceIntTest {
             .outcomeComment(DEFAULT_OUTCOME_COMMENT)
             .completedDate(DEFAULT_COMPLETED_DATE);
         // Add required entity
-        FollowupPlan followupPlan = FollowupPlanResourceIntTest.createEntity(em);
-        em.persist(followupPlan);
+        CareEvent careEvent = CareEventResourceIntTest.createEntity(em);
+        em.persist(careEvent);
         em.flush();
-        followupAction.setFollowupPlan(followupPlan);
+        followupAction.setCareEvent(careEvent);
         // Add required entity
         Patient patient = PatientResourceIntTest.createEntity(em);
         em.persist(patient);
@@ -575,18 +572,18 @@ public class FollowupActionResourceIntTest {
     @Transactional
     public void getAllFollowupActionsByFollowupPlanIsEqualToSomething() throws Exception {
         // Initialize the database
-        FollowupPlan followupPlan = FollowupPlanResourceIntTest.createEntity(em);
-        em.persist(followupPlan);
+        CareEvent careEvent = CareEventResourceIntTest.createEntity(em);
+        em.persist(careEvent);
         em.flush();
-        followupAction.setFollowupPlan(followupPlan);
+        followupAction.setCareEvent(careEvent);
         followupActionRepository.saveAndFlush(followupAction);
-        Long followupPlanId = followupPlan.getId();
+        Long careEventId = careEvent.getId();
 
-        // Get all the followupActionList where followupPlan equals to followupPlanId
-        defaultFollowupActionShouldBeFound("followupPlanId.equals=" + followupPlanId);
+        // Get all the followupActionList where careEvent equals to careEventId
+        defaultFollowupActionShouldBeFound("careEventId.equals=" + careEventId);
 
-        // Get all the followupActionList where followupPlan equals to followupPlanId + 1
-        defaultFollowupActionShouldNotBeFound("followupPlanId.equals=" + (followupPlanId + 1));
+        // Get all the followupActionList where careEvent equals to careEventId + 1
+        defaultFollowupActionShouldNotBeFound("careEventId.equals=" + (careEventId + 1));
     }
 
 

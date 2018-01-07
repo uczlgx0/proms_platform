@@ -12,6 +12,7 @@
     <include file="config/liquibase/changelog/20171129114835_added_entity_Procedurelink.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171129172603_added_entity_ProcedureBooking.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171130070059_added_entity_FollowupPlan.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_entity_CareEvent.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171130072715_added_entity_FollowupAction.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171207130141_added_entity_HealthcareProvider.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180104065827_added_entity_Timepoint.xml" relativeToChangelogFile="false"/>
@@ -26,6 +27,8 @@
     <include file="config/liquibase/changelog/20171130072715_added_entity_constraints_FollowupAction.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171207749_added_column_User.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171208900_added_entity_ResponseItem.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_entity_constraints_CareEvent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_column_CareEvent.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171215329_added_column_FollowupAction.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171225537_added_column_ProcedureBooking.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171228519_added_column_side_ProcedureBooking.xml" relativeToChangelogFile="false"/>

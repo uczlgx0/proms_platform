@@ -7,12 +7,12 @@
         Added the constraints for entity FollowupAction.
     -->
     <changeSet id="20171130072715-2" author="jhipster">
-        
-        <addForeignKeyConstraint baseColumnNames="followup_plan_id"
+
+        <addForeignKeyConstraint baseColumnNames="care_event_id"
                                  baseTableName="followup_action"
-                                 constraintName="fk_followup_action_followup_plan_id"
+                                 constraintName="fk_followup_action_care_event_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="followup_plan"/>
+                                 referencedTableName="care_event"/>
 
         <addForeignKeyConstraint baseColumnNames="patient_id"
                                  baseTableName="followup_action"
