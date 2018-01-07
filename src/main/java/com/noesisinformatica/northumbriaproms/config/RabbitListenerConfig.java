@@ -55,6 +55,12 @@ public class RabbitListenerConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
+    public Queue careEventsQueue() {
+        return new Queue(Constants.CARE_EVENTS_QUEUE);
+    }
+
+
+    @Bean
     public Queue plansQueue() {
         return new Queue(Constants.PLANS_QUEUE);
     }

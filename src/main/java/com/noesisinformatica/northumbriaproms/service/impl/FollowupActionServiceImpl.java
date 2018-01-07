@@ -1,8 +1,8 @@
 package com.noesisinformatica.northumbriaproms.service.impl;
 
 import com.noesisinformatica.northumbriaproms.config.Constants;
+import com.noesisinformatica.northumbriaproms.domain.CareEvent;
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
-import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.repository.FollowupActionRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupActionSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupActionService;
@@ -19,7 +19,7 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -77,7 +77,6 @@ public class FollowupActionServiceImpl implements FollowupActionService {
      * @param followupAction the entity to process
      */
     @Override
-//    @RabbitHandler
     @RabbitListener(queues = Constants.ACTIONS_QUEUE)
     public void processFollowupAction(FollowupAction followupAction) {
         log.debug("Request to process FollowupAction : {}", followupAction);
@@ -85,18 +84,15 @@ public class FollowupActionServiceImpl implements FollowupActionService {
     }
 
     /**
-     * Utility method that handles processing of a {@link com.noesisinformatica.northumbriaproms.domain.FollowupPlan}s
-     * @param followupPlan the plan to process
+     * Process a {@link com.noesisinformatica.northumbriaproms.domain.CareEvent}.
+     *
+     * @param careEvent the entity to process
      */
     @Override
-    @RabbitListener(queues = Constants.PLANS_QUEUE)
-    public void processFollowupPlan(FollowupPlan followupPlan) {
-        log.debug("Request to process FollowupPlan : {}", followupPlan);
-        // get all associated actions in plan
-        followupPlan.getFollowupActions().forEach(action -> {
-            log.info("action = {}", action);
-            processFollowupAction(action);
-        });
+    @RabbitListener(queues = Constants.CARE_EVENTS_QUEUE)
+    public void processCareEvent(CareEvent careEvent) {
+        log.debug("Request to process CareEvent : {}", careEvent);
+        careEvent.getFollowupActions().forEach(this::save);
     }
 
     /**
@@ -200,22 +196,27 @@ public class FollowupActionServiceImpl implements FollowupActionService {
 
         BoolQueryBuilder proceduresQueryBuilder = QueryBuilders.boolQuery();
         for(String condition : query.getProcedures()) {
-            proceduresQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.procedureBooking.primaryProcedure", condition));
+            proceduresQueryBuilder.should(QueryBuilders.matchQuery("careEvent.followupPlan.procedureBooking.primaryProcedure", condition));
         }
 
         BoolQueryBuilder sourcesQueryBuilder = QueryBuilders.boolQuery();
         for(String location : query.getLocations()) {
-            sourcesQueryBuilder.should(QueryBuilders.matchPhraseQuery("followupPlan.procedureBooking.hospitalSite", location));
+            sourcesQueryBuilder.should(QueryBuilders.matchPhraseQuery("careEvent.followupPlan.procedureBooking.hospitalSite", location));
         }
 
         BoolQueryBuilder consultantsQueryBuilder = QueryBuilders.boolQuery();
         for(String consultant : query.getConsultants()) {
-            consultantsQueryBuilder.should(QueryBuilders.matchPhraseQuery("followupPlan.procedureBooking.consultantName", consultant));
+            consultantsQueryBuilder.should(QueryBuilders.matchPhraseQuery("careEvent.followupPlan.procedureBooking.consultantName", consultant));
         }
 
         BoolQueryBuilder patientIdsQueryBuilder = QueryBuilders.boolQuery();
         for(String id : query.getPatientIds()) {
             patientIdsQueryBuilder.should(QueryBuilders.matchQuery("patient.id", id));
+        }
+
+        BoolQueryBuilder careEventsQueryBuilder = QueryBuilders.boolQuery();
+        for(String id : query.getCareEvents()) {
+            careEventsQueryBuilder.should(QueryBuilders.matchQuery("careEvent.id", id));
         }
 
         BoolQueryBuilder phaseQueryBuilder = QueryBuilders.boolQuery();
@@ -230,7 +231,7 @@ public class FollowupActionServiceImpl implements FollowupActionService {
 
         BoolQueryBuilder lateralityQueryBuilder = QueryBuilders.boolQuery();
         for(String phase : query.getSides()) {
-            lateralityQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.procedureBooking.side", phase));
+            lateralityQueryBuilder.should(QueryBuilders.matchQuery("careEvent.followupPlan.procedureBooking.side", phase));
         }
 
         BoolQueryBuilder typeQueryBuilder = QueryBuilders.boolQuery();
@@ -240,20 +241,20 @@ public class FollowupActionServiceImpl implements FollowupActionService {
 
         BoolQueryBuilder genderQueryBuilder = QueryBuilders.boolQuery();
         for(String gender : query.getGenders()) {
-            genderQueryBuilder.should(QueryBuilders.matchQuery("followupPlan.patient.gender", gender));
+            genderQueryBuilder.should(QueryBuilders.matchQuery("careEvent.followupPlan.patient.gender", gender));
         }
 
         if(query.getMinAge() != null) {
             boolQueryBuilder.must(
-                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("followupPlan.procedureBooking.patientAge").gte(query.getMinAge()))
-                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("followupPlan.procedureBooking.patientAge")))
+                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("careEvent.followupPlan.procedureBooking.patientAge").gte(query.getMinAge()))
+                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("careEvent.followupPlan.procedureBooking.patientAge")))
             );
         }
 
         if(query.getMaxAge() != null) {
             boolQueryBuilder.must(
-                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("followupPlan.procedureBooking.patientAge").lte(query.getMaxAge()))
-                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("followupPlan.procedureBooking.patientAge")))
+                QueryBuilders.boolQuery().should(QueryBuilders.rangeQuery("careEvent.followupPlan.procedureBooking.patientAge").lte(query.getMaxAge()))
+                    .should(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("careEvent.followupPlan.procedureBooking.patientAge")))
             );
         }
 
@@ -270,6 +271,11 @@ public class FollowupActionServiceImpl implements FollowupActionService {
         // we only add phases clause if there are 1 or more phase specified
         if (query.getPhases().size() > 0){
             boolQueryBuilder.must(phaseQueryBuilder);
+        }
+
+        // we only add care events clause if there are 1 or more care events specified
+        if (!query.getCareEvents().isEmpty()){
+            boolQueryBuilder.must(careEventsQueryBuilder);
         }
 
         // we only add statuses clause if there are 1 or more statuses specified
@@ -337,10 +343,10 @@ public class FollowupActionServiceImpl implements FollowupActionService {
             .withSort(getSortParameters(pageable))
             .withPageable(pageable)
             .addAggregation(new TermsBuilder("types").field("type").size(5).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("procedures").field("followupPlan.procedureBooking.primaryProcedure").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("consultants").field("followupPlan.procedureBooking.consultantName").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("locations").field("followupPlan.procedureBooking.hospitalSite").size(100).order(Terms.Order.term(true)))
-            .addAggregation(new TermsBuilder("genders").field("followupPlan.patient.gender").size(5).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("procedures").field("careEvent.followupPlan.procedureBooking.primaryProcedure").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("consultants").field("careEvent.followupPlan.procedureBooking.consultantName").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("locations").field("careEvent.followupPlan.procedureBooking.hospitalSite").size(100).order(Terms.Order.term(true)))
+            .addAggregation(new TermsBuilder("genders").field("careEvent.followupPlan.patient.gender").size(5).order(Terms.Order.term(true)))
             .addAggregation(new TermsBuilder("phases").field("phase").size(10).order(Terms.Order.term(true)))
             .build();
 

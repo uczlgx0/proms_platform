@@ -2,15 +2,14 @@ package com.noesisinformatica.northumbriaproms.service.impl;
 
 import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.*;
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionPhase;
 import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionStatus;
-import com.noesisinformatica.northumbriaproms.domain.enumeration.ActionType;
+import com.noesisinformatica.northumbriaproms.domain.enumeration.EventType;
 import com.noesisinformatica.northumbriaproms.repository.FollowupPlanRepository;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.FollowupPlanSearchRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
 import com.noesisinformatica.northumbriaproms.service.FollowupPlanService;
-import com.noesisinformatica.northumbriaproms.service.ProcedurelinkService;
+import com.noesisinformatica.northumbriaproms.service.ProcedureTimepointService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,19 +42,19 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
     private final ProcedureBookingRepository procedureBookingRepository;
     private final ProcedureBookingSearchRepository procedureBookingSearchRepository;
     private final FollowupPlanSearchRepository followupPlanSearchRepository;
-    private final ProcedurelinkService procedurelinkService;
+    private final ProcedureTimepointService procedureTimepointService;
 
     public FollowupPlanServiceImpl(FollowupPlanRepository followupPlanRepository,
                                    ProcedureBookingRepository procedureBookingRepository,
                                    ProcedureBookingSearchRepository procedureBookingSearchRepository,
                                    FollowupPlanSearchRepository followupPlanSearchRepository,
-                                   ProcedurelinkService procedurelinkService,
+                                   ProcedureTimepointService procedureTimepointService,
                                    RabbitTemplate rabbitTemplate) {
         this.followupPlanRepository = followupPlanRepository;
         this.procedureBookingRepository = procedureBookingRepository;
         this.procedureBookingSearchRepository = procedureBookingSearchRepository;
         this.followupPlanSearchRepository = followupPlanSearchRepository;
-        this.procedurelinkService = procedurelinkService;
+        this.procedureTimepointService = procedureTimepointService;
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -71,52 +69,26 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
 //    @SendTo(value = Constants.ACTIONS_QUEUE)
     public void processBooking(ProcedureBooking booking) {
         log.debug("Request to process ProcedureBooking : {}", booking);
+        Patient patient = booking.getPatient();
         // see if booking has already been processed - we know this by seeing if follow-up plan is set
         Optional<FollowupPlan> existing = findOneByProcedureBookingId(booking.getId());
         FollowupPlan plan = new FollowupPlan();
         if(existing.isPresent()) {
             plan = existing.get();
-            // see if procedures have changed
-            log.info("Found existing plan. Assuming procedure booking has already been processed.");
-            // if procedure booking scheduled date is present and action is not completed/pending, then we can update date
-            if(booking.getScheduledDate() != null) {
-                plan.getFollowupActions().forEach(action -> {
-                    if (ActionStatus.COMPLETED != action.getStatus() && ActionStatus.PENDING != action.getStatus()) {
-                        action.setScheduledDate(booking.getScheduledDate());
-                    }
-                });
-            }
         } else {
             log.info("Found no existing plan. Assuming new procedure booking and creating plan and actions.");
-            // get procedure code from booking and add follow up activities to a new follow up plan
-            Patient patient = booking.getPatient();
-            List<Questionnaire> questionnaires = procedurelinkService.findAllQuestionnairesByProcedureLocalCode(Integer.valueOf(booking.getPrimaryProcedure()));
-            plan.setProcedureBooking(booking);
-            plan.setPatient(patient);
-            for(Questionnaire questionnaire : questionnaires) {
-                // create a new follow up action
-                FollowupAction action = new FollowupAction();
-                action.name(questionnaire.getName())
-                    .type(ActionType.QUESTIONNAIRE).questionnaire(questionnaire).phase(ActionPhase.PRE_OPERATIVE)
-                    .patient(patient).status(ActionStatus.UNINITIALISED);
-                // if procedure booking scheduled date is present, then we can assign tentative date
-                if (booking.getScheduledDate() != null && booking.getScheduledDate().isBefore(LocalDate.now())) {
-                    action.status(ActionStatus.STARTED).setScheduledDate(booking.getScheduledDate());
-                }
-                // if procedure performed date is not present, we have change action status to PENDING
-                if (booking.getPerformedDate() == null) {
-                    action.status(ActionStatus.PENDING);
-                }
-
-                if ("OUTCOME".equalsIgnoreCase(questionnaire.getName())) {
-                    action.setPhase(ActionPhase.POST_OPERATIVE);
-                }
-                // add action to plan
-                plan.addFollowupAction(action);
+            List<Timepoint> timepoints = procedureTimepointService.findAllTimepointsByProcedureLocalCode(Integer.valueOf(booking.getPrimaryProcedure()));
+            for(Timepoint timepoint: timepoints) {
+                // add all time points to plan as scheduled care events
+                CareEvent careEvent = new CareEvent().timepoint(timepoint).patient(patient).type(EventType.SCHEDULED).status(ActionStatus.UNINITIALISED);
+                // add event to plan
+                plan.addCareEvent(careEvent);
             }
         }
 
         // save plan
+        plan.setProcedureBooking(booking);
+        plan.setPatient(patient);
         this.save(plan);
     }
 
@@ -131,7 +103,7 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
         log.debug("Request to save FollowupPlan : {}", followupPlan);
         FollowupPlan result = followupPlanRepository.save(followupPlan);
         followupPlanSearchRepository.save(result);
-        // now send off all associated actions to message queue
+        // now send to message queue for further processing
         rabbitTemplate.convertAndSend(Constants.PLANS_QUEUE, result);
         // now update procedure booking with plan
         ProcedureBooking booking = result.getProcedureBooking();
@@ -190,7 +162,7 @@ public class FollowupPlanServiceImpl implements FollowupPlanService {
     @Override
     @Transactional(readOnly = true)
     public Optional<FollowupPlan> findOneByProcedureBookingId(Long id) {
-        log.debug("Request to get FollowupPlan : {}", id);
+        log.debug("Request to get FollowupPlan for Procedure Booking : {}", id);
         return followupPlanRepository.findOneByProcedureBookingId(id);
     }
 

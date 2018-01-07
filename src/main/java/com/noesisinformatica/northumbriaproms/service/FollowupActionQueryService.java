@@ -100,8 +100,8 @@ public class FollowupActionQueryService extends QueryService<FollowupAction> {
             if (criteria.getCompletedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getCompletedDate(), FollowupAction_.completedDate));
             }
-            if (criteria.getFollowupPlanId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getFollowupPlanId(), FollowupAction_.followupPlan, FollowupPlan_.id));
+            if (criteria.getCareEventId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getCareEventId(), FollowupAction_.careEvent, CareEvent_.id));
             }
             if (criteria.getPatientId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getPatientId(), FollowupAction_.patient, Patient_.id));

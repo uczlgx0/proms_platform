@@ -19,6 +19,7 @@ public class QueryModel {
     List<String> genders = new ArrayList<>();
     List<String> sides = new ArrayList<>();
     List<String> statuses = new ArrayList<>();
+    List<String> careEvents = new ArrayList<>();
     Integer minAge;
     Integer maxAge;
     String token;
@@ -119,10 +120,18 @@ public class QueryModel {
         this.statuses = statuses;
     }
 
+    public List<String> getCareEvents() {
+        return careEvents;
+    }
+
+    public void setCareEvents(List<String> careEvents) {
+        this.careEvents = careEvents;
+    }
+
     public boolean isEmpty() {
         return procedures.isEmpty() && consultants.isEmpty() && locations.isEmpty() && phases.isEmpty()
             && patientIds.isEmpty() && types.isEmpty() && genders.isEmpty() && (minAge == null) && (maxAge == null)
-            && sides.isEmpty() && (token == null);
+            && sides.isEmpty() && careEvents.isEmpty() && (token == null);
     }
 
     @Override
@@ -137,6 +146,7 @@ public class QueryModel {
         sb.append(", types=").append(types);
         sb.append(", genders=").append(genders);
         sb.append(", sides=").append(sides);
+        sb.append(", careEvents=").append(careEvents);
         sb.append(", minAge=").append(minAge);
         sb.append(", maxAge=").append(maxAge);
         sb.append(", token='").append(token).append('\'');

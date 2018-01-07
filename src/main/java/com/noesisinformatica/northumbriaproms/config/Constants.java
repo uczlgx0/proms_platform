@@ -14,6 +14,7 @@ public final class Constants {
     public static final String BOOKINGS_QUEUE = "promsapp_bookings_queue";
     public static final String PLANS_QUEUE = "promsapp_plans_queue";
     public static final String ACTIONS_QUEUE = "promsapp_actions_queue";
+    public static final String CARE_EVENTS_QUEUE = "promsapp_care_events_queue";
 
     private Constants() {
     }

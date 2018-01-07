@@ -38,7 +38,7 @@ public class FollowupPlan implements Serializable {
     @OneToMany(mappedBy = "followupPlan", cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<FollowupAction> followupActions = new HashSet<>();
+    private Set<CareEvent> careEvents = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -75,30 +75,31 @@ public class FollowupPlan implements Serializable {
         this.patient = patient;
     }
 
-    public Set<FollowupAction> getFollowupActions() {
-        return followupActions;
+    public Set<CareEvent> getCareEvents() {
+        return careEvents;
     }
 
-    public FollowupPlan followupActions(Set<FollowupAction> followupActions) {
-        this.followupActions = followupActions;
+    public FollowupPlan careEvents(Set<CareEvent> careEvents) {
+        this.careEvents = careEvents;
         return this;
     }
 
-    public FollowupPlan addFollowupAction(FollowupAction followupAction) {
-        this.followupActions.add(followupAction);
-        followupAction.setFollowupPlan(this);
+    public FollowupPlan addCareEvent(CareEvent careEvent) {
+        this.careEvents.add(careEvent);
+        careEvent.setFollowupPlan(this);
         return this;
     }
 
-    public FollowupPlan removeFollowupAction(FollowupAction followupAction) {
-        this.followupActions.remove(followupAction);
-        followupAction.setFollowupPlan(null);
+    public FollowupPlan removeCareEvent(CareEvent careEvent) {
+        this.careEvents.remove(careEvent);
+        careEvent.setFollowupPlan(null);
         return this;
     }
 
-    public void setFollowupActions(Set<FollowupAction> followupActions) {
-        this.followupActions = followupActions;
+    public void setCareEvents(Set<CareEvent> careEvents) {
+        this.careEvents = careEvents;
     }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -123,8 +124,12 @@ public class FollowupPlan implements Serializable {
 
     @Override
     public String toString() {
-        return "FollowupPlan{" +
-            "id=" + getId() +
-            "}";
+        final StringBuffer sb = new StringBuffer("FollowupPlan{");
+        sb.append("id=").append(id);
+        sb.append(", procedureBooking=").append(procedureBooking);
+        sb.append(", patient=").append(patient);
+        sb.append(", careEvents=").append(careEvents);
+        sb.append('}');
+        return sb.toString();
     }
 }

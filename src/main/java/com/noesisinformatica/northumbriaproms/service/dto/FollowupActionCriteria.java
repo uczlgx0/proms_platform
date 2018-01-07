@@ -47,7 +47,7 @@ public class FollowupActionCriteria implements Serializable {
 
     private LocalDateFilter completedDate;
 
-    private LongFilter followupPlanId;
+    private LongFilter careEventId;
 
     private LongFilter patientId;
 
@@ -126,12 +126,12 @@ public class FollowupActionCriteria implements Serializable {
         this.completedDate = completedDate;
     }
 
-    public LongFilter getFollowupPlanId() {
-        return followupPlanId;
+    public LongFilter getCareEventId() {
+        return careEventId;
     }
 
-    public void setFollowupPlanId(LongFilter followupPlanId) {
-        this.followupPlanId = followupPlanId;
+    public void setCareEventId(LongFilter careEventId) {
+        this.careEventId = careEventId;
     }
 
     public LongFilter getPatientId() {
@@ -185,7 +185,7 @@ public class FollowupActionCriteria implements Serializable {
                 (outcomeScore != null ? "outcomeScore=" + outcomeScore + ", " : "") +
                 (outcomeComment != null ? "outcomeComment=" + outcomeComment + ", " : "") +
                 (completedDate != null ? "completedDate=" + completedDate + ", " : "") +
-                (followupPlanId != null ? "followupPlanId=" + followupPlanId + ", " : "") +
+                (careEventId != null ? "followupPlanId=" + careEventId + ", " : "") +
                 (patientId != null ? "patientId=" + patientId + ", " : "") +
                 (questionnaireId != null ? "questionnaireId=" + questionnaireId + ", " : "") +
                 (consultantName != null ? "consultantName=" + consultantName + ", " : "") +

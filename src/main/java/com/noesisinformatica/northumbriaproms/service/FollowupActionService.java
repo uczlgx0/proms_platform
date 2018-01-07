@@ -1,7 +1,7 @@
 package com.noesisinformatica.northumbriaproms.service;
 
+import com.noesisinformatica.northumbriaproms.domain.CareEvent;
 import com.noesisinformatica.northumbriaproms.domain.FollowupAction;
-import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +27,11 @@ public interface FollowupActionService {
     void processFollowupAction(FollowupAction followupAction);
 
     /**
-     * Utility method that handles processing of a {@link com.noesisinformatica.northumbriaproms.domain.FollowupPlan}s
-     * @param followupPlan the plan to process
+     * Process a {@link com.noesisinformatica.northumbriaproms.domain.CareEvent}.
+     *
+     * @param careEvent the entity to process
      */
-    void processFollowupPlan(FollowupPlan followupPlan);
+    void processCareEvent(CareEvent careEvent);
 
     /**
      * Get all the followupActions.

@@ -126,6 +126,25 @@ public class FollowupActionResource {
     }
 
     /**
+     * GET  /care-events/:id/followup-actions : get all the followup actions for care event id
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of follow up actions in body
+     */
+    @GetMapping("/care-events/{id}/followup-actions")
+    @Timed
+    public ResponseEntity<List<FollowupAction>> getAllFollowupActionsForCareEvent(@PathVariable Long id, Pageable pageable) {
+        log.debug("REST request to get care-events for followup-plan id: {}", id);
+        FollowupActionCriteria criteria = new FollowupActionCriteria();
+        LongFilter filter = new LongFilter();
+        filter.setEquals(id);
+        criteria.setCareEventId(filter);
+        Page<FollowupAction> page = followupActionQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/care-events/" + id + "/followup-actions");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
      * GET  /followup-actions/:id : get the "id" followupAction.
      *
      * @param id the id of the followupAction to retrieve

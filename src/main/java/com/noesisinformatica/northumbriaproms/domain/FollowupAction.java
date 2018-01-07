@@ -61,7 +61,7 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
 
     @ManyToOne(optional = false)
     @NotNull
-    private FollowupPlan followupPlan;
+    private CareEvent careEvent;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -174,17 +174,17 @@ public class FollowupAction extends AbstractAuditingEntity implements Serializab
         this.completedDate = completedDate;
     }
 
-    public FollowupPlan getFollowupPlan() {
-        return followupPlan;
+    public CareEvent getCareEvent() {
+        return careEvent;
     }
 
-    public FollowupAction followupPlan(FollowupPlan followupPlan) {
-        this.followupPlan = followupPlan;
+    public FollowupAction careEvent(CareEvent careEvent) {
+        this.careEvent = careEvent;
         return this;
     }
 
-    public void setFollowupPlan(FollowupPlan followupPlan) {
-        this.followupPlan = followupPlan;
+    public void setCareEvent(CareEvent careEvent) {
+        this.careEvent = careEvent;
     }
 
     public Patient getPatient() {
