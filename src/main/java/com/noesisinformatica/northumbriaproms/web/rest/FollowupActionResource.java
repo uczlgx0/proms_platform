@@ -11,8 +11,6 @@ import com.noesisinformatica.northumbriaproms.web.rest.util.PaginationUtil;
 import com.noesisinformatica.northumbriaproms.web.rest.util.QueryModel;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.github.jhipster.service.filter.LongFilter;
@@ -35,6 +33,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -212,31 +211,62 @@ public class FollowupActionResource {
                                                                      HttpServletResponse response) throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
         log.debug("REST request to search for a page of FollowupActions for query {}", query);
         FacetedPage<FollowupAction> page = followupActionService.search(query, pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/_export/followup-actions");
-//        headers.set("Content-Type", "text/plain; charset=utf-8");
-//        response.setHeader("Content-Type", "text/plain; charset=utf-8");
         response.setContentType("text/csv");
-//        headers.set("content-disposition","attachment;filename =filename.csv");
         response.setHeader("content-disposition","attachment;filename=export.csv");
-//        response.setHeader("Content-Disposition", "attachment");
         // wrap results page in a response entity with faceted results turned into a map
         ColumnPositionMappingStrategy mapStrategy = new ColumnPositionMappingStrategy();
         mapStrategy.setType(FollowupAction.class);
 
-        String[] columns = new String[]{"id", "name", "outcomeScore", "type", "phase", "status"};
+        String[] columns = new String[]{"id","last_name", "first_name", "nhs_number", "gender", "age",
+            "consultant_name", "hospital_name", "primary_procedure", "performed_date",
+            "name", "time_point", "outcomeScore", "completed_date",  "phase", "status", "outcome_comment",
+            };
         mapStrategy.setColumnMapping(columns);
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), "UTF-8");
-        StatefulBeanToCsv btcsv = new StatefulBeanToCsvBuilder(osw)
-            .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
-            .withMappingStrategy(mapStrategy)
-            .withSeparator(',')
-            .build();
-        btcsv.write(page.getContent());
-//        osw.flush();
+//        StatefulBeanToCsv btcsv = new StatefulBeanToCsvBuilder(osw)
+//            .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+//            .withMappingStrategy(mapStrategy)
+//            .withSeparator(',')
+//            .build();
+//        btcsv.write(page.getContent());
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        CSVWriter csvWriter = new CSVWriter(osw);
+        csvWriter.writeNext(columns);
+        page.getContent().forEach(action -> {
+            List<String> row = new ArrayList<>();
+            log.info("action.getCareEvent() = {}", action.getCareEvent());
+            log.info("action.getCareEvent().getFollowupPlan() = {}", action.getCareEvent().getFollowupPlan());
+            log.info("action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient() = {}",
+                action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient());
+            log.info("action.getCareEvent().getTimepoint() = {}", action.getCareEvent().getTimepoint());
+            row.add(action.getId().toString());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getFamilyName());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getGivenName());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getNhsNumber().toString());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatient().getGender().name());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPatientAge().toString());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getConsultantName());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getHospitalSite());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPrimaryProcedure());
+            row.add(action.getCareEvent().getFollowupPlan().getProcedureBooking().getPerformedDate().format(dateFormat));
+            row.add(action.getName());
+            row.add(action.getCareEvent().getTimepoint().getName());
+            row.add(action.getOutcomeScore().toString());
+            if (action.getCompletedDate() != null) {
+                row.add(action.getCompletedDate().format(dateFormat));
+            } else {
+                row.add("");
+            }
+            row.add(action.getPhase().name());
+            row.add(action.getOutcomeComment());
+            // write to csv
+            csvWriter.writeNext(row.toArray(new String[columns.length]));
+        });
+
+        csvWriter.close();
         osw.close();
         response.flushBuffer();
-//        return new ResponseEntity<>(getResultMapMapForResults(page), headers, HttpStatus.OK);
     }
 
     /**
