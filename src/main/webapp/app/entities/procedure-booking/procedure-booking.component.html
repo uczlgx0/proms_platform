@@ -12,11 +12,12 @@
            replaceUrl="true">New Procedure Booking</a>
     </h2>
     <jhi-alert></jhi-alert>
-    <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="row">
+    <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <input type="text" class="form-control" [ngModel]="currentSearch" (ngModelChange)="search($event)"
+                           id="currentSearch" name="currentSearch" placeholder="Enter NHS number or name (2 or more characters)">
                     <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
                         <span class="fa fa-search"></span>
                     </button>
@@ -28,7 +29,7 @@
         </div>
     </div>
     <br/>
-    <div *ngIf="procedureBookings">
+    <div *ngIf="currentSearch && procedureBookings && procedureBookings?.length > 0">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
@@ -118,7 +119,12 @@
             </div>
         </div>
     </div>
-    <div *ngIf="procedureBookings && procedureBookings.length">
+    <div *ngIf="currentSearch && procedureBookings?.length == 0">
+        <div class="alert alert-warning">
+            <h4>No matching procedure bookings found for query '<strong>{{currentSearch}}</strong>'</h4>
+        </div>
+    </div>
+    <div *ngIf="currentSearch && procedureBookings && procedureBookings.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>

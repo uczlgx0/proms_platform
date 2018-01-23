@@ -119,8 +119,8 @@ export class ProcedureBookingComponent implements OnInit, OnDestroy {
     }
 
     search(query) {
-        if (!query) {
-            return this.clear();
+        if (!query || query.length < 2) {
+            return;
         }
         this.page = 0;
         this.currentSearch = query;
@@ -131,6 +131,20 @@ export class ProcedureBookingComponent implements OnInit, OnDestroy {
         }]);
         this.loadAll();
     }
+
+    //search(query) {
+    //    if (!query || query.length < 2) {
+    //        return;
+    //    }
+    //    this.page = 0;
+    //    this.currentSearch = query;
+    //    this.router.navigate(['/patient', {
+    //        search: this.currentSearch,
+    //        page: this.page,
+    //        sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+    //    }]);
+    //    this.loadAll();
+    //}
 
     ngOnInit() {
         // load procedures lookup

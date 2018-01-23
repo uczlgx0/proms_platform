@@ -3,10 +3,13 @@ package com.noesisinformatica.northumbriaproms.service.impl;
 import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.FollowupPlan;
 import com.noesisinformatica.northumbriaproms.domain.Patient;
-import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
 import com.noesisinformatica.northumbriaproms.domain.ProcedureBooking;
 import com.noesisinformatica.northumbriaproms.repository.ProcedureBookingRepository;
 import com.noesisinformatica.northumbriaproms.repository.search.ProcedureBookingSearchRepository;
+import com.noesisinformatica.northumbriaproms.service.ProcedureBookingService;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,10 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing ProcedureBooking.
@@ -134,7 +134,16 @@ public class ProcedureBookingServiceImpl implements ProcedureBookingService{
     @Transactional(readOnly = true)
     public Page<ProcedureBooking> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProcedureBookings for query {}", query);
-        Page<ProcedureBooking> result = procedureBookingSearchRepository.search(queryStringQuery(query), pageable);
+        QueryBuilder queryBuilder = null;
+        // try to see if query is number, if it is try as nhs number otherwise try as name
+        try {
+            Long number = Long.parseLong(query);
+            queryBuilder = QueryBuilders.termQuery("patient.nhsNumber", number);
+        } catch (NumberFormatException e) {
+            queryBuilder =
+                QueryBuilders.multiMatchQuery(query, "patient.givenName", "patient.familyName").type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+        }
+        Page<ProcedureBooking> result = procedureBookingSearchRepository.search(queryBuilder, pageable);
         return result;
     }
 }
