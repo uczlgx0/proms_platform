@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
@@ -24,6 +24,7 @@ import {IOption} from 'ng-select';
 })
 export class FollowupOutcomesComponent implements OnInit, OnDestroy {
 
+    @Input() selectedPatientId;
     currentAccount: any;
     followupActions: FollowupAction[];
     query: Query;
@@ -109,6 +110,11 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        // add patient id if selectedPatientId is set
+        if(this.selectedPatientId) {
+            this.query.patientIds = [];
+            this.query.patientIds.push(this.selectedPatientId);
+        }
         // update min and max ages for query
         this.query.minAge = this.ageRange[0];
         this.query.maxAge = this.ageRange[1];

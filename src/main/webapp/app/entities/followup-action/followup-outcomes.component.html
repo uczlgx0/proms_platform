@@ -77,7 +77,7 @@
                                >
                     </ng-select>
                 </div>
-                <div class="form-group">
+                <div *ngIf="!selectedPatientId" class="form-group">
                     <label for="field_genders">Gender
                         <small *ngIf="query.genders.length > 0">
                             [<a class="alert-danger" (click)="clearGenders()">Clear</a>]
@@ -122,7 +122,7 @@
             </form>
         </div>
         <div class="col-md-9">
-            <div class="form-group row">
+            <div *ngIf="!selectedPatientId" class="form-group row">
                 <label for="ageSlider" class="col-sm-2 col-form-label"><strong>Patient Age</strong></label>
                 <div class="col-sm-10">
                     <nouislider id="ageSlider" [connect]="true" [min]="0" [max]="150" [step]="1" [(ngModel)]="ageRange"
@@ -133,7 +133,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                        <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+                        <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
                         <!--<th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>-->
                         <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
                         <!--<th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>-->
@@ -150,7 +150,7 @@
                     <tbody>
                     <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
                         <!--<td><a [routerLink]="['../followup-action', followupAction.id ]">{{followupAction.id}}</a></td>-->
-                        <td>
+                        <td *ngIf="!selectedPatientId">
                             <!--{{followupAction?.followupPlan?.patient | json}}-->
                             <div *ngIf="followupAction.patient">
                                 <a [routerLink]="['../patient', followupAction.patient?.id ]" >
@@ -177,8 +177,14 @@
                         <!--</td>-->
                         <td class="text-right">
                             <div class="btn-group flex-btn-group-container">
-                                <button type="submit"
+                                <button *ngIf="!selectedPatientId" type="submit"
                                         [routerLink]="['../followup-action', followupAction.id ]"
+                                        class="btn btn-info btn-sm">
+                                    <!--<span class="fa fa-eye"></span>-->
+                                    <span class="d-none d-md-inline">View</span>
+                                </button>
+                                <button *ngIf="selectedPatientId" type="submit"
+                                        [routerLink]="['../../followup-action', followupAction.id ]"
                                         class="btn btn-info btn-sm">
                                     <!--<span class="fa fa-eye"></span>-->
                                     <span class="d-none d-md-inline">View</span>
