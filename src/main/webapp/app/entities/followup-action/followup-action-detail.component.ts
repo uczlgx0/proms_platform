@@ -15,6 +15,7 @@ import { PainvasComponent } from '../../forms/painvas.component';
 export class FollowupActionDetailComponent implements OnInit, OnDestroy {
 
     followupAction: FollowupAction;
+    isEditing: boolean = false;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
@@ -37,6 +38,10 @@ export class FollowupActionDetailComponent implements OnInit, OnDestroy {
         this.followupActionService.find(id).subscribe((followupAction) => {
             this.followupAction = followupAction;
         });
+    }
+
+    toggleEdit() {
+        this.isEditing = !this.isEditing;
     }
 
     previousState() {

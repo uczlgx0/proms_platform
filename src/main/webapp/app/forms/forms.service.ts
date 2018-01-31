@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { JhiDateUtils } from 'ng-jhipster';
 
 import { FollowupAction, ActionStatus } from '../entities/followup-action';
 import { ResponseItem } from '../entities/followup-action/response-item.model';
@@ -6,7 +7,7 @@ import { ResponseItem } from '../entities/followup-action/response-item.model';
 @Injectable()
 export class FormsService {
 
-    constructor() { }
+    constructor(private dateUtils: JhiDateUtils) { }
 
     convertToResponseItem(key: string, value: string, followupAction: FollowupAction): ResponseItem {
         let responseItem = new ResponseItem();
@@ -27,7 +28,7 @@ export class FormsService {
         // loop through data keys and collect as response items
         let items: Array<ResponseItem> = [];
         Object.keys(formData).forEach((key) => {
-            if(key != 'comment' && key != 'outcomeScore' && formData[key]) {
+            if(key != 'comment' && key != 'outcomeScore' && formData[key] && key != 'completedDate' && formData[key]) {
                 items.push(this.convertToResponseItem(key, formData[key], followupAction));
             }
         });

@@ -6,7 +6,7 @@
     <div class="form-group">
         <label for="p1">1. At its worst? </label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p1" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p1" name="p1" (ngModelChange)="onChange($event, 'p1')"></nouislider>
+                    id="p1" name="p1" (ngModelChange)="onChange($event, 'p1')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -15,7 +15,7 @@
     <div class="form-group">
         <label for="p2">2. Before you get up in the morning?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p2" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p2" name="p2" (ngModelChange)="onChange($event, 'p2')"></nouislider>
+                    id="p2" name="p2" (ngModelChange)="onChange($event, 'p2')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -24,7 +24,7 @@
     <div class="form-group">
         <label for="p3">3. When you walked barefoot?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p3" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p3" name="p3" (ngModelChange)="onChange($event, 'p3')"></nouislider>
+                    id="p3" name="p3" (ngModelChange)="onChange($event, 'p3')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -33,7 +33,7 @@
     <div class="form-group">
         <label for="p4">4. When you stood barefoot?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p4" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p4" name="p4" (ngModelChange)="onChange($event, 'p4')"></nouislider>
+                    id="p4" name="p4" (ngModelChange)="onChange($event, 'p4')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -42,7 +42,7 @@
     <div class="form-group">
         <label for="p5">5. When you walked wearing shoes?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p5" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p5" name="p5" (ngModelChange)="onChange($event, 'p5')"></nouislider>
+                    id="p5" name="p5" (ngModelChange)="onChange($event, 'p5')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -51,7 +51,7 @@
     <div class="form-group">
         <label for="p6">6. When you stood wearing shoes</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p6" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p6" name="p6" (ngModelChange)="onChange($event, 'p6')"></nouislider>
+                    id="p6" name="p6" (ngModelChange)="onChange($event, 'p6')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -60,7 +60,7 @@
     <div class="form-group">
         <label for="p7">7. When you walked wearing shoe inserts or braces?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p7" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p7" name="p7" (ngModelChange)="onChange($event, 'p7')"></nouislider>
+                    id="p7" name="p7" (ngModelChange)="onChange($event, 'p7')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -69,7 +69,7 @@
     <div class="form-group">
         <label for="p8">8. When you stood wearing shoe inserts or braces?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p8" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p8" name="p8" (ngModelChange)="onChange($event, 'p8')"></nouislider>
+                    id="p8" name="p8" (ngModelChange)="onChange($event, 'p8')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -78,7 +78,7 @@
     <div class="form-group">
         <label for="p9">9. At the end of the day?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.p9" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="p9" name="p9" (ngModelChange)="onChange($event, 'p9')"></nouislider>
+                    id="p9" name="p9" (ngModelChange)="onChange($event, 'p9')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
         </small>
@@ -96,7 +96,7 @@
     <div class="form-group">
         <label for="d1">1. Walking around the house?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d1" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d1" name="d1" (ngModelChange)="onChange($event, 'd1')"></nouislider>
+                    id="d1" name="d1" (ngModelChange)="onChange($event, 'd1')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -105,7 +105,7 @@
     <div class="form-group">
         <label for="d2">2. Walking outside on uneven ground? </label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d2" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d2" name="d2" (ngModelChange)="onChange($event, 'd2')"></nouislider>
+                    id="d2" name="d2" (ngModelChange)="onChange($event, 'd2')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -114,7 +114,7 @@
     <div class="form-group">
         <label for="d3">3. Walking four blocks or more?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d3" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d3" name="d3" (ngModelChange)="onChange($event, 'd3')"></nouislider>
+                    id="d3" name="d3" (ngModelChange)="onChange($event, 'd3')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -123,7 +123,7 @@
     <div class="form-group">
         <label for="d4">4. Climbing stairs?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d4" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d4" name="d4" (ngModelChange)="onChange($event, 'd4')"></nouislider>
+                    id="d4" name="d4" (ngModelChange)="onChange($event, 'd4')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -132,7 +132,7 @@
     <div class="form-group">
         <label for="d5">5. Descending stairs?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d5" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d5" name="d5" (ngModelChange)="onChange($event, 'd5')"></nouislider>
+                    id="d5" name="d5" (ngModelChange)="onChange($event, 'd5')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -141,7 +141,7 @@
     <div class="form-group">
         <label for="d6">6.Standing on tip toes?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d6" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d6" name="d6" (ngModelChange)="onChange($event, 'd6')"></nouislider>
+                    id="d6" name="d6" (ngModelChange)="onChange($event, 'd6')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -150,7 +150,7 @@
     <div class="form-group">
         <label for="d7">7. Getting out of a chair?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d7" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d7" name="d7" (ngModelChange)="onChange($event, 'd7')"></nouislider>
+                    id="d7" name="d7" (ngModelChange)="onChange($event, 'd7')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -159,7 +159,7 @@
     <div class="form-group">
         <label for="d8">8. Climbing up or down curbs?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d8" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d8" name="d8" (ngModelChange)="onChange($event, 'd8')"></nouislider>
+                    id="d8" name="d8" (ngModelChange)="onChange($event, 'd8')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -168,7 +168,7 @@
     <div class="form-group">
         <label for="d9">9. Walking fast or running?</label>
         <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.d9" [tooltips]="[true ]" style="margin-top: 2em;"
-                    id="d9" name="d9" (ngModelChange)="onChange($event, 'd9')"></nouislider>
+                    id="d9" name="d9" (ngModelChange)="onChange($event, 'd9')" [disabled]="!isEditing"></nouislider>
         <small class="form-text text-muted">
             On a scale of 0 to 100, with 0 is “No difficulty” and 100 is “So difficult unable”.
         </small>
@@ -176,12 +176,14 @@
 
     <div class="form-group">
         <label for="comment">Comment</label>
-        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5" cols="40"></textarea>
+        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5"
+                  cols="40" [disabled]="!isEditing"></textarea>
     </div>
 
     <div class="form-group">
         <label for="outcomeScore">Outcome Score</label>
-        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control" name="outcomeScore"/>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control"
+               name="outcomeScore" [disabled]="!isEditing"/>
     </div>
     <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
         <small class="form-text text-danger"
@@ -191,6 +193,13 @@
     </div>
 
     <br>
+    <div class="form-group row">
+        <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
+        <div class="col-sm-10">
+            <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" [disabled]="!isEditing"></my-date-picker>
+        </div>
+    </div>
     <button type="submit" class="btn btn-info">Submit</button>
     <br>
 </form>

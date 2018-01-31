@@ -17,7 +17,7 @@
         </div>
         <div class="form-check">
             <label class="form-check-label">
-                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="3">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="3" [disabled]="!isEditing">
                 I am confined to bed
             </label>
         </div>
@@ -40,7 +40,7 @@
         </div>
         <div class="form-check">
             <label class="form-check-label">
-                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="3">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="3" [disabled]="!isEditing">
                 I am unable to wash or dress myself
             </label>
         </div>
@@ -63,7 +63,7 @@
         </div>
         <div class="form-check">
             <label class="form-check-label">
-                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="3">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="3" [disabled]="!isEditing">
                 I am unable to perform my usual activities
             </label>
         </div>
@@ -85,7 +85,7 @@
         </div>
         <div class="form-check">
             <label class="form-check-label">
-                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="3">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="3" [disabled]="!isEditing">
                 I have extreme pain or discomfort
             </label>
         </div>
@@ -107,7 +107,7 @@
         </div>
         <div class="form-check">
             <label class="form-check-label">
-                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="3">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="3" [disabled]="!isEditing">
                 I am extremely anxious or depressed
             </label>
         </div>
@@ -115,12 +115,14 @@
 
     <div class="form-group">
         <label for="comment">Comment</label>
-        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5" cols="40"></textarea>
+        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5"
+                  cols="40" [disabled]="!isEditing"></textarea>
     </div>
 
     <div class="form-group">
         <label for="outcomeScore">Outcome Score</label>
-        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control" name="outcomeScore"/>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control"
+               name="outcomeScore" [disabled]="!isEditing"/>
     </div>
     <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
         <small class="form-text text-danger"
@@ -130,6 +132,13 @@
     </div>
 
     <br>
+    <div class="form-group row">
+        <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
+        <div class="col-sm-10">
+            <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" [disabled]="!isEditing"></my-date-picker>
+        </div>
+    </div>
     <button type="submit" class="btn btn-info">Submit</button>
     <br>
 </form>
