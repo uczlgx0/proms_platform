@@ -16,7 +16,10 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-patient-detail',
-    templateUrl: './patient-detail.component.html'
+    templateUrl: './patient-detail.component.html',
+    styleUrls: [
+        'patient-detail.component.css'
+    ]
 })
 export class PatientDetailComponent implements OnInit, OnDestroy {
 

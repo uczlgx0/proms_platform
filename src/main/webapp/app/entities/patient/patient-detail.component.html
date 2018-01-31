@@ -1,106 +1,86 @@
 
 <div *ngIf="patient">
     <h2>
-        {{patient.givenName}} {{patient.familyName}}
+        Patient Details
         <div class="btn-group float-right " role="group">
             <button  type="submit"
                      (click)="previousState()"
-                     class="btn btn-info">
+                     class="btn btn-outline-info">
                 <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
             </button>
 
             <button  type="button"
                      [routerLink]="['/', { outlets: { popup: 'patient/'+ patient.id + '/edit'} }]"
                      replaceUrl="true"
-                     class="btn btn-primary">
+                     class="btn btn-outline-primary">
                 <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+            <button *ngIf="!addresses || addresses.length < 1"
+                    class="btn btn btn-outline-success btn-sm float-right jh-create-entity create-address mb-2"
+                    [routerLink]="['/', { outlets: { popup: 'address/'+ patient.id + '/create'}  }]">
+                <span class="fa fa-plus"></span>
+                    <span class="hidden-sm-down" >
+                    Add Address
+                    </span>
+            </button>
+            <button *ngIf="addresses && addresses.length" type="submit"
+                    [routerLink]="['/', { outlets: { popup: 'address/'+ addresses[0].id + '/edit'} }]"
+                    replaceUrl="true"
+                    class="btn btn-outline-success btn-sm">
+                <span class="fa fa-pencil"></span>
+                <span class="d-none d-md-inline">Edit Address</span>
             </button>
         </div>
     </h2>
     <hr>
     <jhi-alert></jhi-alert>
-    <div class="row">
-        <div class="col-md-6">
-            <dl class="row-md jh-entity-details">
-                <dt><span>Family Name</span></dt>
-                <dd>
-                    <span>{{patient.familyName}}</span>
-                </dd>
-                <dt><span>Given Name</span></dt>
-                <dd>
-                    <span>{{patient.givenName}}</span>
-                </dd>
-                <dt><span>Birth Date</span></dt>
-                <dd>
-                    <span>{{patient.birthDate | date:'mediumDate'}}</span>
-                </dd>
-                <dt><span>Gender</span></dt>
-                <dd>
-                    <span>{{patient.gender}}</span>
-                </dd>
-                <dt><span>Nhs Number</span></dt>
-                <dd>
-                    <span>{{patient.nhsNumber}}</span>
-                </dd>
-                <dt><span>Email</span></dt>
-                <dd>
-                    <span>{{patient.email}}</span>
-                </dd>
-            </dl>
-        </div>
-        <div class="col-md-6">
-            <h4>
-                Address
-                <button *ngIf="!addresses || addresses.length < 1"
-                        class="btn btn btn-outline-success btn-sm float-right jh-create-entity create-address mb-2"
-                        [routerLink]="['/', { outlets: { popup: 'address/'+ patient.id + '/create'}  }]">
-                    <span class="fa fa-plus"></span>
-                    <span class="hidden-sm-down" >
-                    Add Address
-                    </span>
-                </button>
-                <button *ngIf="addresses && addresses.length" type="submit"
-                        [routerLink]="['/', { outlets: { popup: 'address/'+ addresses[0].id + '/edit'} }]"
-                        replaceUrl="true"
-                        class="btn btn-primary btn-sm">
-                    <span class="fa fa-pencil"></span>
-                    <span class="d-none d-md-inline">Edit</span>
-                </button>
-            </h4>
-            <hr>
-            <dl *ngFor="let address of addresses" class="row-md jh-entity-details">
-                <dt><span>Line</span></dt>
-                <dd>
-                    <span>{{address.lines}}</span>
-                </dd>
-                <dt><span>City</span></dt>
-                <dd>
-                    <span>{{address.city}}</span>
-                </dd>
-                <dt><span>County</span></dt>
-                <dd>
-                    <span>{{address.county}}</span>
-                </dd>
-                <dt><span>Postal Code</span></dt>
-                <dd>
-                    <span>{{address.postalCode}}</span>
-                </dd>
-                <dt><span>Country</span></dt>
-                <dd>
-                    <span>{{address.country}}</span>
-                </dd>
-            </dl>
-        </div>
+    <!-- Details Jumbotron-->
+    <div class="jumbotron">
+
+        <h1 class="h1-reponsive mb-3 blue-text"><strong>{{patient.givenName}} {{patient.familyName}}</strong></h1>
+        <p class="lead">
+            <div class="row">
+                <div class="col-sm-4">
+                    <span>{{patient.familyName | uppercase}}, {{patient.givenName}}</span>
+                </div>
+                <div class="col-sm-4">
+                    <span>{{patient.gender | uppercase}}, {{patient.birthDate | date:'mediumDate'}}</span>
+                </div>
+                <div class="col-sm-4">
+                    <strong>{{patient.nhsNumber}}</strong>, {{patient.email}}
+                </div>
+            </div>
+        </p>
+        <hr class="my-4">
+        <p *ngFor="let address of addresses">
+            <span><strong>Address:</strong></span>
+            {{address.lines}}, {{address.city}}, {{address.county}}, {{address.postalCode}}, {{address.country}}
+        </p>
     </div>
 
-    <hr>
-    <jhi-procedure-booking [selectedPatientId]="patient.id"></jhi-procedure-booking>
-    <hr>
-
-    <jhi-followup-action [selectedPatientId]="patient.id"></jhi-followup-action>
-    <hr>
-
-    <followup-outcomes [selectedPatientId]="patient.id"></followup-outcomes>
-    <hr>
+    <!-- Tabbed bookings, actions and outcomes-->
+    <ngb-tabset>
+        <ngb-tab>
+            <ng-template ngbTabTitle><b>Procedure Bookings</b></ng-template>
+            <ng-template ngbTabContent>
+                <br>
+                <jhi-procedure-booking [selectedPatientId]="patient.id"></jhi-procedure-booking>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+            <ng-template ngbTabTitle><b>Followup Actions</b></ng-template>
+            <ng-template ngbTabContent>
+                <br>
+                <jhi-followup-action [selectedPatientId]="patient.id"></jhi-followup-action>
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+            <ng-template ngbTabTitle><b>Completed Outcomes</b></ng-template>
+            <ng-template ngbTabContent>
+                <br>
+                <followup-outcomes [selectedPatientId]="patient.id"></followup-outcomes>
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
 
 </div>
