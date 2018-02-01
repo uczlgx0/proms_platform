@@ -112,7 +112,8 @@
                 <table class="table table-striped">
                     <thead>
                     <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                        <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+                        <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span
+                            class="fa fa-sort"></span></th>
                         <th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
                         <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
@@ -122,7 +123,7 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
-                        <td>
+                        <td *ngIf="!selectedPatientId">
                             <div *ngIf="followupAction.patient">
                                 <a [routerLink]="['../patient', followupAction.patient?.id ]" >
                                     {{followupAction.careEvent?.followupPlan?.patient?.givenName}} {{followupAction.careEvent?.followupPlan?.patient?.familyName}}
