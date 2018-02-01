@@ -121,17 +121,16 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
         // always set status to completed
         this.query.statuses = [];
         this.query.statuses.push('COMPLETED');
+
         if (this.currentSearch) {
-            this.followupActionService.search({
-                page: this.page - 1,
-                query: this.currentSearch,
-                size: this.itemsPerPage,
-                sort: this.sort()}).subscribe(
-                    (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
-                    (res: ResponseWrapper) => this.onError(res.json)
-                );
-            return;
+            //this.currentSearch = '';
+            this.query.token = this.currentSearch;
         }
+        else {
+            this.query.token = '';
+        }
+        console.log("this.query  = ", this.query);
+
         this.followupActionService.search({
             page: this.page - 1,
             query: this.query,
@@ -223,16 +222,22 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     search(query) {
-        if (!query) {
-            return this.clear();
+        //if (!query) {
+        //    return this.clear();
+        //}
+        if (query) {
+            this.currentSearch = query;
+        }
+        else {
+            this.currentSearch = null;
         }
         this.page = 0;
-        this.currentSearch = query;
-        this.router.navigate(['/followup-outcomes', {
-            search: this.currentSearch,
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }]);
+        //this.currentSearch = query;
+        //this.router.navigate(['/followup-outcomes', {
+        //    search: this.currentSearch,
+        //    page: this.page,
+        //    sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+        //}]);
         this.loadAll();
     }
 
