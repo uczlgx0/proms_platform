@@ -7,30 +7,7 @@
         <jhi-alert></jhi-alert>
         <form name="editForm" [style.min-height]="formHeight" role="form" novalidate #editForm="ngForm">
 
-            <!--<div class="modal-header">-->
-                <!--<h4 class="modal-title" id="myFollowupActionLabel">Create or edit a Followup Action</h4>-->
-                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true"-->
-                        <!--(click)="clear()">&times;</button>-->
-            <!--</div>-->
             <div class="modal-body">
-                <!--<div class="form-group" [hidden]="!followupAction.id">-->
-                <!--<label for="id">ID</label>-->
-                <!--<input type="text" class="form-control" id="id" name="id"-->
-                <!--[(ngModel)]="followupAction.id" readonly />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_patient">Patient</label>-->
-                <!--<select class="form-control" id="field_patient" name="patient" [(ngModel)]="followupAction.patient"  required>-->
-                <!--<option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>-->
-                <!--<option [ngValue]="patientOption.id === followupAction.patient?.id ? followupAction.patient : patientOption" *ngFor="let patientOption of patients; trackBy: trackPatientById">{{patientOption.id}}</option>-->
-                <!--</select>-->
-                <!--</div>-->
-                <!--<div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">-->
-                <!--<small class="form-text text-danger"-->
-                <!--[hidden]="!editForm.controls.patient?.errors?.required">-->
-                <!--This field is required.-->
-                <!--</small>-->
-                <!--</div>-->
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label" for="field_patient">Patient</label>
                     <div class="col-sm-10">
@@ -56,15 +33,8 @@
                         <div class="table-responsive">
                             <h6>
                                 Select existing Procedure Bookings
-                                <!--<a class="btn btn-outline-success jh-create-entity create-procedure-booking" [routerLink]="['/', { outlets: { popup: ['procedure-booking-new'] } }]"-->
-                                   <!--replaceUrl="true">New</a>-->
-                                <!--<a class="btn btn-primary btn-sm" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ followupAction?.patient?.id + '/edit'} }]"-->
-                                   <!--replaceUrl="true">Edit</a>-->
                                 <a class="btn btn-outline-success float-right jh-create-entity create-procedure-booking btn-sm mb-2" [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ followupAction?.patient?.id + '/create'} }]"
                                    replaceUrl="true">New Procedure Booking</a>
-                                <!--<a class="btn btn-outline-success float-right jh-create-entity create-procedure-booking btn-sm mb-2"-->
-                                   <!--[routerLink]="['/', { outlets: { popup: ['procedure-booking/' + followupAction?.patient?.id + '/edit2'] } }]"-->
-                                    <!--replaceUrl="true">New Procedure Booking</a>-->
                             </h6>
                             <table *ngIf="procedureBookings && procedureBookings.length > 0" class="table table-striped">
                                 <thead>
@@ -106,30 +76,6 @@
                         </small>
                     </div>
                 </div>
-                <!--<div *ngIf="selectedProcedureBooking" class="form-group row">-->
-                    <!--<label class="col-sm-2 col-form-label" for="field_questionnaire">Questionnaire</label>-->
-                    <!--<div class="col-sm-10">-->
-                        <!--<ng-select class="form-control" name="questionnaire" id="field_questionnaire"-->
-                                   <!--placeholder="Type/Select questionnaire"-->
-                                   <!--[options]="questionnaires"-->
-                                   <!--(selected)="onQuestionnaireSelected($event)"-->
-                                   <!--[(ngModel)]="questionnaireId">-->
-                        <!--</ng-select>-->
-                    <!--</div>-->
-                    <!--<div [hidden]="!(editForm.controls.questionnaire?.dirty && editForm.controls.questionnaire?.invalid)">-->
-                        <!--<small class="form-text text-danger"-->
-                               <!--[hidden]="!editForm.controls.questionnaire?.errors?.required">-->
-                            <!--This field is required.-->
-                        <!--</small>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_questionnaire">Questionnaire</label>-->
-                <!--<select class="form-control" id="field_questionnaire" name="questionnaire" [(ngModel)]="followupAction.questionnaire" >-->
-                <!--<option [ngValue]="null"></option>-->
-                <!--<option [ngValue]="questionnaireOption.id === followupAction.questionnaire?.id ? followupAction.questionnaire : questionnaireOption" *ngFor="let questionnaireOption of questionnaires; trackBy: trackQuestionnaireById">{{questionnaireOption.name}}</option>-->
-                <!--</select>-->
-                <!--</div>-->
                 <div *ngIf="selectedProcedureBooking" class="form-group row">
                     <label class="col-sm-2 form-control-label" for="field_phase">Phase</label>
                     <div class="col-sm-10" id="field_phase">
@@ -142,70 +88,8 @@
                                 {{careEvent?.timepoint?.name}} <span *ngIf="careEvent.status !== 'STARTED'">[InActive]</span>
                             </label>
                         </div>
-                        <!--<div class="form-check form-check-inline">-->
-                            <!--<label class="form-check-label">-->
-                                <!--<input class="form-check-input" id="inlineCheckbox1" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="PRE_OPERATIVE"> Pre Operative-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="form-check form-check-inline">-->
-                            <!--<label class="form-check-label">-->
-                                <!--<input class="form-check-input" id="inlineCheckbox2" type="radio" name="phase" [(ngModel)]="followupAction.phase" value="POST_OPERATIVE"> Post Operative-->
-                            <!--</label>-->
-                        <!--</div>-->
                     </div>
                 </div>
-                <!--<div class="form-group">-->
-                    <!--<label class="form-control-label" for="field_scheduledDate">Scheduled Date</label>-->
-                    <!--<div class="d-flex">-->
-                        <!--<input id="field_scheduledDate" type="datetime-local" class="form-control" name="scheduledDate" [(ngModel)]="followupAction.scheduledDate"-->
-                            <!--/>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_name">Name</label>-->
-                <!--<input type="text" class="form-control" name="name" id="field_name"-->
-                <!--[(ngModel)]="followupAction.name" required/>-->
-                <!--<div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">-->
-                <!--<small class="form-text text-danger"-->
-                <!--[hidden]="!editForm.controls.name?.errors?.required">-->
-                <!--This field is required.-->
-                <!--</small>-->
-                <!--</div>-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_type">Type</label>-->
-                <!--<select class="form-control" name="type" [(ngModel)]="followupAction.type" id="field_type" >-->
-                <!--<option value="QUESTIONNAIRE">QUESTIONNAIRE</option>-->
-                <!--<option value="UKNOWN">UKNOWN</option>-->
-                <!--</select>-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_outcomeScore">Outcome Score</label>-->
-                <!--<input type="number" class="form-control" name="outcomeScore" id="field_outcomeScore"-->
-                <!--[(ngModel)]="followupAction.outcomeScore" />-->
-                <!--</div>-->
-                <!--<div class="form-group">-->
-                <!--<label class="form-control-label" for="field_outcomeComment">Outcome Comment</label>-->
-                <!--<input type="text" class="form-control" name="outcomeComment" id="field_outcomeComment"-->
-                <!--[(ngModel)]="followupAction.outcomeComment" />-->
-                <!--</div>-->
-
-                <!--<div *ngIf="followupAction?.questionnaire" class="form-group row">-->
-                    <!--<label class="col-sm-2 col-form-label" for="field_outcomescore">Outcome score</label>-->
-                    <!--<div class="col-sm-10" id="field_outcomescore">-->
-                        <!--<input [(ngModel)]="followupAction.outcomeScore" type="number" id="outcomeScore" name="outcomeScore" class="form-control">-->
-                    <!--</div>-->
-                    <!--<select class="form-control" id="field_followupPlan" name="followupPlan" [(ngModel)]="followupAction.followupPlan"  required>-->
-                        <!--<option *ngIf="!editForm.value.followupPlan" [ngValue]="null" selected></option>-->
-                        <!--<option [ngValue]="followupPlanOption.id === followupAction.followupPlan?.id ? followupAction.followupPlan : followupPlanOption" *ngFor="let followupPlanOption of followupplans; trackBy: trackFollowupPlanById">{{followupPlanOption.id}}</option>-->
-                    <!--</select>-->
-                <!--</div>-->
-                <!--<div [hidden]="!(editForm.controls.outcomeScore?.dirty && editForm.controls.outcomeScore?.invalid)">-->
-                    <!--<small class="form-text text-danger"-->
-                           <!--[hidden]="!editForm.controls.outcomeScore?.errors?.required">-->
-                        <!--This field is required.-->
-                    <!--</small>-->
-                <!--</div>-->
                 <div *ngIf="selectedCareEvent" class="form-group row">
                     <label class="col-sm-2 form-control-label" for="field_questionnaire">Questionnaire</label>
                     <div class="col-sm-10 container-fluid">
