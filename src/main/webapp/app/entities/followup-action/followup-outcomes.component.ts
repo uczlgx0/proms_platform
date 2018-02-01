@@ -200,14 +200,17 @@ export class FollowupOutcomesComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/followup-outcomes'], {queryParams:
+        if (!this.selectedPatientId) {
+            this.router.navigate(['/followup-outcomes'], {
+                queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
-        });
+            });
+        }
         this.loadAll();
     }
 
