@@ -37,6 +37,7 @@ export class DataEntryComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     followupAction: FollowupAction;
     isSaving: boolean;
+    isEditing:boolean = true;
     patientId: string;
     questionnaireId: string;
     followupplans: FollowupPlan[];

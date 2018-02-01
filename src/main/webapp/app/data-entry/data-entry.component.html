@@ -101,32 +101,25 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="selectedCareEvent" class="form-group row">
-                    <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
-                    <div class="col-sm-10">
-                        <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
-                                        [(ngModel)]="followupAction.completedDate"></my-date-picker>
-                    </div>
-                </div>
             </div>
             <div *ngIf="followupAction?.name" class="m-1 alert alert-dark">
                 <div class="container-fluid" *ngIf="followupAction.name == 'MOXFQ'">
-                    <moxfq-component [followupAction]="followupAction"></moxfq-component>
+                    <moxfq-component [followupAction]="followupAction" [(isEditing)]="isEditing"></moxfq-component>
                 </div>
                 <div class="container-fluid" *ngIf="followupAction.name == 'PAIN VAS'">
-                    <painvas-component [followupAction]="followupAction"></painvas-component>
+                    <painvas-component [followupAction]="followupAction" [(isEditing)]="isEditing"></painvas-component>
                 </div>
                 <div class="container-fluid" *ngIf="followupAction.name == 'AOFAS'">
-                    <aofas-component [followupAction]="followupAction"></aofas-component>
+                    <aofas-component [followupAction]="followupAction" [(isEditing)]="isEditing"></aofas-component>
                 </div>
                 <div class="container-fluid" *ngIf="followupAction.name == 'AOS'">
-                    <aos-component [followupAction]="followupAction"></aos-component>
+                    <aos-component [followupAction]="followupAction" [(isEditing)]="isEditing"></aos-component>
                 </div>
                 <div class="container-fluid" *ngIf="followupAction.name == 'COFAS-AOS'">
-                    <cofas-component [followupAction]="followupAction"></cofas-component>
+                    <cofas-component [followupAction]="followupAction" [(isEditing)]="isEditing"></cofas-component>
                 </div>
                 <div class="container-fluid" *ngIf="followupAction.name == 'EQ-5D 3L INDEX'">
-                    <eq5d3l-component [followupAction]="followupAction"></eq5d3l-component>
+                    <eq5d3l-component [followupAction]="followupAction" [(isEditing)]="isEditing"></eq5d3l-component>
                 </div>
             </div>
         </form>
