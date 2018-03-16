@@ -17,3 +17,7 @@ services:
         extends:
             file: elasticsearch.yml
             service: northumbriaproms-elasticsearch
+    northumbriaproms-rabbitmq:
+        extends:
+            file: rabbitmq.yml
+            service: northumbriaproms-rabbitmq
