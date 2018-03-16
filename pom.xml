@@ -6,7 +6,12 @@
     <artifactId>promsapp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Northumbria Proms Application</name>
+    <name>Proms Platform</name>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>Termlex</name>
+        <url>https://termlex.com</url>
+    </organization>
 
     <properties>
         <!-- Build properties -->
@@ -548,6 +553,38 @@
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.14</version>
+                <configuration>
+                    <licenseName>agpl_3</licenseName>
+                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                            <excludes>
+                                <exclude>*.yml</exclude>
+                                <exclude>*.ts</exclude>
+                                <exclude>*.html</exclude>
+                                <exclude>*.css</exclude>
+                                <exclude>*.xml</exclude>
+                                <exclude>*.csv</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

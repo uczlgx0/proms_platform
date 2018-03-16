@@ -1,1 +1,1 @@
-${AnsiColor.BRIGHT_BLUE}:: Northumbria PROMS Application  :: Running Version ${project.version} ::
+${AnsiColor.BRIGHT_BLUE}:: PROMS Platform  :: Running Version ${project.version} ::
