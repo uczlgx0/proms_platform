@@ -1,0 +1,195 @@
+<div class="followup-actions-page">
+    <h2>
+        <span>Followup Actions</span>
+        <button *ngIf="!selectedPatientId" class="btn btn-primary float-right jh-create-entity create-followup-action" [routerLink]="['/', { outlets: { popup: ['followup-action-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down" >
+            Create new Followup Action
+            </span>
+        </button>
+        <button *jhiHasAnyAuthority="'ROLE_ADMIN'" class="btn btn-outline-warning float-right" (click)="indexAll()">
+            <span class="fa fa-refresh"></span>
+            <span class="hidden-sm-down" >
+                Refresh Index
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row m-1">
+        <div class="col-md-3 alert alert-dark">
+            <h4>
+                Search Filters
+                <button class="btn btn-sm btn-warning float-right" (click)="clearFilters()"
+                        *ngIf="query.consultants.length > 0 || query.locations.length > 0 || query.procedures.length > 0
+                        || query.statuses.length > 0
+                        || query.minAge !== 10 || query.maxAge !== 100"
+                    >Clear</button>
+            </h4>
+            <form>
+                <div class="form-group">
+                    <label for="field_sides">Status
+                        <small *ngIf="query.statuses.length > 0">
+                            [<a class="alert-danger" (click)="clearStatus()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="status" id="field_status"
+                               placeholder="Select Status"
+                               [options]="statuses"
+                               (selected)="onStatusSelected($event)"
+                               [(ngModel)]="selectedStatus"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_sides">Phase
+                        <small *ngIf="query.phases.length > 0">
+                            [<a class="alert-danger" (click)="clearPhases()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="side" id="field_sides"
+                               placeholder="Select Phase"
+                               [options]="phases"
+                               (selected)="onPhaseSelected($event)"
+                               [(ngModel)]="selectedPhase"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_consultantName">Consultant
+                        <small *ngIf="query.consultants.length > 0">
+                            [<a class="alert-danger" (click)="clearConsultants()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="consultantName" id="field_consultantName"
+                               placeholder="Type/Select consultant name"
+                               [options]="consultants"
+                               (selected)="onConsultantSelected($event)"
+                               [(ngModel)]="selectedConsultant"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_hospitalSite">Hospital
+                        <small *ngIf="query.locations.length > 0">
+                            [<a class="alert-danger" (click)="clearLocations()">Clear</a>]
+                        </small>
+                    </label>
+                    <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
+                               placeholder="Type/Select hospital name"
+                               [options]="locations"
+                               (selected)="onLocationSelected($event)"
+                               [(ngModel)]="selectedLocation"
+                        >
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="field_primaryProcedure">Procedure <small *ngIf="query.procedures.length > 0">
+                        [<a class="alert-danger" (click)="clearProcedures()">Clear</a>]
+                    </small>
+                    </label>
+                    <ng-select class="form-control" name="primaryProcedure" id="field_primaryProcedure"
+                               placeholder="Type/Select procedure name"
+                               [options]="procedures"
+                               (selected)="onProcedureSelected($event)"
+                               [(ngModel)]="selectedProcedure"
+                        >
+                    </ng-select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-9">
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <div class="form-inline">
+                        <div class="input-group w-100 mt-3">
+                            <input *ngIf="!selectedPatientId" type="text" class="form-control" [ngModel]="currentSearch" id="currentSearch"
+                                   (ngModelChange)="search($event)" name="currentSearch" placeholder="Enter NHS number">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" *ngIf="followupActions?.length > 0">
+                <table class="table table-striped">
+                    <thead>
+                    <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                        <th *ngIf="!selectedPatientId" jhiSortBy="patient.id"><span>Patient</span> <span
+                            class="fa fa-sort"></span></th>
+                        <th jhiSortBy="id"><span>Procedure</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="scheduledDate"><span>Scheduled Date</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
+                        <th jhiSortBy="phase"><span>Phase</span> <span class="fa fa-sort"></span></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let followupAction of followupActions ;trackBy: trackId">
+                        <td *ngIf="!selectedPatientId">
+                            <div *ngIf="followupAction.patient">
+                                <a [routerLink]="['../patient', followupAction.patient?.id ]" >
+                                    {{followupAction.careEvent?.followupPlan?.patient?.givenName}} {{followupAction.careEvent?.followupPlan?.patient?.familyName}}
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <a *ngIf="followupAction.careEvent?.followupPlan?.procedureBooking"
+                               [routerLink]="['../procedure-booking', followupAction.careEvent?.followupPlan?.procedureBooking?.id ]" >
+                        <span *ngIf="proceduresLookup && followupAction.careEvent?.followupPlan?.procedureBooking?.primaryProcedure">
+                            {{proceduresLookup[followupAction.careEvent?.followupPlan?.procedureBooking?.primaryProcedure].label}}
+                        </span>
+                        <span *ngIf="followupAction.careEvent?.followupPlan?.procedureBooking?.side" class="alert-danger">
+                            [{{followupAction.careEvent?.followupPlan?.procedureBooking?.side}}]
+                        </span>
+                            </a>
+                        </td>
+                        <td>{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</td>
+                        <td>{{followupAction.name}}</td>
+                        <td>{{followupAction.phase}}</td>
+                        <td class="text-right">
+                            <div class="btn-group flex-btn-group-container">
+                                <button *ngIf="!selectedPatientId" type="submit"
+                                        [routerLink]="['../followup-action', followupAction.id ]"
+                                        class="btn btn-info btn-sm">
+                                    <!--<span class="fa fa-eye"></span>-->
+                                    <span class="d-none d-md-inline">View</span>
+                                </button>
+                                <button *ngIf="selectedPatientId" type="submit"
+                                        [routerLink]="['../../followup-action', followupAction.id ]"
+                                        class="btn btn-info btn-sm">
+                                    <!--<span class="fa fa-eye"></span>-->
+                                    <span class="d-none d-md-inline">View</span>
+                                </button>
+                                <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/edit'} }]"
+                                        replaceUrl="true"
+                                        class="btn btn-primary btn-sm">
+                                    <span class="fa fa-pencil"></span>
+                                    <span class="d-none d-md-inline">Edit</span>
+                                </button>
+                                <button *jhiHasAnyAuthority="'ROLE_ADMIN'" type="submit"
+                                        [routerLink]="['/', { outlets: { popup: 'followup-action/'+ followupAction.id + '/delete'} }]"
+                                        replaceUrl="true"
+                                        class="btn btn-danger btn-sm">
+                                    <span class="fa fa-remove"></span>
+                                    <span class="d-none d-md-inline">Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-warning text-center" *ngIf="followupActions && followupActions?.length == 0">
+                <h6 *ngIf="selectedPatientId">No matching followup actions found for this patient for given search criteria</h6>
+                <h6 *ngIf="!selectedPatientId">No matches found for selected search criteria</h6>
+            </div>
+            <div *ngIf="followupActions && followupActions.length">
+                <div class="row justify-content-center">
+                    <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                </div>
+                <div class="row justify-content-center">
+                    <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

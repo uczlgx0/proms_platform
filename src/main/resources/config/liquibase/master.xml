@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129035846_added_entity_Patient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129035846_added_entity_Address.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129072155_added_entity_Procedure.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129103304_added_entity_Questionnaire.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129114835_added_entity_Procedurelink.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129172603_added_entity_ProcedureBooking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130070059_added_entity_FollowupPlan.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_entity_CareEvent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130072715_added_entity_FollowupAction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171207130141_added_entity_HealthcareProvider.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180104065827_added_entity_Timepoint.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180104070155_added_entity_ProcedureTimepoint.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20171129035846_added_entity_constraints_Address.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129114835_added_entity_constraints_Procedurelink.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171129336_added_table_address_lines.xml" relativeToChangelogFile="false"/>
+    <!--<include file="config/liquibase/changelog/20171129336_added_table_constraints_address_lines.xml" relativeToChangelogFile="false"/>-->
+    <include file="config/liquibase/changelog/20171129172603_added_entity_constraints_ProcedureBooking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130070059_added_entity_constraints_FollowupPlan.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130072715_added_entity_constraints_FollowupAction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171207749_added_column_User.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171208900_added_entity_ResponseItem.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_entity_constraints_CareEvent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171130071059_added_column_CareEvent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171215329_added_column_FollowupAction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171225537_added_column_ProcedureBooking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20171228519_added_column_side_ProcedureBooking.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/201712281057_added_column_status_FollowupAction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180104070155_added_entity_constraints_ProcedureTimepoint.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+</databaseChangeLog>

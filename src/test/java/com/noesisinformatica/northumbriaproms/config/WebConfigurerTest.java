@@ -1,8 +1,40 @@
 package com.noesisinformatica.northumbriaproms.config;
 
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.*;
+import com.hazelcast.durableexecutor.DurableExecutorService;
+import com.hazelcast.logging.LoggingService;
+import com.hazelcast.mapreduce.JobTracker;
+import com.hazelcast.quorum.QuorumService;
+import com.hazelcast.ringbuffer.Ringbuffer;
+import com.hazelcast.transaction.*;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
 import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
@@ -10,6 +42,7 @@ import io.undertow.Undertow;
 import io.undertow.Undertow.Builder;
 import io.undertow.UndertowOptions;
 import org.apache.commons.io.FilenameUtils;
+import org.h2.server.web.WebServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainerFactory;
@@ -23,6 +56,7 @@ import org.xnio.OptionMap;
 
 import javax.servlet.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -61,7 +95,7 @@ public class WebConfigurerTest {
         env = new MockEnvironment();
         props = new JHipsterProperties();
 
-        webConfigurer = new WebConfigurer(env, props);
+        webConfigurer = new WebConfigurer(env, props, new MockHazelcastInstance());
         metricRegistry = new MetricRegistry();
         webConfigurer.setMetricRegistry(metricRegistry);
     }
@@ -76,6 +110,7 @@ public class WebConfigurerTest {
         verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
         verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
         verify(servletContext).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
+        verify(servletContext, never()).addServlet(eq("H2Console"), any(WebServlet.class));
     }
 
     @Test
@@ -88,6 +123,7 @@ public class WebConfigurerTest {
         verify(servletContext).addFilter(eq("webappMetricsFilter"), any(InstrumentedFilter.class));
         verify(servletContext).addServlet(eq("metricsServlet"), any(MetricsServlet.class));
         verify(servletContext, never()).addFilter(eq("cachingHttpHeadersFilter"), any(CachingHttpHeadersFilter.class));
+        verify(servletContext).addServlet(eq("H2Console"), any(WebServlet.class));
     }
 
     @Test
@@ -326,6 +362,204 @@ public class WebConfigurerTest {
         @Override
         public Map<String, String> getInitParameters() {
             return null;
+        }
+    }
+
+    public static class MockHazelcastInstance implements HazelcastInstance {
+
+        @Override
+        public String getName() {
+            return "HazelcastInstance";
+        }
+
+        @Override
+        public <E> IQueue<E> getQueue(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> ITopic<E> getTopic(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> ISet<E> getSet(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> IList<E> getList(String s) {
+            return null;
+        }
+
+        @Override
+        public <K, V> IMap<K, V> getMap(String s) {
+            return null;
+        }
+
+        @Override
+        public <K, V> ReplicatedMap<K, V> getReplicatedMap(String s) {
+            return null;
+        }
+
+        @Override
+        public JobTracker getJobTracker(String s) {
+            return null;
+        }
+
+        @Override
+        public <K, V> MultiMap<K, V> getMultiMap(String s) {
+            return null;
+        }
+
+        @Override
+        public ILock getLock(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> Ringbuffer<E> getRingbuffer(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> ITopic<E> getReliableTopic(String s) {
+            return null;
+        }
+
+        @Override
+        public Cluster getCluster() {
+            return null;
+        }
+
+        @Override
+        public Endpoint getLocalEndpoint() {
+            return null;
+        }
+
+        @Override
+        public IExecutorService getExecutorService(String s) {
+            return null;
+        }
+
+        @Override
+        public DurableExecutorService getDurableExecutorService(String s) {
+            return null;
+        }
+
+        @Override
+        public <T> T executeTransaction(TransactionalTask<T> transactionalTask) throws TransactionException {
+            return null;
+        }
+
+        @Override
+        public <T> T executeTransaction(TransactionOptions transactionOptions, TransactionalTask<T> transactionalTask) throws TransactionException {
+            return null;
+        }
+
+        @Override
+        public TransactionContext newTransactionContext() {
+            return null;
+        }
+
+        @Override
+        public TransactionContext newTransactionContext(TransactionOptions transactionOptions) {
+            return null;
+        }
+
+        @Override
+        public IdGenerator getIdGenerator(String s) {
+            return null;
+        }
+
+        @Override
+        public IAtomicLong getAtomicLong(String s) {
+            return null;
+        }
+
+        @Override
+        public <E> IAtomicReference<E> getAtomicReference(String s) {
+            return null;
+        }
+
+        @Override
+        public ICountDownLatch getCountDownLatch(String s) {
+            return null;
+        }
+
+        @Override
+        public ISemaphore getSemaphore(String s) {
+            return null;
+        }
+
+        @Override
+        public Collection<DistributedObject> getDistributedObjects() {
+            return null;
+        }
+
+        @Override
+        public String addDistributedObjectListener(DistributedObjectListener distributedObjectListener) {
+            return null;
+        }
+
+        @Override
+        public boolean removeDistributedObjectListener(String s) {
+            return false;
+        }
+
+        @Override
+        public Config getConfig() {
+            return null;
+        }
+
+        @Override
+        public PartitionService getPartitionService() {
+            return null;
+        }
+
+        @Override
+        public QuorumService getQuorumService() {
+            return null;
+        }
+
+        @Override
+        public ClientService getClientService() {
+            return null;
+        }
+
+        @Override
+        public LoggingService getLoggingService() {
+            return null;
+        }
+
+        @Override
+        public LifecycleService getLifecycleService() {
+            return null;
+        }
+
+        @Override
+        public <T extends DistributedObject> T getDistributedObject(String s, String s1) {
+            return null;
+        }
+
+        @Override
+        public ConcurrentMap<String, Object> getUserContext() {
+            return null;
+        }
+
+        @Override
+        public HazelcastXAResource getXAResource() {
+            return null;
+        }
+
+        @Override
+        public ICacheManager getCacheManager() {
+            return null;
+        }
+
+        @Override
+        public void shutdown() {
+
         }
     }
 

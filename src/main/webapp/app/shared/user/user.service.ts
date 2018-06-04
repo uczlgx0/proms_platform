@@ -33,6 +33,12 @@ export class UserService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    consultants(req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(this.resourceUrl + '/authority/ROLE_CONSULTANT', options)
+            .map((res: Response) => this.convertToSelectOption(res));
+    }
+
     delete(login: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }
@@ -47,5 +53,16 @@ export class UserService {
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
         return new ResponseWrapper(res.headers, jsonResponse, res.status);
+    }
+
+    private convertToSelectOption(res: Response): ResponseWrapper {
+        const jsonResponse = res.json();
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            let user = jsonResponse[i];
+            let userName = user.title + ' ' + user.firstName + ' ' + user.lastName;
+            result.push({value: userName, label: userName});
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 }

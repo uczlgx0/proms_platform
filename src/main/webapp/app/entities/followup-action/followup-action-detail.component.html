@@ -1,0 +1,99 @@
+
+<div *ngIf="followupAction">
+    <h2>
+        <span *ngIf="followupAction.status == 'COMPLETED'">PROMs Outcome</span>
+        <span *ngIf="followupAction.status != 'COMPLETED'">Followup Action</span>
+        <div class="btn-group float-right" role="group">
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+            <button type="button"
+                    (click)="toggleEdit()"
+                    class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </h2>
+    <hr>
+    <jhi-alert></jhi-alert>
+
+    <div class="card border-dark mb-4 text-center hoverable">
+        <div class="card-body">
+            <!--Grid row-->
+            <div class="row">
+                <!--Grid column-->
+                <div class="col-sm-12 col-md-7 text-left ml-3 mt-3">
+                    <h4 class="mb-4" *ngIf="followupAction.patient">
+                        <a [routerLink]="['/patient', followupAction.patient?.id]">
+                            {{followupAction.patient?.givenName}} {{followupAction.patient?.familyName}}
+                        </a>
+                    </h4>
+                    <a *ngIf="followupAction.questionnaire" [routerLink]="['/questionnaire', followupAction.questionnaire?.id]" class="green-text">
+                        <h6 class="font-bold pb-1"><i class="fa fa-newspaper-o"></i> {{followupAction.questionnaire?.name}}</h6>
+                    </a>
+                    <h6>
+                        Status:
+                        <span *ngIf="followupAction.status == 'COMPLETED'" class="badge badge-success">{{followupAction.status | titlecase}}</span>
+                        <span *ngIf="followupAction.status != 'COMPLETED'" class="badge badge-danger">{{followupAction.status | titlecase}}</span>
+                    </h6>
+                    <div *jhiHasAnyAuthority="'ROLE_ADMIN'">
+                        <h6 *ngIf="followupAction.followupPlan">
+                            Followup Plan:
+                            <a [routerLink]="['/followup-plan', followupAction.followupPlan?.id]">{{followupAction.followupPlan?.id}}</a>
+                        </h6>
+                    </div>
+                    <h6>Outcome comment</h6>
+                    <blockquote *ngIf="followupAction.outcomeComment">{{followupAction.outcomeComment}}</blockquote>
+                    <blockquote *ngIf="!followupAction.outcomeComment">No outcome comment to display</blockquote>
+                    <small>Last updated by <a><strong>{{followupAction.lastModifiedBy}}</strong></a>, {{followupAction.lastModifiedDate | date:'medium'}}</small>
+                    <!--<a class="btn btn-success">Read more</a>-->
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-sm-12 col-md-4 offset-md-1 mx-3 my-3">
+                    <div class="card">
+                        <ul class="list-group list-group-flush text-left">
+                            <li class="list-group-item">
+                                <strong>Phase : </strong>
+                                <span *ngIf="followupAction.phase" class="badge badge-warning">{{followupAction.phase | titlecase}}</span>
+                                <span *ngIf="!followupAction.phase" class="badge badge-secondary">Not specified</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Outcome Score : </strong>
+                                <span *ngIf="followupAction.status == 'COMPLETED'" class="badge badge-info">{{followupAction.outcomeScore}}</span>
+                                <span *ngIf="followupAction.status != 'COMPLETED'">No score to display as action is not completed</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Scheduled Date : </strong>
+                                <span *ngIf="followupAction.scheduledDate">{{followupAction.scheduledDate | date:'dd/MM/yyyy'}}</span>
+                                <span *ngIf="!followupAction.scheduledDate">Not specified</span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Completed Date : </strong>
+                                <span *ngIf="followupAction.completedDate">{{followupAction.completedDate | date:'dd/MM/yyyy'}}</span>
+                                <span *ngIf="!followupAction.completedDate">Not specified</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+        </div>
+    </div>
+
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'MOXFQ'">
+        <moxfq-component [(followupAction)]="followupAction" [(isEditing)]="isEditing"></moxfq-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'PAIN VAS'">
+        <painvas-component [(followupAction)]="followupAction" [(isEditing)]="isEditing"></painvas-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOFAS'">
+        <aofas-component [(followupAction)]="followupAction" [(isEditing)]="isEditing"></aofas-component>
+    </div>
+    <div class="container-fluid" *ngIf="followupAction.questionnaire?.name == 'AOS'">
+        <aos-component [(followupAction)]="followupAction" [(isEditing)]="isEditing"></aos-component>
+    </div>
+</div>

@@ -3,10 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.noesisinformatica.northumbriaproms</groupId>
-    <artifactId>northumbriaproms</artifactId>
+    <artifactId>promsapp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>Northumbriaproms</name>
+    <name>Proms Platform</name>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>Termlex</name>
+        <url>https://termlex.com</url>
+    </organization>
 
     <properties>
         <!-- Build properties -->
@@ -33,6 +38,17 @@
         <!-- The spring-boot version should match the one managed by
         https://mvnrepository.com/artifact/io.github.jhipster/jhipster-dependencies/${jhipster-dependencies.version} -->
         <spring-boot.version>1.5.7.RELEASE</spring-boot.version>
+        <!-- The hibernate version should match the one managed by
+        https://mvnrepository.com/artifact/io.github.jhipster/jhipster-dependencies/${jhipster-dependencies.version} -->
+        <hibernate.version>5.2.10.Final</hibernate.version>
+        <!-- The javassist version should match the one managed by
+        https://mvnrepository.com/artifact/org.hibernate/hibernate-core/${hibernate.version} -->
+        <javassist.version>3.20.0-GA</javassist.version>
+        <!-- The liquibase version should match the one managed by
+        https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/${spring-boot.version} -->
+        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
+        <validation-api.version>1.1.0.Final</validation-api.version>
         <mapstruct.version>1.1.0.Final</mapstruct.version>
 
         <!-- Plugin versions -->
@@ -72,6 +88,24 @@
         <sonar.tests>${project.basedir}/src/test/</sonar.tests>
 
         <!-- jhipster-needle-maven-property -->
+        <!-- Spring properties -->
+        <spring-cloud-stream.version>Brooklyn.SR2</spring-cloud-stream.version>
+
+        <!-- RPM settings -->
+        <execFinalName>${project.build.finalName}.war</execFinalName>
+        <app.home>/opt/${project.artifactId}</app.home>
+        <log.folder.location>/var/log/${project.artifactId}</log.folder.location>
+        <data.folder.location>${app.home}/data</data.folder.location>
+        <index.folder.location>${app.home}/index</index.folder.location>
+        <config.folder.location>${app.home}/config</config.folder.location>
+        <staging.dir>${project.build.directory}/staging</staging.dir>
+        <executable.name>${project.artifactId}</executable.name>
+        <executable.name.id>main</executable.name.id>
+        <!-- Disable license plugin downloads -->
+        <skip.third.party.license>true</skip.third.party.license>
+        <skip.license.download>true</skip.license.download>
+        <rpm.plugin.version>2.1.5</rpm.plugin.version>
+        <assembly.plugin.version>2.4</assembly.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +114,13 @@
                 <groupId>io.github.jhipster</groupId>
                 <artifactId>jhipster-dependencies</artifactId>
                 <version>${jhipster-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-stream-dependencies</artifactId>
+                <version>${spring-cloud-stream.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -118,6 +159,10 @@
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hppc</artifactId>
         </dependency>
         <dependency>
@@ -132,10 +177,28 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.1</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-hibernate52</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-spring</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
@@ -152,8 +215,16 @@
             <artifactId>springfox-bean-validators</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.ryantenney.metrics</groupId>
             <artifactId>metrics-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -162,11 +233,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
@@ -178,21 +244,33 @@
             <artifactId>jzlib</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.mongobee</groupId>
-            <artifactId>mongobee</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -226,7 +304,19 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -296,6 +386,7 @@
     </dependencies>
 
     <build>
+        <finalName>${executable.name}</finalName>
         <defaultGoal>spring-boot:run</defaultGoal>
         <testResources>
             <testResource>
@@ -343,6 +434,12 @@
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${mapstruct.version}</version>
+                        </path>
+                        <!-- For JPA static metamodel generation -->
+                        <path>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate.version}</version>
                         </path>
 
                     </annotationProcessorPaths>
@@ -439,6 +536,57 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-etc-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <!-- Spring boot overrides the default delimiters, so we have to set this explicitly!! -->
+                            <useDefaultDelimiters>true</useDefaultDelimiters>
+                            <outputDirectory>${project.build.directory}/etc</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/etc</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.14</version>
+                <configuration>
+                    <licenseName>agpl_3</licenseName>
+                    <licenseResolver>${project.baseUri}/src/license</licenseResolver>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test</root>
+                            </roots>
+                            <excludes>
+                                <exclude>*.yml</exclude>
+                                <exclude>*.ts</exclude>
+                                <exclude>*.html</exclude>
+                                <exclude>*.css</exclude>
+                                <exclude>*.xml</exclude>
+                                <exclude>*.csv</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -505,6 +653,45 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>${liquibase.version}</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+                    <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
+                    <driver>org.h2.Driver</driver>
+                    <url>jdbc:h2:file:./target/h2db/db/northumbriaproms</url>
+                    <defaultSchemaName></defaultSchemaName>
+                    <username>northumbriaproms</username>
+                    <password></password>
+                    <referenceUrl>hibernate:spring:com.noesisinformatica.northumbriaproms.domain?dialect=org.hibernate.dialect.H2Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
+                    <verbose>true</verbose>
+                    <logging>debug</logging>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                        <version>${javassist.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-hibernate5</artifactId>
+                        <version>${liquibase-hibernate5.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-data-jpa</artifactId>
+                        <version>${spring-boot.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <version>${validation-api.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -664,6 +851,10 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-devtools</artifactId>
                     <optional>true</optional>
+                </dependency>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -949,6 +1140,138 @@
                     <version>${mapstruct.version}</version>
                 </dependency>
             </dependencies>
+        </profile>
+        <!-- Used for packaging as an rpm -->
+        <profile>
+            <id>rpm</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <package.type>war</package.type>
+                <spring.profile>prod</spring.profile>
+                <!-- Enable license plugin downloads -->
+                <skip.third.party.license>false</skip.third.party.license>
+                <skip.license.download>false</skip.license.download>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>rpm-maven-plugin</artifactId>
+                        <version>${rpm.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-rpm</id>
+                                <goals>
+                                    <goal>rpm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <license>Noesis Informatica (C) 2012 - 2017</license>
+                            <distribution>Noesis Informatica Ltd</distribution>
+                            <group>Development</group>
+                            <description>${project.description}</description>
+                            <version>${project.version}</version>
+                            <release>${timestamp}</release>
+                            <!--<icon>src/main/resources/icon.gif</icon>-->
+                            <packager>Noesis Informatica</packager>
+                            <!--<prefix>/usr/local</prefix>-->
+                            <!--<changelogFile>CHANGELOG.md</changelogFile>-->
+                            <defineStatements>
+                                <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                            </defineStatements>
+                            <provides>
+                                <provide>${project.artifactId}</provide>
+                            </provides>
+                            <defaultUsername>${project.artifactId}</defaultUsername>
+                            <defaultGroupname>${project.artifactId}</defaultGroupname>
+                            <defaultFilemode>750</defaultFilemode>
+                            <mappings>
+                                <mapping>
+                                    <directory>${app.home}</directory>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/${executable.name}.${package.type}</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>${app.home}</directory>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.directory}/etc/run.sh</location>
+                                        </source>
+                                        <source>
+                                            <location>${project.build.directory}/etc/promsapp.service</location>
+                                        </source>
+                                        <!--<source>-->
+                                            <!--<location>${project.basedir}/LICENSE.txt</location>-->
+                                        <!--</source>-->
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>${config.folder.location}</directory>
+                                    <configuration>true</configuration>
+                                    <filemode>755</filemode>
+                                    <sources>
+                                        <source>
+                                            <location>${project.build.outputDirectory}/config</location>
+                                        </source>
+                                        <source>
+                                            <location>${project.build.outputDirectory}/logback-spring.xml</location>
+                                        </source>
+                                    </sources>
+                                </mapping>
+                                <mapping>
+                                    <directory>${log.folder.location}</directory>
+                                </mapping>
+                                <mapping>
+                                    <directory>${data.folder.location}</directory>
+                                </mapping>
+                                <mapping>
+                                    <directory>${config.folder.location}</directory>
+                                </mapping>
+                                <mapping>
+                                    <directory>${index.folder.location}</directory>
+                                </mapping>
+                                <!-- Symbolic Links -->
+                                <mapping>
+                                    <directory>${app.home}/${project.artifactId}</directory>
+                                    <sources>
+                                        <softlinkSource>
+                                            <location>/usr/local/bin/${project.artifactId}</location>
+                                        </softlinkSource>
+                                    </sources>
+                                </mapping>
+                            </mappings>
+                            <preinstallScriptlet>
+                                <scriptFile>${project.build.directory}/etc/deb/control/preinst</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </preinstallScriptlet>
+                            <postinstallScriptlet>
+                                <scriptFile>${project.build.directory}/etc/deb/control/postinst</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </postinstallScriptlet>
+                            <preremoveScriptlet>
+                                <scriptFile>${project.build.directory}/etc/deb/control/prerm</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </preremoveScriptlet>
+                            <postremoveScriptlet>
+                                <scriptFile>${project.build.directory}/etc/deb/control/postrm</scriptFile>
+                                <fileEncoding>utf-8</fileEncoding>
+                            </postremoveScriptlet>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

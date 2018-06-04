@@ -1,0 +1,579 @@
+<h4>{{followupAction?.name}}</h4>
+<form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
+
+    <div class="form-group">
+        <label>1. I have pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q1" class="form-check-input" type="radio" name = "q1" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>2. I avoid walking long distances because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q2" class="form-check-input" type="radio" name = "q2" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>3. I change the way I walk due to pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q3" class="form-check-input" type="radio" name = "q3" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>4. I walk slowly because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q4" class="form-check-input" type="radio" name = "q4" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>5. I have to stop and rest my foot/ankle because of pain</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q5" class="form-check-input" type="radio" name = "q5" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>6. I avoid some hard or rough surfaces because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q6" class="form-check-input" type="radio" name = "q6" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q6" class="form-check-input" type="radio" name = "q6" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q6" class="form-check-input" type="radio" name = "q6" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q6" class="form-check-input" type="radio" name = "q6" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q6" class="form-check-input" type="radio" name = "q6" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>7. I avoid standing for a long time because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q7" class="form-check-input" type="radio" name = "q7" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q7" class="form-check-input" type="radio" name = "q7" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q7" class="form-check-input" type="radio" name = "q7" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q7" class="form-check-input" type="radio" name = "q7" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q7" class="form-check-input" type="radio" name = "q7" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>8. I catch the bus or use the car instead of walking, because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q8" class="form-check-input" type="radio" name = "q8" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q8" class="form-check-input" type="radio" name = "q8" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q8" class="form-check-input" type="radio" name = "q8" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q8" class="form-check-input" type="radio" name = "q8" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q8" class="form-check-input" type="radio" name = "q8" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>9. I feel self-conscious about my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q9" class="form-check-input" type="radio" name = "q9" value="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q9" class="form-check-input" type="radio" name = "q9" value="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q9" class="form-check-input" type="radio" name = "q9" value="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q9" class="form-check-input" type="radio" name = "q9" value="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q9" class="form-check-input" type="radio" name = "q9" value="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>10. I feel self-conscious about the shoes I have to wear</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q10" class="form-check-input" type="radio" name = "q10" value="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q10" class="form-check-input" type="radio" name = "q10" value="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q10" class="form-check-input" type="radio" name = "q10" value="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q10" class="form-check-input" type="radio" name = "q10" value="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q10" class="form-check-input" type="radio" name = "q10" value="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>11. The pain in my foot/ankle is more painful in the evening</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q11" class="form-check-input" type="radio" name = "q11" value="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q11" class="form-check-input" type="radio" name = "q11" value="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q11" class="form-check-input" type="radio" name = "q11" value="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q11" class="form-check-input" type="radio" name = "q11" value="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q11" class="form-check-input" type="radio" name = "q11" value="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>12. I get shooting pains in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q12" class="form-check-input" type="radio" name = "q12" value="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q12" class="form-check-input" type="radio" name = "q12" value="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q12" class="form-check-input" type="radio" name = "q12" value="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q12" class="form-check-input" type="radio" name = "q12" value="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q12" class="form-check-input" type="radio" name = "q12" value="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>13. The pain in my foot/ankle prevents me from carrying out my work/everyday activities</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q13" class="form-check-input" type="radio" name = "q13" value="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q13" class="form-check-input" type="radio" name = "q13" value="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q13" class="form-check-input" type="radio" name = "q13" value="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q13" class="form-check-input" type="radio" name = "q13" value="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q13" class="form-check-input" type="radio" name = "q13" value="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>14. I am unable to do all my social or recreational activities because of pain in my foot/ankle</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q14" class="form-check-input" type="radio" name = "q14" [value]="0">
+                None of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q14" class="form-check-input" type="radio" name = "q14" [value]="1">
+                Rarely
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q14" class="form-check-input" type="radio" name = "q14" [value]="2">
+                Some of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q14" class="form-check-input" type="radio" name = "q14" [value]="3">
+                Most of the time
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q14" class="form-check-input" type="radio" name = "q14" [value]="4" [disabled]="!isEditing">
+                All of the time
+            </label>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>15. During the past 4 weeks how would you describe the pain you usually have in your foot/ankle? (please tick one box)</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q15" class="form-check-input" type="radio" name = "q15" [value]="0">
+                None
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q15" class="form-check-input" type="radio" name = "q15" value="1">
+                Very mild
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q15" class="form-check-input" type="radio" name = "q15" [value]="2">
+                Mild
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q15" class="form-check-input" type="radio" name = "q15" [value]="3">
+                Moderate
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q15" class="form-check-input" type="radio" name = "q15" [value]="4" [disabled]="!isEditing">
+                Severe
+            </label>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>16. During the past 4 weeks have you been troubled by pain from your foot/ankle in bed at night? (please tick one box)</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q16" class="form-check-input" type="radio" name = "q16" [value]="0">
+                No nights
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q16" class="form-check-input" type="radio" name = "q16" [value]="1">
+                Only 1 or 2 nights
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q16" class="form-check-input" type="radio" name = "q16" [value]="2">
+                Some nights
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q16" class="form-check-input" type="radio" name = "q16" [value]="3">
+                Most nights
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input [(ngModel)]="formData.q16" class="form-check-input" type="radio" name = "q16" [value]="4" [disabled]="!isEditing">
+                Every night
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="comment">Comment</label>
+        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5"
+                  cols="40" [disabled]="!isEditing"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="outcomeScore">Outcome Score</label>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control"
+               name="outcomeScore" [disabled]="!isEditing"/>
+    </div>
+    <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
+        <small class="form-text text-danger"
+               [hidden]="!qForm.controls.outcomeScore?.errors?.required">
+            This field is required.
+        </small>
+    </div>
+
+    <br>
+    <div class="form-group row">
+        <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
+        <div class="col-sm-10">
+            <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" [disabled]="!isEditing"></my-date-picker>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-info">Submit</button>
+    <br>
+</form>

@@ -1,9 +1,34 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
 import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import com.noesisinformatica.northumbriaproms.domain.User;
 import com.noesisinformatica.northumbriaproms.repository.UserRepository;
+import com.noesisinformatica.northumbriaproms.repository.search.UserSearchRepository;
 import com.noesisinformatica.northumbriaproms.security.AuthoritiesConstants;
 import com.noesisinformatica.northumbriaproms.service.MailService;
 import com.noesisinformatica.northumbriaproms.service.UserService;
@@ -29,6 +54,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing users.
@@ -66,11 +95,14 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    private final UserSearchRepository userSearchRepository;
+
+    public UserResource(UserRepository userRepository, UserService userService, MailService mailService, UserSearchRepository userSearchRepository) {
 
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.userSearchRepository = userSearchRepository;
     }
 
     /**
@@ -149,6 +181,21 @@ public class UserResource {
     }
 
     /**
+     * GET /users/authority/:authority : get all users with given role.
+     *
+     * @param authority the role name
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     */
+    @GetMapping("/users/authority/{authority}")
+    @Timed
+    public ResponseEntity<List<UserDTO>> getAllUsers(@PathVariable String authority, Pageable pageable) {
+        final Page<UserDTO> page = userService.findAllByAuthoritiesName(authority, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
      * @return a string list of the all of the roles
      */
     @GetMapping("/users/authorities")
@@ -186,5 +233,20 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "A user is deleted with identifier " + login, login)).build();
+    }
+
+    /**
+     * SEARCH /_search/users/:query : search for the User corresponding
+     * to the query.
+     *
+     * @param query the query to search
+     * @return the result of the search
+     */
+    @GetMapping("/_search/users/{query}")
+    @Timed
+    public List<User> search(@PathVariable String query) {
+        return StreamSupport
+            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .collect(Collectors.toList());
     }
 }

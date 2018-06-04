@@ -1,0 +1,40 @@
+<h4>{{followupAction?.name}}</h4>
+<form #qForm="ngForm" (ngSubmit)="submitData(qForm.value)">
+    <div class="form-group">
+        <label for="q1">How bad is your foot/ankle pain today?</label>
+        <nouislider [min]="0" [max]="100" [step]="1" [(ngModel)]="formData.q1" [tooltips]="[true ]" style="margin-top: 2em;"
+                    id="q1" name="q1" (ngModelChange)="onChange($event, 'q1')" [disabled]="!isEditing"></nouislider>
+        <small id="scoreHelpBlock" class="form-text text-muted">
+            On a scale of 0 to 100, with 0 being no pain and 100 being worst pain.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label for="comment">Comment</label>
+        <textarea [(ngModel)]="followupAction.outcomeComment" id="comment" class="form-control" name="comment" rows="5" cols="40"
+                  [disabled]="!isEditing"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="outcomeScore">Outcome Score</label>
+        <input type="number" [(ngModel)]="followupAction.outcomeScore" id="outcomeScore" class="form-control" name="outcomeScore"
+               [disabled]="!isEditing"/>
+    </div>
+    <div [hidden]="!(qForm.controls.outcomeScore?.dirty && qForm.controls.outcomeScore?.invalid)">
+        <small class="form-text text-danger"
+               [hidden]="!qForm.controls.outcomeScore?.errors?.required">
+            This field is required.
+        </small>
+    </div>
+
+    <br>
+    <div class="form-group row">
+        <label class="col-sm-2 form-control-label" for="field_completedDate">Completed Date</label>
+        <div class="col-sm-10">
+            <my-date-picker class="form-control" id="field_completedDate" name="completedDate" [options]="datePickerOptions"
+                            (dateChanged)="onDateChanged($event)" [selDate]="selectedDate" [disabled]="!isEditing"></my-date-picker>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-info">Submit</button>
+    <br>
+</form>

@@ -1,5 +1,29 @@
 package com.noesisinformatica.northumbriaproms.config;
 
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
 import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
@@ -7,6 +31,7 @@ import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
+import com.hazelcast.core.HazelcastInstance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +65,15 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
 
     private final JHipsterProperties jHipsterProperties;
 
+    private final HazelcastInstance hazelcastInstance;
+
     private MetricRegistry metricRegistry;
 
-    public WebConfigurer(Environment env, JHipsterProperties jHipsterProperties) {
+    public WebConfigurer(Environment env, JHipsterProperties jHipsterProperties, HazelcastInstance hazelcastInstance) {
 
         this.env = env;
         this.jHipsterProperties = jHipsterProperties;
+        this.hazelcastInstance = hazelcastInstance;
     }
 
     @Override
@@ -57,6 +85,9 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
         initMetrics(servletContext, disps);
         if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
             initCachingHttpHeadersFilter(servletContext, disps);
+        }
+        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+            initH2Console(servletContext);
         }
         log.info("Web application fully configured");
     }
@@ -164,6 +195,31 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
             source.registerCorsConfiguration("/v2/api-docs", config);
         }
         return new CorsFilter(source);
+    }
+
+    /**
+     * Initializes H2 console.
+     */
+    private void initH2Console(ServletContext servletContext) {
+        log.debug("Initialize H2 console");
+        try {
+            // We don't want to include H2 when we are packaging for the "prod" profile and won't
+            // actually need it, so we have to load / invoke things at runtime through reflection.
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            Class<?> servletClass = Class.forName("org.h2.server.web.WebServlet", true, loader);
+            Servlet servlet = (Servlet) servletClass.newInstance();
+
+            ServletRegistration.Dynamic h2ConsoleServlet = servletContext.addServlet("H2Console", servlet);
+            h2ConsoleServlet.addMapping("/h2-console/*");
+            h2ConsoleServlet.setInitParameter("-properties", "src/main/resources/");
+            h2ConsoleServlet.setLoadOnStartup(1);
+
+        } catch (ClassNotFoundException | LinkageError  e) {
+            throw new RuntimeException("Failed to load and initialize org.h2.server.web.WebServlet", e);
+
+        } catch (IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException("Failed to instantiate org.h2.server.web.WebServlet", e);
+        }
     }
 
     @Autowired(required = false)

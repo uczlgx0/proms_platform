@@ -1,5 +1,29 @@
 package com.noesisinformatica.northumbriaproms.web.rest;
 
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
 import com.noesisinformatica.northumbriaproms.domain.User;
 import com.noesisinformatica.northumbriaproms.repository.UserRepository;
@@ -16,6 +40,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,6 +85,7 @@ public class UserJWTControllerIntTest {
     }
 
     @Test
+    @Transactional
     public void testAuthorize() throws Exception {
         User user = new User();
         user.setLogin("user-jwt-controller");
@@ -67,7 +93,7 @@ public class UserJWTControllerIntTest {
         user.setActivated(true);
         user.setPassword(passwordEncoder.encode("test"));
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         LoginVM login = new LoginVM();
         login.setUsername("user-jwt-controller");
@@ -83,6 +109,7 @@ public class UserJWTControllerIntTest {
     }
 
     @Test
+    @Transactional
     public void testAuthorizeWithRememberMe() throws Exception {
         User user = new User();
         user.setLogin("user-jwt-controller-remember-me");
@@ -90,7 +117,7 @@ public class UserJWTControllerIntTest {
         user.setActivated(true);
         user.setPassword(passwordEncoder.encode("test"));
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         LoginVM login = new LoginVM();
         login.setUsername("user-jwt-controller-remember-me");
@@ -107,6 +134,7 @@ public class UserJWTControllerIntTest {
     }
 
     @Test
+    @Transactional
     public void testAuthorizeFails() throws Exception {
         LoginVM login = new LoginVM();
         login.setUsername("wrong-user");

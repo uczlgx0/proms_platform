@@ -1,0 +1,33 @@
+
+<div *ngIf="procedurelink">
+    <h2><span>Procedurelink</span> {{procedurelink.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Procedure</span></dt>
+        <dd>
+            <div *ngIf="procedurelink.procedure">
+                <a [routerLink]="['/procedure', procedurelink.procedure?.id]">{{procedurelink.procedure?.name}}</a>
+            </div>
+        </dd>
+        <dt><span>Questionnaire</span></dt>
+        <dd>
+            <div *ngIf="procedurelink.questionnaire">
+                <a [routerLink]="['/questionnaire', procedurelink.questionnaire?.id]">{{procedurelink.questionnaire?.name}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'procedurelink/'+ procedurelink.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

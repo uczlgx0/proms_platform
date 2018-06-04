@@ -1,0 +1,74 @@
+
+<div *ngIf="procedureBooking">
+    <h2>
+        <span>Procedure Booking Details</span>
+        <div class="btn-group float-right" role="group">
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/', { outlets: { popup: 'procedure-booking/'+ procedureBooking.id + '/edit'} }]"
+                    replaceUrl="true"
+                    class="btn btn-primary">
+                <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Patient</span></dt>
+                <dd>
+                    <div *ngIf="procedureBooking.patient">
+                        <a [routerLink]="['/patient', procedureBooking.patient?.id]">{{procedureBooking.patient?.givenName}} {{procedureBooking.patient?.familyName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Patient Age</span></dt>
+                <dd>
+                    <span>{{procedureBooking.patientAge}} years</span>
+                </dd>
+                <dt><span>Consultant Name</span></dt>
+                <dd>
+                    <span>{{procedureBooking.consultantName}}</span>
+                </dd>
+                <dt><span>Hospital Site</span></dt>
+                <dd>
+                    <span>{{procedureBooking.hospitalSite}}</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="row-md jh-entity-details">
+                <dt><span>Primary Procedure</span></dt>
+                <dd>
+                    <span *ngIf="proceduresLookup">{{proceduresLookup[procedureBooking.primaryProcedure].label}}</span>
+                    <span class="alert-danger" *ngIf="procedureBooking.side">[{{procedureBooking.side}}]</span>
+                </dd>
+                <dt><span>Other Procedures</span></dt>
+                <dd>
+                    <span>{{procedureBooking.otherProcedures}}</span>
+                    <span class="alert-danger" *ngIf="procedureBooking.side && procedureBooking.otherProcedures">[{{procedureBooking.side}}]</span>
+                </dd>
+                <dt><span>Scheduled Date</span></dt>
+                <dd>
+                    <span>{{procedureBooking.scheduledDate | date:'dd/MM/yyyy'}}</span>
+                </dd>
+                <dt><span>Performed Date</span></dt>
+                <dd>
+                    <span>{{procedureBooking.performedDate | date:'dd/MM/yyyy'}}</span>
+                </dd>
+                <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span>Followup Plan</span></dt>
+                <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
+                    <div *ngIf="procedureBooking.followupPlan">
+                        <a [routerLink]="['/followup-plan', procedureBooking.followupPlan?.id]">{{procedureBooking.followupPlan?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

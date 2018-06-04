@@ -1,8 +1,30 @@
 package com.noesisinformatica.northumbriaproms.domain;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
@@ -14,29 +36,36 @@ import java.util.Map;
  *
  * @see org.springframework.boot.actuate.audit.AuditEvent
  */
-@Document(collection = "jhi_persistent_audit_event")
+@Entity
+@Table(name = "jhi_persistent_audit_event")
 public class PersistentAuditEvent implements Serializable {
     
     @Id
-    @Field("event_id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
+    private Long id;
 
     @NotNull
+    @Column(nullable = false)
     private String principal;
 
-    @Field("event_date")
+    @Column(name = "event_date")
     private Instant auditEventDate;
 
-    @Field("event_type")
+    @Column(name = "event_type")
     private String auditEventType;
 
+    @ElementCollection
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
+    @CollectionTable(name = "jhi_persistent_audit_evt_data", joinColumns=@JoinColumn(name="event_id"))
     private Map<String, String> data = new HashMap<>();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,0 +1,43 @@
+
+<div *ngIf="careEvent">
+    <h2><span>Care Event</span> {{careEvent.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Type</span></dt>
+        <dd>
+            <span>{{careEvent.type}}</span>
+        </dd>
+        <dt><span>Timepoint</span></dt>
+        <dd>
+            <div *ngIf="careEvent.timepoint">
+                <a [routerLink]="['/timepoint', careEvent.timepoint?.id]">{{careEvent.timepoint?.name}}</a>
+            </div>
+        </dd>
+        <dt><span>Patient</span></dt>
+        <dd>
+            <div *ngIf="careEvent.patient">
+                <a [routerLink]="['/patient', careEvent.patient?.id]">{{careEvent.patient?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Followup Plan</span></dt>
+        <dd>
+            <div *ngIf="careEvent.followupPlan">
+                <a [routerLink]="['/followup-plan', careEvent.followupPlan?.id]">{{careEvent.followupPlan?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'care-event/'+ careEvent.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

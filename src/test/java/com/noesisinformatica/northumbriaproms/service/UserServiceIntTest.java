@@ -1,5 +1,29 @@
 package com.noesisinformatica.northumbriaproms.service;
 
+/*-
+ * #%L
+ * Proms Platform
+ * %%
+ * Copyright (C) 2017 - 2018 Termlex
+ * %%
+ * This software is Copyright and Intellectual Property of Termlex Inc Limited.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation as version 3 of the
+ * License.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this program.  If not, see
+ * <https://www.gnu.org/licenses/agpl-3.0.en.html>.
+ * #L%
+ */
+
 import com.noesisinformatica.northumbriaproms.NorthumbriapromsApp;
 import com.noesisinformatica.northumbriaproms.config.Constants;
 import com.noesisinformatica.northumbriaproms.domain.User;
@@ -16,6 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -31,6 +56,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NorthumbriapromsApp.class)
+@Transactional
 public class UserServiceIntTest {
 
     @Autowired
@@ -43,7 +69,6 @@ public class UserServiceIntTest {
 
     @Before
     public void init() {
-        userRepository.deleteAll();
         user = new User();
         user.setLogin("johndoe");
         user.setPassword(RandomStringUtils.random(60));
@@ -56,8 +81,9 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatUserMustExistToResetPassword() {
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         Optional<User> maybeUser = userService.requestPasswordReset("invalid.login@localhost");
         assertThat(maybeUser).isNotPresent();
 
@@ -69,9 +95,10 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatOnlyActivatedUserCanRequestPasswordReset() {
         user.setActivated(false);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         Optional<User> maybeUser = userService.requestPasswordReset(user.getLogin());
         assertThat(maybeUser).isNotPresent();
@@ -79,13 +106,14 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatResetKeyMustNotBeOlderThan24Hours() {
         Instant daysAgo = Instant.now().minus(25, ChronoUnit.HOURS);
         String resetKey = RandomUtil.generateResetKey();
         user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
         assertThat(maybeUser).isNotPresent();
@@ -93,12 +121,13 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatResetKeyMustBeValid() {
         Instant daysAgo = Instant.now().minus(25, ChronoUnit.HOURS);
         user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
         assertThat(maybeUser).isNotPresent();
@@ -106,6 +135,7 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatUserCanResetPassword() {
         String oldPassword = user.getPassword();
         Instant daysAgo = Instant.now().minus(2, ChronoUnit.HOURS);
@@ -113,7 +143,7 @@ public class UserServiceIntTest {
         user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
         assertThat(maybeUser).isPresent();
@@ -125,12 +155,13 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void testFindNotActivatedUsersByCreationDateBefore() {
         Instant now = Instant.now();
         user.setActivated(false);
-        User dbUser = userRepository.save(user);
+        User dbUser = userRepository.saveAndFlush(user);
         dbUser.setCreatedDate(now.minus(4, ChronoUnit.DAYS));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minus(3, ChronoUnit.DAYS));
         assertThat(users).isNotEmpty();
         userService.removeNotActivatedUsers();
@@ -139,10 +170,11 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void assertThatAnonymousUserIsNotGet() {
         user.setLogin(Constants.ANONYMOUS_USER);
         if (!userRepository.findOneByLogin(Constants.ANONYMOUS_USER).isPresent()) {
-            userRepository.save(user);
+            userRepository.saveAndFlush(user);
         }
         final PageRequest pageable = new PageRequest(0, (int) userRepository.count());
         final Page<UserDTO> allManagedUsers = userService.getAllManagedUsers(pageable);
@@ -152,12 +184,13 @@ public class UserServiceIntTest {
     }
 
     @Test
+    @Transactional
     public void testRemoveNotActivatedUsers() {
         user.setActivated(false);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         // Let the audit first set the creation date but then update it
         user.setCreatedDate(Instant.now().minus(30, ChronoUnit.DAYS));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
 
         assertThat(userRepository.findOneByLogin("johndoe")).isPresent();
         userService.removeNotActivatedUsers();

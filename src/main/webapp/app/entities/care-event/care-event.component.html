@@ -1,0 +1,95 @@
+<div>
+    <h2>
+        <span>Care Events</span>
+        <button class="btn btn-primary float-right jh-create-entity create-care-event" [routerLink]="['/', { outlets: { popup: ['care-event-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down" >
+            Create new Care Event
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="careEvents">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="type"><span>Type</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="timepoint.name"><span>Timepoint</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="patient.id"><span>Patient</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="followupPlan.id"><span>Followup Plan</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let careEvent of careEvents ;trackBy: trackId">
+                <td><a [routerLink]="['../care-event', careEvent.id ]">{{careEvent.id}}</a></td>
+                <td>{{careEvent.type}}</td>
+                <td>
+                    <div *ngIf="careEvent.timepoint">
+                        <a [routerLink]="['../timepoint', careEvent.timepoint?.id ]" >{{careEvent.timepoint?.name}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="careEvent.patient">
+                        <a [routerLink]="['../patient', careEvent.patient?.id ]" >{{careEvent.patient?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="careEvent.followupPlan">
+                        <a [routerLink]="['../followup-plan', careEvent.followupPlan?.id ]" >{{careEvent.followupPlan?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../care-event', careEvent.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'care-event/'+ careEvent.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'care-event/'+ careEvent.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div *ngIf="careEvents && careEvents.length">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [pageSize]="itemsPerPage" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+</div>

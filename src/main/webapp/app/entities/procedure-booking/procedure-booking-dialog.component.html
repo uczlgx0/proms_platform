@@ -1,0 +1,148 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 *ngIf="hidePatients" class="modal-title" id="myProcedureBookingLabel">Edit Procedure Booking</h4>
+        <h4 *ngIf="!hidePatients" class="modal-title" id="myProcedureBookingLabel">Create a Procedure Booking</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div *ngIf="!hidePatients" class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_patient">Patient</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="patient" id="field_patient"
+                           placeholder="Select patient"
+                           filterPlaceholder="Enter name or NHS number to search..."
+                           (noOptionsFound)="filterInputChanged($event)"
+                           [options]="patients"
+                           (selected)="onPatientSelected($event)"
+                           [(ngModel)]="patientId">
+                </ng-select>
+                <!--<select class="form-control" id="field_patient" name="patient" [(ngModel)]="procedureBooking.patient"  required>-->
+                    <!--<option *ngIf="!editForm.value.patient" [ngValue]="null" selected></option>-->
+                    <!--<option [ngValue]="patientOption.id === procedureBooking.patient?.id ? procedureBooking.patient : patientOption" *ngFor="let patientOption of patients; trackBy: trackPatientById">{{patientOption.id}}</option>-->
+                <!--</select>-->
+            </div>
+            <div [hidden]="!(editForm.controls.patient?.dirty && editForm.controls.patient?.invalid)">
+                <small class="form-text text-danger"
+                       [hidden]="!editForm.controls.patient?.errors?.required">
+                    This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_consultantName">Consultant Name</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="consultantName" id="field_consultantName"
+                           placeholder="Type/Select consultant name"
+                           [options]="consultants"
+                           [(ngModel)]="procedureBooking.consultantName">
+                </ng-select>
+            </div>
+            <!--<select class="form-control" name="consultantName" id="field_consultantName"-->
+                    <!--[(ngModel)]="procedureBooking.consultantName" required>-->
+                <!--<option *ngFor="let item of consultants" [value]="item.value">{{ item.label }}</option>-->
+            <!--</select>-->
+            <div [hidden]="!(editForm.controls.consultantName?.dirty && editForm.controls.consultantName?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.consultantName?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_hospitalSite">Hospital Site</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="hospitalSite" id="field_hospitalSite"
+                           placeholder="Type/Select hospital name"
+                           [options]="locations"
+                           [(ngModel)]="procedureBooking.hospitalSite">
+                </ng-select>
+            </div>
+            <!--<input type="text" class="form-control" name="hospitalSite" id="field_hospitalSite"-->
+                <!--[(ngModel)]="procedureBooking.hospitalSite" required/>-->
+            <div [hidden]="!(editForm.controls.hospitalSite?.dirty && editForm.controls.hospitalSite?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.hospitalSite?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_scheduledDate">Scheduled Date</label>
+                <!--<div class="d-flex">-->
+                    <!--<input id="field_scheduledDate" type="datetime-local" class="form-control" name="scheduledDate" [(ngModel)]="procedureBooking.scheduledDate"-->
+                        <!--/>-->
+                    <my-date-picker class="form-control" id="field_scheduledDate" name="scheduledDate" [options]="myDatePickerOptions"
+                                    (dateChanged)="onScheduledDateChanged($event)" [selDate]="selectedScheduledDate" required></my-date-picker>
+                <!--</div>-->
+            </div>
+            <div class="col-md-6">
+                <label class="form-control-label" for="field_performedDate">Performed Date</label>
+                <!--<div class="d-flex">-->
+                <my-date-picker class="form-control" id="field_performedDate" name="performedDate" [options]="myDatePickerOptions"
+                                (dateChanged)="onPerformedDateChanged($event)" [selDate]="selectedPerformedDate" ></my-date-picker>
+                    <!--<input id="field_performedDate" type="datetime-local" class="form-control" name="performedDate" [(ngModel)]="procedureBooking.performedDate"-->
+                        <!--/>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="field_primaryProcedure">Primary Procedure</label>
+            <div class="col-sm-10">
+                <ng-select class="form-control" name="primaryProcedure" id="field_primaryProcedure"
+                           placeholder="Type/Select procedure name"
+                           [options]="procedures"
+                           [(ngModel)]="procedureBooking.primaryProcedure">
+                </ng-select>
+            </div>
+            <!--<input type="text" class="form-control" name="primaryProcedure" id="field_primaryProcedure"-->
+                <!--[(ngModel)]="procedureBooking.primaryProcedure" required/>-->
+            <div [hidden]="!(editForm.controls.primaryProcedure?.dirty && editForm.controls.primaryProcedure?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.primaryProcedure?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label" for="field_phase">Side</label>
+            <div class="col-sm-10" id="field_phase">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox1" type="radio" name="side" [(ngModel)]="procedureBooking.side" value="LEFT"> Left
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" id="inlineCheckbox2" type="radio" name="side" [(ngModel)]="procedureBooking.side" value="RIGHT"> Right
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!--<div class="form-group row">-->
+            <!--<label class="col-sm-2 col-form-label" for="field_otherProcedures">Other Procedures</label>-->
+            <!--<div class="col-sm-10">-->
+                <!--<input type="text" class="form-control" name="otherProcedures" id="field_otherProcedures"-->
+                       <!--[(ngModel)]="procedureBooking.otherProcedures" />-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="form-control-label" for="field_followupPlan">Followup Plan</label>-->
+            <!--<select class="form-control" id="field_followupPlan" name="followupPlan" [(ngModel)]="procedureBooking.followupPlan">-->
+                <!--<option [ngValue]="null"></option>-->
+                <!--<option [ngValue]="followupPlanOption.id === procedureBooking.followupPlan?.id ? procedureBooking.followupPlan : followupPlanOption" *ngFor="let followupPlanOption of followupplans; trackBy: trackFollowupPlanById">{{followupPlanOption.id}}</option>-->
+            <!--</select>-->
+        <!--</div>-->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>
